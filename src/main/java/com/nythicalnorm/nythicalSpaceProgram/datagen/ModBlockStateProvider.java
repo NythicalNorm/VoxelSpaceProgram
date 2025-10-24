@@ -2,14 +2,19 @@ package com.nythicalnorm.nythicalSpaceProgram.datagen;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
+import com.nythicalnorm.nythicalSpaceProgram.util.FootprintedType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
+
+import static com.nythicalnorm.nythicalSpaceProgram.block.custom.FootprintedRegolith.FOOTPRINTTYPE;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -22,9 +27,31 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.OXYGEN_PROPELLANT_TANK.get(), getColumnCubeModel(ModBlocks.OXYGEN_PROPELLANT_TANK,
                 ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/oxygen_propellant_tank_side"),
                 ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/oxygen_propellant_tank_end")));
+
+        SetFootprintBlockState(ModBlocks.LUNAR_REGOLITH);
     }
 
-    protected ModelFile getColumnCubeModel(RegistryObject<Block> block, ResourceLocation side, ResourceLocation end) {
+
+    protected void SetFootprintBlockState (RegistryObject<Block> block) {
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            FootprintedType myEnumval = state.getValue(FOOTPRINTTYPE);
+            if (myEnumval == FootprintedType.NOFOOTPRINTS) {
+               return new ConfiguredModel[]{new ConfiguredModel(models().cubeAll("lunar_regolith",
+                       ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith")))};
+           }
+
+           else { //if (state.getValue(FOOTPRINTTYPE) == FootprintedType.TWOBOOTZFACING) {
+                return new ConfiguredModel[]{new ConfiguredModel(models().cubeTop("lunar_regolith_2bootfacingz",
+                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith"),
+                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith_2bootfacingz")
+                ))};
+           }
+        });
+
+        simpleBlockItem(block.get(), cubeAll(block.get()));
+    }
+
+    protected ModelFile getColumnCubeModel(@NotNull RegistryObject<Block> block, ResourceLocation side, ResourceLocation end) {
         assert block.getId() != null;
         return models().withExistingParent(block.getId().getPath(), ModelProvider.BLOCK_FOLDER + "/cube_column_horizontal")
                 .texture("side", side)

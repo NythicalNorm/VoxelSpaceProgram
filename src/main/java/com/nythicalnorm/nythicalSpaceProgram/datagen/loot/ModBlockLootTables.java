@@ -16,6 +16,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     @Override
     protected void generate() {
         this.dropSelf(ModBlocks.OXYGEN_PROPELLANT_TANK.get());
+        this.dropSelf(ModBlocks.LUNAR_REGOLITH.get());
     }
 
     @Override

@@ -21,6 +21,7 @@ public class ModCreativeModeTab {
                         output.accept(ModItems.HANDHELD_PROPELLER.get());
                         output.accept(ModItems.MAGNET_BOOTS.get());
                         output.accept(ModBlocks.OXYGEN_PROPELLANT_TANK.get());
+                        output.accept(ModBlocks.LUNAR_REGOLITH.get());
                     })
                     .build());
 

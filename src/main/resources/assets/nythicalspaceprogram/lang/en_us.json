@@ -2,5 +2,7 @@
   "item.nythicalspaceprogram.handheld_propeller": "Handheld Propeller",
   "item.nythicalspaceprogram.magnet_boots": "Magnetic Boots",
   "creativetab.Main_NSP": "Nythical Space Program",
-  "block.nythicalspaceprogram.oxygen_propellant_tank": "Oxygen Propellant Tank"
+  "block.nythicalspaceprogram.oxygen_propellant_tank": "Oxygen Propellant Tank",
+  "block.nythicalspaceprogram.lunar_regolith": "Lunar Regolith"
+
 }
