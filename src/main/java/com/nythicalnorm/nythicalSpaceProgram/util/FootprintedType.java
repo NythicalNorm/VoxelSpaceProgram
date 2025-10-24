@@ -7,13 +7,13 @@ public enum FootprintedType implements StringRepresentable {
     NOFOOTPRINTS("none"),
     TWOBOOTXFACING("2bootfacingx"),
     TWOBOOTZFACING("2bootfacingz"),
-    ONEBOOTXFACING("1bootfacingx"),
-    ONEBOOTZFACING("1bootfacingz"),
+    TWOBOOTSTANDINGXFACING("2bootstandingfacingx"),
+    TWOBOOTSTANDINGZFACING("2bootstandingfacingz"),
 
-    TWOBOOTXZPosFACING("2bootfacingposxz"),
-    TWOBOOTXZNegFACING("2bootfacingnegxz"),
-    ONEBOOTXZPosFACING("1bootfacingposxz"),
-    ONEBOOTXZNegFACING("1bootfacingnegxz");
+    LEFTBOOTXFACING("leftbootfacingx"),
+    LEFTBOOTZFACING("leftbootfacingz"),
+    RIGHTBOOTXFACING("rightbootfacingx"),
+    RIGHTBOOTZFACING("rightbootfacingz");
 
 
 

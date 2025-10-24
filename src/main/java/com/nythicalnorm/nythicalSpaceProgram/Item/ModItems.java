@@ -2,6 +2,7 @@ package com.nythicalnorm.nythicalSpaceProgram.Item;
 
 import com.nythicalnorm.nythicalSpaceProgram.Item.custom.HandheldPropellerItem;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -13,7 +14,9 @@ public class ModItems {
 
     public static final RegistryObject<Item> HANDHELD_PROPELLER = ITEMS.register("handheld_propeller",
             () -> new HandheldPropellerItem(new Item.Properties()));
-    public static final RegistryObject<Item> MAGNET_BOOTS = ITEMS.register("magnet_boots", () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> MAGNET_BOOTS = ITEMS.register("magnet_boots", () ->
+            new ArmorItem(ModArmorMaterial.MAGNETIC, ArmorItem.Type.BOOTS,  new Item.Properties()));
 
     public static void register(IEventBus eventBus)
     {
