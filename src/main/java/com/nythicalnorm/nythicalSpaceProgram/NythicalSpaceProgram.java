@@ -10,10 +10,8 @@ import com.nythicalnorm.nythicalSpaceProgram.screen.ModMenuTypes;
 import com.nythicalnorm.nythicalSpaceProgram.sound.ModSounds;
 import com.nythicalnorm.nythicalSpaceProgram.util.ModItemProperties;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,7 +28,7 @@ public class NythicalSpaceProgram
     // Define mod id in a common place for everything to reference
     public static final String MODID = "nythicalspaceprogram";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public NythicalSpaceProgram(FMLJavaModLoadingContext context)
     {

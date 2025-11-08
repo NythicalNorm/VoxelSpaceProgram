@@ -1,6 +1,8 @@
 package com.nythicalnorm.nythicalSpaceProgram.block.entity;
 
+import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.screen.MagnetizerMenu;
+import com.nythicalnorm.nythicalSpaceProgram.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -29,9 +32,12 @@ import org.jetbrains.annotations.Nullable;
 public class MagnetizerEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler InputItemHandler = new ItemStackHandler(1);
     private final ItemStackHandler OutputItemHandler = new ItemStackHandler(1);
+    private final CustomEnergyStorage energyStorage = new CustomEnergyStorage(10000, 50, 0, 0);
 
     private LazyOptional<IItemHandler> lazyInputItemHandler = LazyOptional.empty();
     private LazyOptional<IItemHandler> lazyOutputItemHandler = LazyOptional.empty();
+    private LazyOptional<CustomEnergyStorage> energyStorageLazyOptional = LazyOptional.empty();
+    private Direction Facing = Direction.NORTH;
 
     protected final ContainerData data;
     private int progress = 0;
@@ -39,12 +45,16 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
 
     public MagnetizerEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.MAGNETIZER_BE.get(), pPos, pBlockState);
+        Facing = pBlockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
                 return switch (pIndex) {
                     case 0 -> MagnetizerEntity.this.progress;
                     case 1 -> MagnetizerEntity.this.maxProgress;
+                    case 2 -> MagnetizerEntity.this.energyStorage.getEnergyStored();
+                    case 3 -> MagnetizerEntity.this.energyStorage.getMaxEnergyStored();
                     default -> 0;
                 };
             }
@@ -54,12 +64,13 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
                  switch (pIndex) {
                     case 0 -> MagnetizerEntity.this.progress = pValue;
                     case 1 -> MagnetizerEntity.this.maxProgress = pValue;
-                }
+                    case 2 -> MagnetizerEntity.this.energyStorage.setEnergy(pValue);
+                 }
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return 4;
             }
         };
     }
@@ -67,15 +78,19 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (side == Direction.DOWN) {
+            if (side == Direction.DOWN || side == Facing.getOpposite()) {
                 return lazyOutputItemHandler.cast();
             }
             else {
                 return lazyInputItemHandler.cast();
             }
         }
-
-        return super.getCapability(cap, side);
+        else if (cap == ForgeCapabilities.ENERGY) {
+            return this.energyStorageLazyOptional.cast();
+        }
+        else {
+            return super.getCapability(cap, side);
+        }
     }
 
     @Override
@@ -83,11 +98,13 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
         super.onLoad();
         lazyInputItemHandler = LazyOptional.of(() ->  InputItemHandler);
         lazyOutputItemHandler = LazyOptional.of(() ->  OutputItemHandler);
+        energyStorageLazyOptional = LazyOptional.of(() -> energyStorage);
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
+        energyStorageLazyOptional.invalidate();
         lazyInputItemHandler.invalidate();
         lazyOutputItemHandler.invalidate();
     }
@@ -122,27 +139,35 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
-        pTag.put("inventoryIn", InputItemHandler.serializeNBT());
-        pTag.put("inventoryOut", OutputItemHandler.serializeNBT());
+        pTag.put("inventoryIn", this.InputItemHandler.serializeNBT());
+        pTag.put("inventoryOut", this.OutputItemHandler.serializeNBT());
+        pTag.put("magnetizer.energyStorage", this.energyStorage.serializeNBT());
         pTag.putInt("magnetizer.progress", progress);
         super.saveAdditional(pTag);
     }
 
     @Override
     public void load(CompoundTag pTag) {
-        InputItemHandler.deserializeNBT(pTag.getCompound("inventoryIn"));
-        OutputItemHandler.deserializeNBT(pTag.getCompound("inventoryOut"));
-        progress = pTag.getInt("magnetizer.progress");
+        if (!pTag.contains("inventoryIn") || !pTag.contains("inventoryOut") || !pTag.contains("magnetizer.energyStorage") || !pTag.contains("magnetizer.progress")) {
+            NythicalSpaceProgram.LOGGER.error("Expected NBT tag is missing.");
+            return;
+        }
+        this.InputItemHandler.deserializeNBT(pTag.getCompound("inventoryIn"));
+        this.OutputItemHandler.deserializeNBT(pTag.getCompound("inventoryOut"));
+        this.energyStorage.deserializeNBT(pTag.get("magnetizer.energyStorage"));
+        this.progress = pTag.getInt("magnetizer.progress");
         super.load(pTag);
     }
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
         if (hasRecipe()) {
-            progress++;
-            setChanged(pLevel, pPos, pState);
-            if (progress >= maxProgress) {
-                craftItem();
-                resetProgress();
+            if (energyStorage.ConsumeEnergy(20)) {
+                progress++;
+                setChanged(pLevel, pPos, pState);
+                if (progress >= maxProgress) {
+                    craftItem();
+                    resetProgress();
+                }
             }
         } else {
             resetProgress();

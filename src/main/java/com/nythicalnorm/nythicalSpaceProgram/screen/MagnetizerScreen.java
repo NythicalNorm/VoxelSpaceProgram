@@ -34,6 +34,16 @@ public class MagnetizerScreen extends AbstractContainerScreen<MagnetizerMenu> {
         int y = (height - imageHeight) / 2;
 
         pGuiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+
+        renderProgressArrow(pGuiGraphics, x, y);
+    }
+
+    private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
+        if(menu.isCrafting()) {
+            guiGraphics.blit(TEXTURE, x + 52, y + 35, 176, 0, menu.getScaledProgress(), 14);
+        }
+        int bar_length =  menu.getEnergyProgress();
+        guiGraphics.blit(TEXTURE, x + 150, y + 65 - bar_length, 176, 71 - bar_length, 12, bar_length);
     }
 
     @Override
@@ -41,5 +51,13 @@ public class MagnetizerScreen extends AbstractContainerScreen<MagnetizerMenu> {
         renderBackground(pGuiGraphics);
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         renderTooltip(pGuiGraphics, pMouseX, pMouseY);
+
+        int energyStored = this.menu.getCurrentEnergy();
+        int maxStored = this.menu.getMaxEnergy();
+
+        if(isHovering(150,8,12, 58, pMouseX, pMouseY)) {
+            Component text = Component.literal(energyStored + "/" + maxStored + " FE");
+            pGuiGraphics.renderTooltip(this.font, text, pMouseX, pMouseY);
+        }
     }
 }

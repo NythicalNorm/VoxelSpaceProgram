@@ -3,30 +3,35 @@ package com.nythicalnorm.nythicalSpaceProgram.block.custom;
 import com.nythicalnorm.nythicalSpaceProgram.block.entity.MagnetizerEntity;
 import com.nythicalnorm.nythicalSpaceProgram.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Magnetizer extends BaseEntityBlock {
-    public static final VoxelShape SHAPE = Block.box(0,0,0, 16,12,16);
+public class Magnetizer extends BaseEntityBlock  {
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final VoxelShape SHAPE = Block.box(0,0,0, 16,10,16);
 
     public Magnetizer(Properties pProperties) {
         super(pProperties);
+        registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
     }
 
     @Override
@@ -77,5 +82,26 @@ public class Magnetizer extends BaseEntityBlock {
 
         return createTickerHelper(pBlockEntityType, ModBlockEntities.MAGNETIZER_BE.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
+    }
+
+    @Override
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(FACING, pRot.rotate(pState.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(FACING);
+        super.createBlockStateDefinition(pBuilder);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
+        return defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
     }
 }

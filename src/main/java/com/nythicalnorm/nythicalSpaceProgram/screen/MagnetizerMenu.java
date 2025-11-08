@@ -20,7 +20,7 @@ public class MagnetizerMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public MagnetizerMenu(int pContainerId, Inventory inventory, FriendlyByteBuf extraData) {
-        this(pContainerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(4));
     }
     public MagnetizerMenu(int pContainerId, Inventory inventory, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.MAGNETIZER_MENU.get(), pContainerId);
@@ -36,17 +36,42 @@ public class MagnetizerMenu extends AbstractContainerMenu {
         LazyOptional<IItemHandler> lazyOutputItemHandler = ((MagnetizerEntity) entity).getSlotForDisplay(1);
 
         lazyInputItemHandler.ifPresent(itemHandler ->
-            this.addSlot(new SlotItemHandler(itemHandler, 0, 50, 25))
+            this.addSlot(new SlotItemHandler(itemHandler, 0, 23, 34))
         );
 
         lazyOutputItemHandler.ifPresent(itemHandler ->
-            this.addSlot(new SlotItemHandler(itemHandler, 0, 85, 25))
+            this.addSlot(new SlotItemHandler(itemHandler, 0, 110, 34))
         );
 
         addDataSlots(data);
     }
 
-    // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
+    public boolean isCrafting() {
+        return data.get(0) > 0;
+    }
+
+    public int getScaledProgress() {
+        int progress = this.data.get(0);
+        int maxProgress = this.data.get(1);  // Max Progress
+        int progressArrowSize = 41; // This is the height in pixels of your arrow
+
+        return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
+    }
+
+    public int getEnergyProgress() {
+        int amount = this.data.get(2);
+        int maxAmount = this.data.get(3);
+        int EnergyBarSize = 56;
+        return amount != 0 ? amount * EnergyBarSize / maxAmount : 0;
+    }
+
+    public int getCurrentEnergy() {
+        return this.data.get(2);
+    }
+    public int getMaxEnergy() {
+        return this.data.get(3);
+    }
+        // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
     // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
     // Each time we add a Slot to the container, it automatically increases the slotIndex, which means

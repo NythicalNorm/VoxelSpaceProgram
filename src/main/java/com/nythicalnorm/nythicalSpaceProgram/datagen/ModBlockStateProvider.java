@@ -30,9 +30,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         SetFootprintBlockState(ModBlocks.LUNAR_REGOLITH);
         simpleBlockWithItem(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get(), cubeAll(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get()));
-        simpleBlockWithItem(ModBlocks.MAGNETIZER.get(), cubeAll(ModBlocks.MAGNETIZER.get()));
+        modelBlockWithItem(ModBlocks.MAGNETIZER.get(), new ModelFile.UncheckedModelFile(
+                ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/magnetizer")));
     }
 
+    protected void modelBlockWithItem(Block block, ModelFile model) {
+        horizontalBlock(block, model);
+        simpleBlockItem(block, model);
+    }
 
     protected void SetFootprintBlockState (RegistryObject<Block> block) {
         getVariantBuilder(block.get()).forAllStates(state -> {
