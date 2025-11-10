@@ -1,12 +1,16 @@
 package com.nythicalnorm.nythicalSpaceProgram.block.entity;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import com.nythicalnorm.nythicalSpaceProgram.recipe.MagnetizerRecipe;
 import com.nythicalnorm.nythicalSpaceProgram.screen.MagnetizerMenu;
 import com.nythicalnorm.nythicalSpaceProgram.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -16,7 +20,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,19 +32,52 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class MagnetizerEntity extends BlockEntity implements MenuProvider {
-    private final ItemStackHandler InputItemHandler = new ItemStackHandler(1);
-    private final ItemStackHandler OutputItemHandler = new ItemStackHandler(1);
+    private final ItemStackHandler InputItemHandler = new ItemStackHandler(1) {
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return getCurrentRecipe(stack).isPresent();
+        }
+
+        @Override
+        protected void onContentsChanged(int slot) {
+            if (!level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+    };
+
+    private final ItemStackHandler OutputItemHandler = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            if(!level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return false;
+        }
+    };
+
     private final CustomEnergyStorage energyStorage = new CustomEnergyStorage(10000, 50, 0, 0);
 
     private LazyOptional<IItemHandler> lazyInputItemHandler = LazyOptional.empty();
     private LazyOptional<IItemHandler> lazyOutputItemHandler = LazyOptional.empty();
     private LazyOptional<CustomEnergyStorage> energyStorageLazyOptional = LazyOptional.empty();
-    private Direction Facing = Direction.NORTH;
 
+    private Direction Facing = Direction.NORTH;
+    private boolean isCrafting = false;
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 78;
+    private int maxProgress = 100;
+
+    //used clientside only for rendering the magnet table
+    private float magnetTableYrot = 0f;
 
     public MagnetizerEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.MAGNETIZER_BE.get(), pPos, pBlockState);
@@ -73,6 +109,36 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
                 return 4;
             }
         };
+    }
+
+    public ItemStack getOutputStack() {
+        return OutputItemHandler.getStackInSlot(0);
+    }
+    public ItemStack getInputStack() {
+        return InputItemHandler.getStackInSlot(0);
+    }
+
+    public float getRenderFacing() {
+        return -Facing.toYRot();
+    }
+
+    public boolean isCrafting() {
+        return isCrafting;
+    }
+
+    private void setIsCrafting(boolean setValue) {
+        if (isCrafting != setValue) {
+            isCrafting = setValue;
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    public float getMagnetTableYrot() {
+        return magnetTableYrot;
+    }
+
+    public void setMagnetTableYrot(float yRot) {
+        magnetTableYrot = yRot;
     }
 
     @Override
@@ -143,6 +209,7 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
         pTag.put("inventoryOut", this.OutputItemHandler.serializeNBT());
         pTag.put("magnetizer.energyStorage", this.energyStorage.serializeNBT());
         pTag.putInt("magnetizer.progress", progress);
+        pTag.putBoolean("magnetizer.crafting", isCrafting);
         super.saveAdditional(pTag);
     }
 
@@ -156,11 +223,14 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
         this.OutputItemHandler.deserializeNBT(pTag.getCompound("inventoryOut"));
         this.energyStorage.deserializeNBT(pTag.get("magnetizer.energyStorage"));
         this.progress = pTag.getInt("magnetizer.progress");
+        this.isCrafting = pTag.getBoolean("magnetizer.crafting");
+
         super.load(pTag);
     }
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
         if (hasRecipe()) {
+            setIsCrafting(true);
             if (energyStorage.ConsumeEnergy(20)) {
                 progress++;
                 setChanged(pLevel, pPos, pState);
@@ -169,17 +239,23 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
                     resetProgress();
                 }
             }
+            else {
+                setIsCrafting(false);
+            }
         } else {
+            setIsCrafting(false);
             resetProgress();
         }
     }
 
     private void resetProgress() {
         progress = 0;
+        maxProgress = 0;
     }
 
     private void craftItem() {
-        ItemStack result = new ItemStack(Items.GOLD_INGOT, 1);
+        Optional<MagnetizerRecipe> recipe = getCurrentRecipe();
+        ItemStack result = recipe.get().getResultItem(null);
         this.InputItemHandler.extractItem(0, 1, false);
 
         this.OutputItemHandler.setStackInSlot(0, new ItemStack(result.getItem(),
@@ -187,10 +263,24 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
     }
 
     private boolean hasRecipe() {
-        boolean hasCraftingItem = this.InputItemHandler.getStackInSlot(0).getItem() == Items.IRON_INGOT;
-        ItemStack result = new ItemStack(Items.GOLD_INGOT);
+        Optional<MagnetizerRecipe> recipe = getCurrentRecipe();
+        if (recipe.isEmpty()) {
+            return false;
+        }
+        ItemStack result = recipe.get().getResultItem(null);
+        maxProgress = recipe.get().getCraftTime();
+        return camInsertAmountIntoOutputSlot(result.getCount()) && camInsertItemIntoOutputSlot((result.getItem()));
+    }
 
-        return hasCraftingItem && camInsertAmountIntoOutputSlot(result.getCount()) && camInsertItemIntoOutputSlot((result.getItem()));
+    public Optional<MagnetizerRecipe> getCurrentRecipe(ItemStack item) {
+        SimpleContainer inventory = new SimpleContainer(InputItemHandler.getSlots() + OutputItemHandler.getSlots());
+        inventory.setItem(0, item);
+        inventory.setItem(1, OutputItemHandler.getStackInSlot(0));
+        return this.level.getRecipeManager().getRecipeFor(MagnetizerRecipe.Type.INSTANCE, inventory, level);
+    }
+
+    private Optional<MagnetizerRecipe> getCurrentRecipe() {
+        return getCurrentRecipe(InputItemHandler.getStackInSlot(0));
     }
 
     private boolean camInsertItemIntoOutputSlot(Item item) {
@@ -199,5 +289,15 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
 
     private boolean camInsertAmountIntoOutputSlot(int count) {
         return this.OutputItemHandler.getStackInSlot(0).getCount() + count  <= this.OutputItemHandler.getStackInSlot(0).getMaxStackSize();
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 }

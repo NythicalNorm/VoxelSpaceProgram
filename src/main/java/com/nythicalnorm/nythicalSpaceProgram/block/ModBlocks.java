@@ -24,6 +24,9 @@ public class ModBlocks {
     public static final RegistryObject<Block> OXYGEN_PROPELLANT_TANK = registerBlock("oxygen_propellant_tank",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
 
+    public static final RegistryObject<Block> MAGNETIZED_IRON_BLOCK = registerBlock("magnetized_iron_block",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.GOLD_BLOCK).sound(SoundType.NETHERITE_BLOCK)));
+
     public static final RegistryObject<Block> LUNAR_REGOLITH = registerBlock("lunar_regolith",
             () -> new FootprintedRegolith(BlockBehaviour.Properties.copy(Blocks.NETHERRACK).sound(SoundType.POWDER_SNOW).destroyTime(2f)));
 

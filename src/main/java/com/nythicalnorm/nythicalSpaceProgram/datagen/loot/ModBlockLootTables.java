@@ -17,6 +17,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     protected void generate() {
         this.dropSelf(ModBlocks.OXYGEN_PROPELLANT_TANK.get());
         this.dropSelf(ModBlocks.LUNAR_REGOLITH.get());
+        this.dropSelf(ModBlocks.MAGNETIZED_IRON_BLOCK.get());
         this.dropSelf(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get());
         this.dropSelf(ModBlocks.MAGNETIZER.get());
     }

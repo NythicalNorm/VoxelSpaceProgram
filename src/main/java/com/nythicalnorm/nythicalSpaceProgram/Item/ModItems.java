@@ -18,6 +18,9 @@ public class ModItems {
     public static final RegistryObject<Item> MAGNET_BOOTS = ITEMS.register("magnet_boots", () ->
             new ModArmorItem(ModArmorMaterial.MAGNETIC, ArmorItem.Type.BOOTS,  new Item.Properties()));
 
+    public static final RegistryObject<Item> MAGNETIZED_IRON_INGOT = ITEMS.register("magnetized_iron_ingot", () ->
+            new Item(new Item.Properties().fireResistant()));
+
     public static void register(IEventBus eventBus)
     {
         ITEMS.register(eventBus);

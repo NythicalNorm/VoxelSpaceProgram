@@ -28,6 +28,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/oxygen_propellant_tank_side"),
                 ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/oxygen_propellant_tank_end")));
 
+        simpleBlockWithItem(ModBlocks.MAGNETIZED_IRON_BLOCK.get(), cubeAll(ModBlocks.MAGNETIZED_IRON_BLOCK.get()));
         SetFootprintBlockState(ModBlocks.LUNAR_REGOLITH);
         simpleBlockWithItem(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get(), cubeAll(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get()));
         modelBlockWithItem(ModBlocks.MAGNETIZER.get(), new ModelFile.UncheckedModelFile(

@@ -98,8 +98,10 @@ public class MagnetizerMenu extends AbstractContainerMenu {
         // Check if the slot clicked is one of the vanilla container slots
         if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
+
+            // WARNING this will not put stuff into the last TE slot, this is a quick fix for Magnetizer accepting things into the output slot
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) {
+                    + (TE_INVENTORY_SLOT_COUNT - 1), false)) {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
         } else if (pIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {

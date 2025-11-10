@@ -1,12 +1,14 @@
 {
-  "item.nythicalspaceprogram.handheld_propeller": "Handheld Propeller",
-  "item.nythicalspaceprogram.magnet_boots": "Magnetic Boots",
   "creativetab.Main_NSP": "Nythical Space Program",
+  "item.nythicalspaceprogram.handheld_propeller": "Handheld Propeller",
+  "item.nythicalspaceprogram.magnet_boots": "Magnetized Iron Boots",
+  "item.nythicalspaceprogram.magnetized_iron_ingot": "Magnetized Iron Ingot",
 
   "block.nythicalspaceprogram.oxygen_propellant_tank": "Oxygen Propellant Tank",
   "block.nythicalspaceprogram.lunar_regolith": "Lunar Regolith",
   "block.nythicalspaceprogram.cryogenic_air_separator": "Cryogenic Air Separator",
   "block.nythicalspaceprogram.magnetizer": "Magnetizer",
+  "block.nythicalspaceprogram.magnetized_iron_block": "Block of Magnetized Iron",
 
   "sounds.nythicalspaceprogram.propeller_start": "The Handheld Propeller clatters on."
 }

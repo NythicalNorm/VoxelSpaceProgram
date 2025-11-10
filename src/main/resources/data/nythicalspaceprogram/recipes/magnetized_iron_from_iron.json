@@ -1,0 +1,13 @@
+{
+  "type": "nythicalspaceprogram:magnetizer",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "nythicalspaceprogram:magnetized_iron_ingot"
+  },
+  "craft_time": 200
+}

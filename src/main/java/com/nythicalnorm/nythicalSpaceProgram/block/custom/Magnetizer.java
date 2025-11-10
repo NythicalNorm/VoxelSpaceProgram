@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Magnetizer extends BaseEntityBlock  {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final VoxelShape SHAPE = Block.box(0,0,0, 16,10,16);
+    public static final VoxelShape SHAPE = Block.box(0,0,0, 16,12,16);
 
     public Magnetizer(Properties pProperties) {
         super(pProperties);

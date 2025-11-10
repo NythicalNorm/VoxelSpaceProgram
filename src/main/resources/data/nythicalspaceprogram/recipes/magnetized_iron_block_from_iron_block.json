@@ -1,0 +1,13 @@
+{
+  "type": "nythicalspaceprogram:magnetizer",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "nythicalspaceprogram:magnetized_iron_block"
+  },
+  "craft_time": 400
+}

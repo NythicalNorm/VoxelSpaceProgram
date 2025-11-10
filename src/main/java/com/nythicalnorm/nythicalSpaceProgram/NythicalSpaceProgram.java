@@ -5,6 +5,7 @@ import com.nythicalnorm.nythicalSpaceProgram.Item.ModCreativeModeTab;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
 import com.nythicalnorm.nythicalSpaceProgram.block.entity.ModBlockEntities;
+import com.nythicalnorm.nythicalSpaceProgram.recipe.ModRecipes;
 import com.nythicalnorm.nythicalSpaceProgram.screen.MagnetizerScreen;
 import com.nythicalnorm.nythicalSpaceProgram.screen.ModMenuTypes;
 import com.nythicalnorm.nythicalSpaceProgram.sound.ModSounds;
@@ -39,6 +40,7 @@ public class NythicalSpaceProgram
         ModSounds.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
 
