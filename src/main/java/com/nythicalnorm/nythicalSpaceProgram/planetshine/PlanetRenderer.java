@@ -68,14 +68,27 @@ public class PlanetRenderer {
 
         Vector3f CameraAngle = camera.getLookVector();
 
-        float scaleFactor = (float) (Math.tan(theta/2) / Math.tan(PlanetAngularSize / 2));
+        //float scaleFactor = (float) (Math.tan(theta/2) / Math.tan(PlanetAngularSize / 2));
         //float AngleMultiplicationFactor = Math.abs(theta-PlanetAngularSize);// -  Math.abs(theta/PlanetAngularSize);//Math.abs(theta-PlanetAngularSize);///35.2340425512F;//(float) (Math.atan(theta)/(PlanetDistance));  //1f/(float)Math.PI*ScalediffwithResize;
         //CameraAngle.mul(AngleMultiplicationFactor);
         //scaleFactor = 1-scaleFactor;
 
         Quaternionf rotationBetween = getRotationBetween(CameraAngle, relativePlanetDir);
         AxisAngle4f Diffangle = new AxisAngle4f(rotationBetween.normalize());
-        Diffangle.angle = (Diffangle.angle/scaleFactor);
+        float ogDiffAngle = Diffangle.angle;
+
+        float screenTimesPlanetFOV = (float)(ogDiffAngle/PlanetAngularSize);
+        float screenTimesActualFOV = (float)(ogDiffAngle/theta);
+        float differenceBetweenRatio = screenTimesPlanetFOV - screenTimesActualFOV;
+        float correctionFactor = 1;
+        Diffangle.angle = -differenceBetweenRatio*PlanetAngularSize*correctionFactor; // need to add something multiplyed by ogdiffangle- ogDiffAngle*PlanetAngularSize/2;
+
+        //problem when the screen times value is applied to the planet it wraps around the other sied since this is a circle it needs to be
+        // clipped to the back of the camera look direction
+//        if (Diffangle.angle > Math.PI) {
+//            Diffangle.angle = (float) Math.PI;
+//        }
+
         rotationBetween = new Quaternionf(Diffangle);
         poseStack.rotateAround(rotationBetween,0,0,0);
 

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,8 +28,10 @@ public class LevelRendererMixin {
     public void renderSky(PoseStack pPoseStack, Matrix4f pProjectionMatrix, float pPartialTick, Camera pCamera, boolean pIsFoggy, Runnable pSkyFogSetup, CallbackInfo ci) {
         LevelRenderer mylvl = (LevelRenderer) (Object) this;
         Minecraft mc = Minecraft.getInstance();
-
-        if (mc.level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
+        if (mc.level == null) {
+            return;
+        }
+        if (mc.level.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD) {
             pSkyFogSetup.run();
             if (!pIsFoggy) {
                 FogType fogtype = pCamera.getFluidInCamera();
