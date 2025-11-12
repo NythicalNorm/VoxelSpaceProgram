@@ -58,6 +58,10 @@ public class CryogenicAirSeparatorScreen extends AbstractContainerScreen<Cryogen
                 ResourceLocation stillTexture = fluidTypeExtensions.getStillTexture(fluidStack);
                 if (stillTexture != null) {
                     TextureAtlasSprite sprite = this.minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(stillTexture);
+                    if (sprite == null) {
+                        continue;
+                    }
+
                     int tintColor = fluidTypeExtensions.getTintColor(fluidStack);
                     float alpha = ((tintColor >> 24) & 0xFF) / 255f;
                     float red = ((tintColor >> 16) & 0xFF) / 255f;
@@ -96,9 +100,11 @@ public class CryogenicAirSeparatorScreen extends AbstractContainerScreen<Cryogen
             int fluidStored = this.menu.getFluidAmount(i);
             int fluidCapacity = this.menu.getFluidCapacity(i);
             int tankOffset = 101 + i*18;
+            FluidStack fluidStack = new FluidStack(this.menu.getFluidManufacture(i), 1000);
 
             if (isHovering(tankOffset, 5, 12, 58, x, y)) {
-                Component text = Component.literal(fluidStored + "/" + fluidCapacity + " mB");
+                Component text = Component.translatable(fluidStack.getTranslationKey())
+                        .append(" " + fluidStored + "/" + fluidCapacity + " mB");
                 guiGraphics.renderTooltip(this.font, text, x, y);
                 return;
             }

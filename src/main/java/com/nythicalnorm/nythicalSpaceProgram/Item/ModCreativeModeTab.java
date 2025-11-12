@@ -29,7 +29,7 @@ public class ModCreativeModeTab {
                         output.accept(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get());
                         output.accept(ModBlocks.MAGNETIZER.get());
 
-                        output.accept(ModFluids.LIQUID_OXYGEN.bucket.get());
+                        output.accept(ModFluids.LIQUID_OXYGEN.fluidContainer.get());
                     })
                     .build());
 

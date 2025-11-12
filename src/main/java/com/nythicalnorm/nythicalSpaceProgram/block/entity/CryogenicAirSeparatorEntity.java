@@ -68,8 +68,8 @@ public class CryogenicAirSeparatorEntity extends BlockEntity implements MenuProv
 
             @Override
             public void set(int pIndex, int pValue) {
-                switch (pIndex) {
-                    case 0 -> CryogenicAirSeparatorEntity.this.energyStorage.setEnergy(pValue);
+                if (pIndex == 0) {
+                    CryogenicAirSeparatorEntity.this.energyStorage.setEnergy(pValue);
                 }
             }
 
@@ -156,7 +156,9 @@ public class CryogenicAirSeparatorEntity extends BlockEntity implements MenuProv
             for (int i = 0; i < manufacturingFluids.length; i++) {
                 Fluid fl = manufacturingFluids[i].resultingFluid;
                 fluidTank[i].setValidator(fluidStack -> fluidStack.getFluid() == fl);
-                fluidTank[i].setCapacity(manufacturingFluids[i].tankCapacity);
+                if (fluidTank[i].getFluid() == FluidStack.EMPTY || fluidTank[i].getFluid().getFluid() == manufacturingFluids[i].resultingFluid) {
+                    fluidTank[i].setCapacity(manufacturingFluids[i].tankCapacity);
+                }
             }
             updateBlock();
         }

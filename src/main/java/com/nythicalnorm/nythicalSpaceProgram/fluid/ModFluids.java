@@ -17,11 +17,14 @@ public class ModFluids {
             FluidType.Properties.create()
                     .canDrown(true)
                     .canSwim(false)
-                    .canPushEntity(true),
+                    .canPushEntity(true)
+                    .canExtinguish(true),
             () -> FluidRegistryContainer.createExtension(
                     new FluidRegistryContainer.ClientExtensions(NythicalSpaceProgram.MODID, "liquid_oxygen_fluid")
                     .fogColor(0f,0f,1f)
-                    .tint(0x0000FF)),
-            BlockBehaviour.Properties.copy(Blocks.WATER), new Item.Properties()
-    );
+                    .tint(0xFF0091c1)
+                    .flowing("cryogenic_fluid")
+                    .still("cryogenic_fluid")
+                    .overlay("cryogenic_fluid")),
+            BlockBehaviour.Properties.copy(Blocks.WATER), new Item.Properties(), true, false);
 }

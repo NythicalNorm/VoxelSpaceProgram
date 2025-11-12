@@ -3,6 +3,7 @@ package com.nythicalnorm.nythicalSpaceProgram.fluid;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
+import com.nythicalnorm.nythicalSpaceProgram.Item.custom.CryogenicBucketItem;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
 import net.minecraft.client.Camera;
@@ -18,10 +19,10 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.RegistryObject;
-import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -34,14 +35,14 @@ public class FluidRegistryContainer {
     public final RegistryObject<FluidType> type;
     public final FluidType.Properties typeProperties;
     public final RegistryObject<LiquidBlock> block;
-    public final RegistryObject<BucketItem> bucket;
+    public final RegistryObject<Item> fluidContainer;
     private ForgeFlowingFluid.Properties properties;
     public final RegistryObject<ForgeFlowingFluid.Source> source;
     public final RegistryObject<ForgeFlowingFluid.Flowing> flowing;
 
     public FluidRegistryContainer(String name, FluidType.Properties typeProperties,
                                   Supplier<IClientFluidTypeExtensions> clientExtensions, @Nullable AdditionalProperties additionalProperties,
-                                  BlockBehaviour.Properties blockProperties, Item.Properties itemProperties) {
+                                  BlockBehaviour.Properties blockProperties, Item.Properties itemProperties, boolean isCryogenic, boolean isGaseous) {
         this.typeProperties = typeProperties;
         this.type = ModFluids.FLUID_TYPES.register(name, () -> new FluidType(this.typeProperties) {
             @Override
@@ -61,17 +62,28 @@ public class FluidRegistryContainer {
                     .slopeFindDistance(additionalProperties.slopeFindDistance).tickRate(additionalProperties.tickRate);
         }
 
-        this.block = ModBlocks.BLOCKS.register(name, () -> new LiquidBlock(this.source, blockProperties));
+        //LiquidBlock blockType = ;
+        if (isCryogenic && !isGaseous) {
+            this.block = ModBlocks.BLOCKS.register(name, () -> new CryogenicFluid(this.source, blockProperties));
+            this.fluidContainer = ModItems.ITEMS.register(name + "_bucket", () -> new CryogenicBucketItem(this.source, itemProperties));
+        }
+        else if (!isGaseous) {
+            this.block = ModBlocks.BLOCKS.register(name, () -> new LiquidBlock(this.source, blockProperties));
+            this.fluidContainer = ModItems.ITEMS.register(name + "_bucket", () -> new BucketItem(this.source, itemProperties));
+        }
+        else {
+            this.block = ModBlocks.BLOCKS.register(name, () -> new LiquidBlock(this.source, blockProperties));
+            this.fluidContainer = ModItems.ITEMS.register(name + "_canister", () -> new BucketItem(this.source, itemProperties));
+        }
         this.properties.block(this.block);
 
-        this.bucket = ModItems.ITEMS.register(name + "_bucket", () -> new BucketItem(this.source, itemProperties));
-        this.properties.bucket(this.bucket);
+        this.properties.bucket(this.fluidContainer);
     }
 
     public FluidRegistryContainer(String name, FluidType.Properties typeProperties,
                                   Supplier<IClientFluidTypeExtensions> clientExtensions, BlockBehaviour.Properties blockProperties,
-                                  Item.Properties itemProperties) {
-        this(name, typeProperties, clientExtensions, null, blockProperties, itemProperties);
+                                  Item.Properties itemProperties, boolean IsCryogenic, boolean IsGaseous) {
+        this(name, typeProperties, clientExtensions, null, blockProperties, itemProperties, IsCryogenic, IsGaseous);
     }
 
     public ForgeFlowingFluid.Properties getProperties() {
@@ -103,7 +115,12 @@ public class FluidRegistryContainer {
 
             @Override
             public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return extensions.tintFunction == null ? 0xFFFFFFFF : extensions.tintFunction.apply(state, getter, pos);
+                return extensions.tint;//extensions.tint == null ? 0xFFFFFFFF : getTintColor();
+            }
+
+            @Override
+            public int getTintColor(FluidStack Stack) {
+                return extensions.tint;//extensions.tint == null ? 0xFFFFFFFF : extensions.tintFunction.apply(null,null,null);
             }
 
             @Override
@@ -157,7 +174,7 @@ public class FluidRegistryContainer {
         private ResourceLocation overlay;
         private ResourceLocation renderOverlay;
         private Vector3f fogColor;
-        private TriFunction<FluidState, BlockAndTintGetter, BlockPos, Integer> tintFunction;
+        private int tint = 1;
 
         private final String modid;
 
@@ -206,12 +223,7 @@ public class FluidRegistryContainer {
         }
 
         public ClientExtensions tint(int tint) {
-            this.tintFunction = ($0, $1, $2) -> tint;
-            return this;
-        }
-
-        public ClientExtensions tint(TriFunction<FluidState, BlockAndTintGetter, BlockPos, Integer> tinter) {
-            this.tintFunction = tinter;
+            this.tint = tint;
             return this;
         }
     }
