@@ -33,6 +33,9 @@ public class ModBlocks {
     public static final RegistryObject<Block> CRYOGENIC_AIR_SEPARATOR = registerBlock("cryogenic_air_separator",
             () -> new CryogenicAirSeparator(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
 
+    public static final RegistryObject<Block> CRYOGENIC_AIR_SEPARATOR_PART = registerBlock("cryogenic_air_separator_part",
+            () -> new CryogenicAirSeparator(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
+
     public static final RegistryObject<Block> MAGNETIZER = registerBlock("magnetizer",
             () -> new Magnetizer(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
 

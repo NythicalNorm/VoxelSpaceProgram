@@ -73,4 +73,23 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void fluidBlock(RegistryObject<LiquidBlock> block) {
         simpleBlockWithItem(block.get(), cubeAll(block.get()));
     }
+
+    protected void genCryogenicAirSeparatorPartState (RegistryObject<Block> block) {
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            FootprintedType myEnumval = state.getValue(FOOTPRINTTYPE);
+            if (myEnumval == FootprintedType.NOFOOTPRINTS) {
+                return new ConfiguredModel[]{new ConfiguredModel(models().cubeAll("lunar_regolith",
+                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith")))};
+            }
+
+            else { //if (state.getValue(FOOTPRINTTYPE) == FootprintedType.TWOBOOTZFACING) {
+                return new ConfiguredModel[]{new ConfiguredModel(models().cubeTop("lunar_regolith_" + state.getValue(FOOTPRINTTYPE),
+                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith"),
+                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith_" + state.getValue(FOOTPRINTTYPE))
+                ))};
+            }
+        });
+
+        simpleBlockItem(block.get(), cubeAll(block.get()));
+    }
 }
