@@ -2,10 +2,10 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class SphereModelGenerator {
     private static final float textureboundingboxV1 = 0;
     private static final float textureboundingboxV2 = 1;
     private static final float radius = 0.5f;
-    private static final Vec3 modelOffset = new Vec3(0.0,0.0,0.0);
+    private static final Vector3d modelOffset = new Vector3d(0.0,0.0,0.0);
 
     public static List<BakedQuad> getsphereQuads() {
         List<BakedQuad> quads = new ArrayList<>();
@@ -38,7 +38,7 @@ public class SphereModelGenerator {
         return quads;
     }
 
-    private static Vec3 getCartesian(int latitudeIter, int longitudeIter, int maxLatitude,  int maxLongitude)
+    private static Vector3d getCartesian(int latitudeIter, int longitudeIter, int maxLatitude,  int maxLongitude)
     {
         double latAngle = Math.PI*latitudeIter/maxLatitude;
         double longAngle = (2*Math.PI*longitudeIter/maxLongitude) + Math.PI;
@@ -47,10 +47,10 @@ public class SphereModelGenerator {
         double y = radius*Math.cos(latAngle);
         double z = radius*Math.sin(latAngle)*Math.sin(longAngle);
 
-        return new Vec3(x,y,z);
+        return new Vector3d(x,y,z);
     }
 
-    public static BakedQuad quad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4,
+    public static BakedQuad quad(Vector3d v1, Vector3d v2, Vector3d v3, Vector3d v4,
                                  float latitudeIter, float longitudeIter, float maxLatitude,  float maxLongitude) {
         BakedQuad[] quad = new BakedQuad[1];
         QuadBakingVertexConsumer builder = new QuadBakingVertexConsumer(q -> quad[0] = q);

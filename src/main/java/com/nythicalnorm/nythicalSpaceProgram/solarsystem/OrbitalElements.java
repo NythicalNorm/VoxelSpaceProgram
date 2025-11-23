@@ -1,7 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
-import net.minecraft.world.phys.Vec3;
-
+import org.joml.Vector3d;
 import javax.annotation.Nullable;
 
 public class OrbitalElements {
@@ -30,7 +29,7 @@ public class OrbitalElements {
     }
 
     // Reference: https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time
-    public Vec3 ToCartesian(double timeElapsed) {
+    public Vector3d ToCartesian(double timeElapsed) {
         double a = this.SemiMajorAxis;
         double w = this.ArgumentOfPeriapsis;
         double W = this.LongitudeOfAscendingNode;
@@ -66,6 +65,6 @@ public class OrbitalElements {
         x = Math.cos(W) * xtemp - Math.sin(W) * y;
         y = Math.sin(W) * xtemp + Math.cos(W) * y;
 
-        return new Vec3(x,z,y);
+        return new Vector3d(x,z,y);
     }
 }

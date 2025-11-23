@@ -54,7 +54,7 @@ public class PlanetShine {
         VertexBuffer.unbind();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.depthMask(true);
-        PlanetRenderer.renderPlanet(poseStack, mc, camera, projectionMatrix);
+        PlanetRenderer.renderPlanetaryBodies(poseStack, mc, camera, projectionMatrix, partialTick);
     }
 
 //    private static BufferBuilder.RenderedBuffer buildSkyDisc(BufferBuilder pBuilder, float pY) {

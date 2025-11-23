@@ -3,12 +3,13 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.Planets;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.*;
@@ -37,24 +38,23 @@ public class PlanetRenderer {
 
     }
 
-    public static void renderPlanet(PoseStack poseStack, Minecraft mc, Camera camera, Matrix4f projectionMatrix) {
+    public static void renderPlanetaryBodies(PoseStack poseStack, Minecraft mc, Camera camera, Matrix4f projectionMatrix, float partialTick) {
+        double currentTimeElapsed = CelestialStateSupplier.getCurrentTimeElapsed();
+
         poseStack.pushPose();
+        PlanetaryBody renderPlanet = Planets.getPlanet("nila");
 
-        Vec3 PlanetPos = CelestialStateSupplier.getPlanetPositon("nila", mc.getPartialTick());
-        Quaternionf PlanetRot = CelestialStateSupplier.getPlanetRotation("nila", mc.getPartialTick());
+        Vector3d PlanetPos = renderPlanet.CalculateCartesianPosition(currentTimeElapsed);
+        Quaternionf PlanetRot = renderPlanet.getRotationAt(currentTimeElapsed);
 
-        //PerspectiveShift((float) CelestialStateSupplier.lastUpdatedTimePassedPerSec, PlanetPos, poseStack);
-
-        poseStack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
+        PerspectiveShift(PlanetPos.distance(new Vector3d()), PlanetPos, renderPlanet.getRadius(), poseStack);
         poseStack.mulPose(PlanetRot);
-
-        RenderSystem.enableDepthTest();
 
         planetvertex.bind();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, Nila_texture);
 
-        Vector3f lights0 = new Vector3f(0f,0f,1f);
+        Vector3f lights0 = new Vector3f(1f,0f,0f);
         lights0.rotate(PlanetRot.invert());
         lights0.normalize();
 
@@ -64,22 +64,33 @@ public class PlanetRenderer {
         planetvertex.drawWithShader(poseStack.last().pose(), projectionMatrix, shad);
         VertexBuffer.unbind();
         poseStack.popPose();
-        RenderSystem.disableDepthTest();
     }
 
-    private static void PerspectiveShift(float PlanetDistance, Vec3 PlanetPos,PoseStack poseStack){
-        double magnitude = PlanetPos.distanceTo(new Vec3(0,0,0));
+    private static void PerspectiveShift(double PlanetDistance, Vector3d PlanetPos, double bodyRadius,PoseStack poseStack){
+        //double PlanetDistance = PlanetPos.distance(new Vector3d());
+
+        //tan amd atan cancel each other out.
+        float planetApparentSize = (float) (InWorldPlanetsDistance * 2 * bodyRadius/PlanetDistance);
         PlanetPos.normalize();
-        Vector3f relativePlanetDir = new Vector3f((float) PlanetPos.x, (float) PlanetPos.y, (float) PlanetPos.z);
-
-        float planetApparentSize = 5f;
-        Quaternionf planetDirRotation = new Quaternionf();
-        planetDirRotation.rotationTo(new Vector3f(0f,0f,1f), relativePlanetDir);
-
-        poseStack.mulPose(planetDirRotation);
-        poseStack.translate(0,0, InWorldPlanetsDistance);
-        poseStack.scale(planetApparentSize, planetApparentSize, PlanetDistance);
-        planetDirRotation.rotationTo(relativePlanetDir, new Vector3f(0f,0f,1f));
-        poseStack.mulPose(planetDirRotation);
+        PlanetPos.mul(InWorldPlanetsDistance);
+        poseStack.translate(PlanetPos.x,PlanetPos.y, PlanetPos.z);
+        poseStack.scale(planetApparentSize, planetApparentSize, planetApparentSize);
     }
+
+//    private static void PerspectiveShiftZscaleSeparate(double PlanetDistance, Vector3d PlanetPos, double bodyRadius,PoseStack poseStack){
+//        //double PlanetDistance = PlanetPos.distance(new Vector3d());
+//        PlanetPos.normalize();
+//        Vector3f relativePlanetDir = new Vector3f((float) PlanetPos.x, (float) PlanetPos.y, (float) PlanetPos.z);
+//
+//        //tan amd atan cancel each other out.
+//        float planetApparentSize = (float) (InWorldPlanetsDistance*2*bodyRadius/(bodyRadius+PlanetDistance));
+//        Quaternionf planetDirRotation = new Quaternionf();
+//        planetDirRotation.rotationTo(new Vector3f(0f,0f,1f), relativePlanetDir);
+//
+//        poseStack.mulPose(planetDirRotation);
+//        poseStack.translate(0,0, InWorldPlanetsDistance);
+//        poseStack.scale(planetApparentSize, planetApparentSize, planetApparentSize);
+//        planetDirRotation.rotationTo(relativePlanetDir, new Vector3f(0f,0f,1f));
+//        poseStack.mulPose(planetDirRotation);
+//    }
 }

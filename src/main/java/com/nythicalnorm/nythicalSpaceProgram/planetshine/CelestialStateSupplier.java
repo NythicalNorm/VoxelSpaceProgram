@@ -1,33 +1,44 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.network.ServerBoundTimeWarpChange;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.joml.Quaternionf;
 
 @OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier {
-    private static double lastUpdatedSolarSystemTime = 0;
-    public static double lastUpdatedTimePassedPerSec = 0;
-    //private static long UpdateRecievedTime = 0;
+    private static double serverSideSolarSystemTime = 0;
+    private static double clientSideSolarSystemTime = 0;
+    private static long clientSideTickTime = 0L;
+
+    public static double lastUpdatedTimeWarpPerSec = 0;
 
     public static void UpdateState(double currentTime, double TimePassedPerSec){
-        lastUpdatedSolarSystemTime = currentTime;
-        lastUpdatedTimePassedPerSec = TimePassedPerSec;
-        //UpdateRecievedTime = System.currentTimeMillis();
+        serverSideSolarSystemTime = currentTime;
+        lastUpdatedTimeWarpPerSec = TimePassedPerSec;
+
+        if (Math.abs(clientSideSolarSystemTime - serverSideSolarSystemTime) >  lastUpdatedTimeWarpPerSec*0.01d)
+        {
+            clientSideSolarSystemTime = serverSideSolarSystemTime;
+        }
     }
 
-    public static Vec3 getPlanetPositon(String PlanetKey, float partialTicks) {
-        double timeChanged = (partialTicks/20);
-        return Planets.getPlanet(PlanetKey).CalculateCartesianPosition(lastUpdatedSolarSystemTime + timeChanged);
+    public static double getCurrentTimeElapsed() {
+        long currentTime = Util.getMillis();
+
+        if (!Minecraft.getInstance().isPaused()) {
+            float timeDiff = (float) (currentTime - clientSideTickTime) / 1000;
+            clientSideSolarSystemTime = clientSideSolarSystemTime + timeDiff * lastUpdatedTimeWarpPerSec;
+        }
+
+        clientSideTickTime = currentTime;
+        return clientSideSolarSystemTime;
     }
 
-    public static Quaternionf getPlanetRotation(String PlanetKey, float partialTicks) {
-        double timeChanged = (partialTicks/20);
-        return Planets.getPlanet(PlanetKey).getRotationAt (lastUpdatedSolarSystemTime + timeChanged);
+    public static double getLastUpdatedTimeWarpPerSec() {
+        return lastUpdatedTimeWarpPerSec;
     }
 
     public static void TryChangeTimeWarp(boolean DoInc) {
@@ -35,7 +46,7 @@ public class CelestialStateSupplier {
         if (!DoInc) {
             sign = 0.5;
         }
-        PacketHandler.sendToServer(new ServerBoundTimeWarpChange(sign * lastUpdatedTimePassedPerSec));
+        PacketHandler.sendToServer(new ServerBoundTimeWarpChange(sign * lastUpdatedTimeWarpPerSec));
     }
 
 }
