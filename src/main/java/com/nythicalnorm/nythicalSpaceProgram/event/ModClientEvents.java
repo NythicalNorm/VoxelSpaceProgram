@@ -24,11 +24,11 @@ import java.io.IOException;
 public class ModClientEvents {
     @SubscribeEvent
     public static void OnLeveRenderedStartEvent(RenderLevelStageEvent.RegisterStageEvent event) {
-        NythicalSpaceProgram.LOGGER.debug("Baking Planet Models: ");
+        NythicalSpaceProgram.log("Baking Planet Models: ");
         long  beforeTimes = Util.getMillis();
         PlanetRenderer.setupModels();
         PlanetShine.setupBuffers();
-        NythicalSpaceProgram.LOGGER.debug("Setup Complete Took : " + (Util.getMillis()-beforeTimes) + " milliseconds");
+        NythicalSpaceProgram.log("Setup Complete Took : " + (Util.getMillis()-beforeTimes) + " milliseconds");
     }
 
     @SubscribeEvent

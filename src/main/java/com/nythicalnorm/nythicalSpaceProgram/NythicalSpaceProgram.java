@@ -8,10 +8,8 @@ import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.solarsystem.SolarSystem;
 import com.nythicalnorm.nythicalSpaceProgram.sound.ModSounds;
 import com.nythicalnorm.nythicalSpaceProgram.util.ModItemProperties;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,7 +26,7 @@ public class NythicalSpaceProgram
     // Define mod id in a common place for everything to reference
     public static final String MODID = "nythicalspaceprogram";
     // Directly reference a slf4j logger
-    public static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     //only use this in the Logical Server side
     public static SolarSystem solarSystem = null;
 
@@ -56,14 +54,8 @@ public class NythicalSpaceProgram
         event.enqueueWork(PacketHandler::register);
     }
 
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS)
-        {
-            event.accept(ModItems.HANDHELD_PROPELLER);
-            event.accept(ModItems.MAGNET_BOOTS);
-        }
+    public static void log(String msg){
+        LOGGER.debug(msg);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
