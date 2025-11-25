@@ -58,6 +58,13 @@ public class NythicalSpaceProgram
         LOGGER.debug(msg);
     }
 
+    public static void logError(String msg){
+        LOGGER.error(msg);
+    }
+    public static void logWarn(String msg){
+        LOGGER.warn(msg);
+    }
+
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)

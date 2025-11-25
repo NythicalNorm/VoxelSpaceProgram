@@ -2,6 +2,9 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.SkyboxCubeGen;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.SpaceObjRenderer;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -10,66 +13,64 @@ import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class PlanetShine {
-    private static final ResourceLocation SUN_LOCATION = ResourceLocation.parse("textures/item/axolotl_bucket.png");
     private static VertexBuffer Star_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+    private static VertexBuffer Skybox_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 
     public static void setupBuffers() {
         BufferBuilder bufferbuilder =  Tesselator.getInstance().getBuilder();
         Star_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-        BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = drawStars(bufferbuilder);
+        BufferBuilder.RenderedBuffer starsRendered = drawStars(bufferbuilder);
         Star_Buffer.bind();
-        Star_Buffer.upload(bufferbuilder$renderedbuffer);
+        Star_Buffer.upload(starsRendered);
+        VertexBuffer.unbind();
+
+        Skybox_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+        BufferBuilder.RenderedBuffer skyboxRendered = buildSkyBox(bufferbuilder);
+        Skybox_Buffer.bind();
+        Skybox_Buffer.upload(skyboxRendered);
         VertexBuffer.unbind();
     }
 
     public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack,
                                       Matrix4f projectionMatrix, float partialTick, Camera camera)
     {
-        Matrix4f matrix4f1 = poseStack.last().pose();
         FogRenderer.levelFogColor();
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         RenderSystem.depthMask(false);
-        //RenderSystem.setShaderColor(1f, 1f, 1f, 1.0F);
+        poseStack.pushPose();
+
+        if (mc.player.getEyePosition(partialTick).y < mc.level.getMinBuildHeight()) {
+            return;
+        }
+        //poseStack.mulPose(Planets.getPlanet("bumi").getRotationAt(CelestialStateSupplier.getCurrentTimeElapsed()));
+
+        Skybox_Buffer.bind();
+        Skybox_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, ModShaders.getSkyboxShaderInstance().get());
+        VertexBuffer.unbind();
 
         Star_Buffer.bind();
         Star_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, GameRenderer.getPositionColorShader());
         VertexBuffer.unbind();
 
-        float sunSize = 100.0F;
-        float sunPosX = 0f;
-        float sunPosY = 500f;
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.vertex(matrix4f1, sunPosX - sunSize, sunPosY, -sunSize).uv(0.0F, 0.0F).endVertex();
-        bufferbuilder.vertex(matrix4f1, sunPosX + sunSize, sunPosY, -sunSize).uv(1.0F, 0.0F).endVertex();
-        bufferbuilder.vertex(matrix4f1, sunPosX + sunSize, sunPosY, sunSize).uv(1.0F, 1.0F).endVertex();
-        bufferbuilder.vertex(matrix4f1, sunPosX - sunSize, sunPosY, sunSize).uv(0.0F, 1.0F).endVertex();
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, SUN_LOCATION);
-        BufferUploader.drawWithShader(bufferbuilder.end());
-
-        VertexBuffer.unbind();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, camera, projectionMatrix, partialTick);
         RenderSystem.depthMask(true);
-        PlanetRenderer.renderPlanetaryBodies(poseStack, mc, camera, projectionMatrix, partialTick);
+        poseStack.popPose();
     }
 
-//    private static BufferBuilder.RenderedBuffer buildSkyDisc(BufferBuilder pBuilder, float pY) {
-//        float f = Math.signum(pY) * 512.0F;
-//        float f1 = 512.0F;
-//        RenderSystem.setShader(GameRenderer::getPositionShader);
-//        pBuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
-//        pBuilder.vertex(0.0D, (double)pY, 0.0D).endVertex();
-//
-//        for(int i = -180; i <= 180; i += 45) {
-//            pBuilder.vertex((double)(f * Mth.cos((float)i * ((float)Math.PI / 180F))), (double)pY, (double)(512.0F * Mth.sin((float)i * ((float)Math.PI / 180F)))).endVertex();
-//        }
-//
-//        return pBuilder.end();
-//    }
+    private static BufferBuilder.RenderedBuffer buildSkyBox(BufferBuilder pBuilder) {
+        Vector3f[] cubeVertecies = SkyboxCubeGen.getCubeVertexes();
+        pBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        for (Vector3f vertex : cubeVertecies) {
+            pBuilder.vertex(vertex.x, vertex.y, vertex.z).color(10, 11, 20, 255).endVertex();
+        }
+
+        return pBuilder.end();
+    }
 
     private static BufferBuilder.RenderedBuffer drawStars(BufferBuilder pBuilder) {
         RandomSource randomsource = RandomSource.create(1000L);

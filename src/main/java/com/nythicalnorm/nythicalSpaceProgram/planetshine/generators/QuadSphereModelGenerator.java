@@ -1,6 +1,6 @@
-package com.nythicalnorm.nythicalSpaceProgram.planetshine;
+package com.nythicalnorm.nythicalSpaceProgram.planetshine.generators;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +35,27 @@ public class QuadSphereModelGenerator {
 
     private static final float radius = 0.5f;
     private static final Vector3d modelOffset = new Vector3d(0.0,0.0,0.0);
+    private static final VertexBuffer sphereLod0Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 
+    public static void setupModels() {
+        PoseStack spherePose = new PoseStack();
+        spherePose.setIdentity();
+        List<BakedQuad> planetquads = getsphereQuads();
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+
+        for(BakedQuad bakedquad : planetquads) {
+            bufferbuilder.putBulkData(spherePose.last(), bakedquad, 1f, 1f, 1f, 10, 10);
+        }
+        
+        sphereLod0Buffer.bind();
+        sphereLod0Buffer.upload(bufferbuilder.end());
+        VertexBuffer.unbind();
+    }
+
+    public static VertexBuffer getSphereBuffer() {
+        return sphereLod0Buffer;
+    }
 
     public static List<BakedQuad> getsphereQuads() {
         List<BakedQuad> quads = new ArrayList<>();

@@ -2,7 +2,7 @@ package com.nythicalnorm.nythicalSpaceProgram.event;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetRenderer;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.QuadSphereModelGenerator;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetShine;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
 import com.nythicalnorm.nythicalSpaceProgram.util.KeyBindings;
@@ -23,10 +23,10 @@ import java.io.IOException;
 @Mod.EventBusSubscriber(modid = NythicalSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModClientEvents {
     @SubscribeEvent
-    public static void OnLeveRenderedStartEvent(RenderLevelStageEvent.RegisterStageEvent event) {
+    public static void OnLevelRenderedStartEvent(RenderLevelStageEvent.RegisterStageEvent event) {
         NythicalSpaceProgram.log("Baking Planet Models: ");
         long  beforeTimes = Util.getMillis();
-        PlanetRenderer.setupModels();
+        QuadSphereModelGenerator.setupModels();
         PlanetShine.setupBuffers();
         NythicalSpaceProgram.log("Setup Complete Took : " + (Util.getMillis()-beforeTimes) + " milliseconds");
     }
@@ -42,6 +42,9 @@ public class ModClientEvents {
     {
         // Adds a shader to the list, the callback runs when loading is complete.
         event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID,
-                "rendertype_nsp_planet"), DefaultVertexFormat.POSITION_TEX), ModShaders::setPlanetShaderInstance);
+                "nythicalspaceprogram_planet"), DefaultVertexFormat.POSITION_TEX), ModShaders::setPlanetShaderInstance);
+
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID,
+                "nythicalspaceprogram_skybox"), DefaultVertexFormat.POSITION_COLOR), ModShaders::setSkyboxShaderInstance);
     }
 }

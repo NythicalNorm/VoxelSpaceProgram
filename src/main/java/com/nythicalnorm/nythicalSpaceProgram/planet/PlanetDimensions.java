@@ -1,5 +1,6 @@
-package com.nythicalnorm.nythicalSpaceProgram.dimensions;
+package com.nythicalnorm.nythicalSpaceProgram.planet;
 
+import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 

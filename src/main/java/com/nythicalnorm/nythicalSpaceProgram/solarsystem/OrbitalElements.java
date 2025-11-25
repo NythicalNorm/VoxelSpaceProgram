@@ -1,10 +1,9 @@
 package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
 import org.joml.Vector3d;
-import javax.annotation.Nullable;
 
 public class OrbitalElements {
-    public String ParentBody;
+    public static final float universalGravitationalConstant = 6.6743E-11f;
     public double SemiMajorAxis;
     public double Inclination;
     public double Eccentricity;
@@ -16,7 +15,7 @@ public class OrbitalElements {
 
     public OrbitalElements(double semimajoraxis, double inclination, double eccentricity,
                            double argumentOfperiapsis, double longitudeOfAscendingNode, double startinganamoly,
-                           double orbitalperiod, @Nullable String parentbody) {
+                           double orbitalperiod) {
         this.SemiMajorAxis = semimajoraxis;
         this.Inclination = inclination;
         this.Eccentricity = eccentricity;
@@ -25,7 +24,6 @@ public class OrbitalElements {
         this.LongitudeOfAscendingNode = longitudeOfAscendingNode;
         this.StartingAnamoly = startinganamoly;
         this.MeanAngularMotion = (2*Math.PI)/orbitalperiod;
-        this.ParentBody = parentbody;
     }
 
     // Reference: https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time

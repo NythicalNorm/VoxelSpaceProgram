@@ -1,6 +1,6 @@
-package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
+package com.nythicalnorm.nythicalSpaceProgram.planet;
 
-import com.nythicalnorm.nythicalSpaceProgram.dimensions.PlanetDimensions;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -14,8 +14,9 @@ public class Planets {
     public static PlanetaryBody BUMI = registerPlanet("bumi", new PlanetaryBody(new OrbitalElements(
             22374000,0.174533,0.8,
             3.081359034620368E+02,1.239837028145578E+02,0,
-            10000,null),
-            1737400, new Vector3f(0,1,0), 0, 10000,
+            10000),
+             new AtmosphericEffects(true, new Vector3f(0f,0f,0f), new Vector3f(0f,0f,0f), 100000, 0.8f, 0.1f),
+             null,1737400, 5.97219E24, new Vector3f(0,1,0), 0, 10000,
             ResourceLocation.parse("nythicalspaceprogram:textures/planets/overworld_test.png")), Level.OVERWORLD
             );
 

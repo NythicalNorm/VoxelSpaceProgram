@@ -2,6 +2,8 @@ package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
 import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundSpaceShipsPosUpdate;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.joml.Vector3d;

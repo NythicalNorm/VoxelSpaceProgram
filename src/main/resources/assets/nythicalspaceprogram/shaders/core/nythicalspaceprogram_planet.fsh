@@ -3,7 +3,7 @@
 uniform sampler2D Sampler0;
 
 uniform vec4 ColorModulator;
-uniform vec3 Light0_Direction;
+uniform vec3 SunDirection;
 uniform float DarkAmount;
 
 in vec2 texCoord0;
@@ -21,6 +21,6 @@ void main() {
 
     // gets the arc length from two points on a sphere.
     // cos of acos cancels each other out here.
-    float anglefromCenter = vertPos.x*Light0_Direction.x + vertPos.y*Light0_Direction.y + vertPos.z*Light0_Direction.z;
+    float anglefromCenter = vertPos.x*SunDirection.x + vertPos.y*SunDirection.y + vertPos.z*SunDirection.z;
     fragColor = color * ColorModulator * clamp(max(0, -anglefromCenter) + DarkAmount, 0.0, 1.0);
 }
