@@ -2,20 +2,35 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.network.ServerBoundTimeWarpChange;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
+import com.nythicalnorm.nythicalSpaceProgram.util.Calcs;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3d;
 
 @OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier {
-    private static double serverSideSolarSystemTime = 0;
-    private static double clientSideSolarSystemTime = 0;
-    private static long clientSideTickTime = 0L;
+    private double serverSideSolarSystemTime = 0;
+    private double clientSideSolarSystemTime = 0;
+    private long clientSideTickTime = 0L;
 
-    public static double lastUpdatedTimeWarpPerSec = 0;
+    public double lastUpdatedTimeWarpPerSec = 0;
 
-    public static void UpdateState(double currentTime, double TimePassedPerSec){
+    private Vector3d playerAbsolutePositon;
+    private Vector3d playerRelativePositon;
+    private PlanetaryBody currentPlanet;
+
+    public CelestialStateSupplier() {
+        playerAbsolutePositon = new Vector3d();
+        playerRelativePositon = new Vector3d();
+    }
+
+    public void UpdateState(double currentTime, double TimePassedPerSec){
         serverSideSolarSystemTime = currentTime;
         lastUpdatedTimeWarpPerSec = TimePassedPerSec;
 
@@ -25,7 +40,7 @@ public class CelestialStateSupplier {
         }
     }
 
-    public static double getCurrentTimeElapsed() {
+    public double UpdatePlanetaryBodies() {
         long currentTime = Util.getMillis();
 
         if (!Minecraft.getInstance().isPaused()) {
@@ -34,14 +49,34 @@ public class CelestialStateSupplier {
         }
 
         clientSideTickTime = currentTime;
+        Planets.UpdatePlanets(clientSideSolarSystemTime);
+        updatePlayerPos();
         return clientSideSolarSystemTime;
     }
 
-    public static double getLastUpdatedTimeWarpPerSec() {
+    public void updatePlayerPos() {
+        LocalPlayer plr = Minecraft.getInstance().player;
+        if (PlanetDimensions.isDimensionPlanet(plr.level().dimension())) {
+            currentPlanet = PlanetDimensions.getDimPlanet(plr.level().dimension());
+            playerRelativePositon = Calcs.planetDimPosToNormalizedVector(plr.position(), currentPlanet, false);
+            Vector3d newAbs = new Vector3d(currentPlanet.getPlanetAbsolutePos());
+            playerAbsolutePositon = newAbs.add(playerRelativePositon);
+        }
+    }
+
+    public Vector3d getPlayerAbsolutePositon() {
+        return playerAbsolutePositon;
+    }
+
+    public Vector3d getPlayerRelativePositon() {
+        return playerRelativePositon;
+    }
+
+    public double getLastUpdatedTimeWarpPerSec() {
         return lastUpdatedTimeWarpPerSec;
     }
 
-    public static void TryChangeTimeWarp(boolean DoInc) {
+    public void TryChangeTimeWarp(boolean DoInc) {
         double sign = 2;
         if (!DoInc) {
             sign = 0.5;
@@ -49,4 +84,12 @@ public class CelestialStateSupplier {
         PacketHandler.sendToServer(new ServerBoundTimeWarpChange(sign * lastUpdatedTimeWarpPerSec));
     }
 
+    public boolean isOnPlanet()
+    {
+        return currentPlanet != null;
+    }
+
+    public PlanetaryBody getDimPlanet() {
+        return currentPlanet;
+    }
 }

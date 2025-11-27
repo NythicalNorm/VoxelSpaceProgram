@@ -26,8 +26,8 @@ public class ModCommonEvents {
         if (event.side != LogicalSide.SERVER && event.phase != TickEvent.Phase.END) {
             return;
         }
-        if (NythicalSpaceProgram.solarSystem != null) {
-            NythicalSpaceProgram.solarSystem.OnTick();
+        if (NythicalSpaceProgram.getSolarSystem() != null) {
+            NythicalSpaceProgram.getSolarSystem().OnTick();
         }
     }
 

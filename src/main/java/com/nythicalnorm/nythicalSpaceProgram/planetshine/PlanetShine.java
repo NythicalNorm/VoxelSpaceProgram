@@ -2,13 +2,14 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.SkyboxCubeGen;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.AtmosphereRenderer;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.PlanetRenderer;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.SpaceObjRenderer;
-import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,6 +20,7 @@ import org.joml.Vector3f;
 public class PlanetShine {
     private static VertexBuffer Star_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
     private static VertexBuffer Skybox_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+    private static boolean isFirstTime = true;
 
     public static void setupBuffers() {
         BufferBuilder bufferbuilder =  Tesselator.getInstance().getBuilder();
@@ -35,28 +37,39 @@ public class PlanetShine {
         VertexBuffer.unbind();
     }
 
+    private static void setupShaders() {
+        PlanetRenderer.setupShader();
+        AtmosphereRenderer.setupShader();
+        SpaceObjRenderer.PopulateRenderPlanets();
+    }
+
     public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack,
                                       Matrix4f projectionMatrix, float partialTick, Camera camera)
     {
+        if (isFirstTime) {
+            setupShaders();
+            isFirstTime = false;
+        }
         FogRenderer.levelFogColor();
-        RenderSystem.depthMask(false);
-        poseStack.pushPose();
-
         if (mc.player.getEyePosition(partialTick).y < mc.level.getMinBuildHeight()) {
             return;
         }
+
+        RenderSystem.depthMask(false);
+        poseStack.pushPose();
+
+        //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), NythicalSpaceProgram.getCelestialStateSupplier().getCurrentPlanetWithinSOI());
+
         //poseStack.mulPose(Planets.getPlanet("bumi").getRotationAt(CelestialStateSupplier.getCurrentTimeElapsed()));
 
-        Skybox_Buffer.bind();
-        Skybox_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, ModShaders.getSkyboxShaderInstance().get());
-        VertexBuffer.unbind();
+        AtmosphereRenderer.render(Skybox_Buffer, poseStack, projectionMatrix);
 
         Star_Buffer.bind();
         Star_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, GameRenderer.getPositionColorShader());
         VertexBuffer.unbind();
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, camera, projectionMatrix, partialTick);
+        SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, NythicalSpaceProgram.getCelestialStateSupplier(), camera, projectionMatrix, partialTick);
         RenderSystem.depthMask(true);
         poseStack.popPose();
     }

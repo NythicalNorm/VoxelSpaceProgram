@@ -1,6 +1,7 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine.generators;
 
 import com.mojang.blaze3d.vertex.*;
+import com.nythicalnorm.nythicalSpaceProgram.util.Calcs;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,10 +67,10 @@ public class QuadSphereModelGenerator {
         for (int squareSide = 0; squareSide < 6; squareSide++) {
             for (int sidesUpIter = -MaxPerSide; sidesUpIter < MaxPerSide; sidesUpIter++) {
                 for (int sidesRightIter = -MaxPerSide; sidesRightIter < MaxPerSide; sidesRightIter++) {
-                    BakedQuad quad0 = quad(getSquarePos(sidesUpIter, sidesRightIter, MaxPerSide, squareSide),
-                            getSquarePos(sidesUpIter, sidesRightIter + 1, MaxPerSide, squareSide),
-                            getSquarePos(sidesUpIter + 1, sidesRightIter + 1, MaxPerSide, squareSide),
-                            getSquarePos(sidesUpIter + 1, sidesRightIter, MaxPerSide, squareSide),
+                    BakedQuad quad0 = quad(Calcs.getQuadSquarePos(sidesUpIter, sidesRightIter, MaxPerSide, squareSide, radius),
+                            Calcs.getQuadSquarePos(sidesUpIter, sidesRightIter + 1, MaxPerSide, squareSide, radius),
+                            Calcs.getQuadSquarePos(sidesUpIter + 1, sidesRightIter + 1, MaxPerSide, squareSide, radius),
+                            Calcs.getQuadSquarePos(sidesUpIter + 1, sidesRightIter, MaxPerSide, squareSide, radius),
                             sidesUpIter, sidesRightIter, QuadsPerSide, squareSide);
                     quads.add(quad0);
                 }
@@ -78,24 +79,7 @@ public class QuadSphereModelGenerator {
         return quads;
     }
 
-    private static Vector3f getSquarePos(float sidesUpIter, float sidesRightIter, float MaxPerSide, int squareSide) {
-        float sidesrightP = sidesRightIter/MaxPerSide;
-        float sidesupP = sidesUpIter/MaxPerSide;
-        Vector3f squarePos = new Vector3f();
 
-        squarePos = switch (squareSide) {
-            case 0 -> new Vector3f(sidesrightP, sidesupP, 1f);
-            case 1 -> new Vector3f(1f, sidesupP, -sidesrightP);
-            case 2 -> new Vector3f(-sidesrightP, sidesupP, -1);
-            case 3 -> new Vector3f(-1f, sidesupP, sidesrightP);
-            case 4 -> new Vector3f(-sidesrightP, 1f, sidesupP);
-            case 5 -> new Vector3f(sidesrightP, -1f, sidesupP);
-            default -> squarePos;
-        };
-        squarePos.normalize();
-        squarePos.mul(radius);
-        return squarePos;
-    }
 
     public static BakedQuad quad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4,
                                  float sidesUpIter, float sidesRightIter, float QuadsPerSide, int squareSide) {

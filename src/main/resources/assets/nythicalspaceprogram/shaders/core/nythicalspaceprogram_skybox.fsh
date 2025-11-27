@@ -2,18 +2,18 @@
 
 in vec4 vertexColor;
 
-uniform vec4 ColorModulator;
+uniform vec4 BottomColor;
+uniform vec4 TopColor;
+uniform float TransitionPoint;
+uniform float Opacity;
 
 out vec4 fragColor;
 in vec3 vertPos;
 
 void main() {
     vec4 color = vertexColor;
-    vec4 twoColor = vec4(1.0,1.0,1.0,1.0);
-    if (color.a == 0.0) {
-        discard;
-    }
+    vec3 normalizedVector = normalize(vertPos);
+    float normalY =  normalizedVector.y + 0.5;
 
-    float normalY =  vertPos.y + 0.5;
-    fragColor = twoColor * normalY; //mix(color, twoColor, vertPos.y);
+    fragColor = mix (vertexColor, mix(BottomColor, TopColor, smoothstep(TransitionPoint - 0.0135, 1.0, normalY)), Opacity);
 }

@@ -7,17 +7,21 @@ import net.minecraft.world.level.Level;
 import java.util.HashMap;
 
 public class PlanetDimensions {
-    private static final HashMap<String, ResourceKey<Level>> planetDimensions = new HashMap<>();
+    private static final HashMap<ResourceKey<Level>, String> planetDimensions = new HashMap<>();
 
     public static void registerPlanetDim(String name, ResourceKey<Level> planetLevel) {
-        planetDimensions.put(name, planetLevel);
+        planetDimensions.put(planetLevel, name);
     }
 
     public static boolean isDimensionPlanet(ResourceKey<Level> dim) {
         if (dim == null) {
             return false;
         }
-        return planetDimensions.containsValue(dim);
+        return planetDimensions.containsKey(dim);
+    }
+
+    public static PlanetaryBody getDimPlanet(ResourceKey<Level> dim) {
+        return Planets.PLANETARY_BODIES.get(planetDimensions.get(dim));
     }
 
     public static boolean isDimensionSpace(ResourceKey<Level> dim) {

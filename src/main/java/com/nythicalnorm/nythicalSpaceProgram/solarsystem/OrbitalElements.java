@@ -23,7 +23,7 @@ public class OrbitalElements {
         this.ArgumentOfPeriapsis = argumentOfperiapsis;
         this.LongitudeOfAscendingNode = longitudeOfAscendingNode;
         this.StartingAnamoly = startinganamoly;
-        this.MeanAngularMotion = (2*Math.PI)/orbitalperiod;
+        this.MeanAngularMotion = 2*(2*Math.PI)/orbitalperiod; //temp fix *2 because orbits are faster than expected
     }
 
     // Reference: https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time

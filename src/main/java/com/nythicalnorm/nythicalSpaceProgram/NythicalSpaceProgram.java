@@ -5,6 +5,7 @@ import com.nythicalnorm.nythicalSpaceProgram.Item.ModCreativeModeTab;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
 import com.nythicalnorm.nythicalSpaceProgram.solarsystem.SolarSystem;
 import com.nythicalnorm.nythicalSpaceProgram.sound.ModSounds;
 import com.nythicalnorm.nythicalSpaceProgram.util.ModItemProperties;
@@ -28,7 +29,8 @@ public class NythicalSpaceProgram
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     //only use this in the Logical Server side
-    public static SolarSystem solarSystem = null;
+    private static SolarSystem solarSystem;
+    private static CelestialStateSupplier celestialStateSupplier;
 
     public NythicalSpaceProgram(FMLJavaModLoadingContext context)
     {
@@ -80,7 +82,16 @@ public class NythicalSpaceProgram
         public static void onClientSetup(FMLClientSetupEvent event)
         {
             // Some client setup code
+            celestialStateSupplier = new CelestialStateSupplier();
             ModItemProperties.addCustomItemProperties();
         }
+    }
+
+    public static SolarSystem getSolarSystem() {
+        return solarSystem;
+    }
+
+    public static CelestialStateSupplier getCelestialStateSupplier() {
+        return celestialStateSupplier;
     }
 }

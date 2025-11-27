@@ -1,7 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.event;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
 import com.nythicalnorm.nythicalSpaceProgram.util.KeyBindings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,9 +14,9 @@ public class ForgeClientEvents {
     @SubscribeEvent
     public static void OnKeyInput (InputEvent.Key event) {
         if (KeyBindings.INC_TIME_WARP_KEY.consumeClick()) {
-            CelestialStateSupplier.TryChangeTimeWarp(true);
+            NythicalSpaceProgram.getCelestialStateSupplier().TryChangeTimeWarp(true);
         } else if (KeyBindings.DEC_TIME_WARP_KEY.consumeClick()) {
-            CelestialStateSupplier.TryChangeTimeWarp(false);
+            NythicalSpaceProgram.getCelestialStateSupplier().TryChangeTimeWarp(false);
         }
     }
 }
