@@ -73,4 +73,8 @@ public class CelestialStateSupplier {
         }
         return PlanetDimensions.isDimensionPlanet(mc.level.dimension()) || PlanetDimensions.isDimensionSpace(mc.level.dimension());
     }
+
+    public boolean weInSpace() {
+        return PlanetDimensions.isDimensionSpace(Minecraft.getInstance().level.dimension());
+    }
 }

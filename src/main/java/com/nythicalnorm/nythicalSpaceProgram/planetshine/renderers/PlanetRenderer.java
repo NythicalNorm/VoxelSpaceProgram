@@ -39,29 +39,6 @@ public class PlanetRenderer {
         }
     }
 
-    public static void renderPlanets(RenderableObjects[] renderPlanets, CelestialStateSupplier css, PoseStack poseStack, Matrix4f projectionMatrix, float partialTick) {
-        Optional<PlanetaryBody> planetOn = css.getPlayerData().getCurrentPlanet();
-        float currentAlbedo = 1.0f;
-        Optional<PlanetAtmosphere> atmosphere = Optional.empty();
-
-        if (planetOn.isPresent()) {
-            if (planetOn.get().getAtmoshpere().hasAtmosphere()) {
-                currentAlbedo = css.getPlayerData().getSunAngle() * 2;
-                atmosphere = Optional.of(planetOn.get().getAtmoshpere());
-            }
-        }
-
-        for (RenderableObjects plnt : renderPlanets) {
-            double distance = plnt.getDistance();
-
-            if (distance < (plnt.getBody().getRadius() + 320)) {
-                continue;
-            }
-
-            render(plnt, atmosphere, poseStack, projectionMatrix, distance, currentAlbedo);
-        }
-    }
-
     public static void render(RenderableObjects obj, Optional<PlanetAtmosphere> atmosphere, PoseStack poseStack,
                               Matrix4f projectionMatrix, double distance, float currentAlbedo) {
         poseStack.pushPose();

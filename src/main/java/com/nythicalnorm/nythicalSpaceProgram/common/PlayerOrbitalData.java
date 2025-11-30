@@ -6,7 +6,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 public class PlayerOrbitalData extends OrbitalData {
-
     private float sunAngle = 0f;
 
     public PlayerOrbitalData() {

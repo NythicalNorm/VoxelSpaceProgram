@@ -22,5 +22,7 @@ void main() {
     // gets the arc length from two points on a sphere.
     // cos of acos cancels each other out here.
     float anglefromCenter = vertPos.x*SunDirection.x + vertPos.y*SunDirection.y + vertPos.z*SunDirection.z;
-    fragColor = color * ColorModulator * clamp(max(0, -anglefromCenter) + DarkAmount, 0.0, 1.0);
+    vec4 finalColor = color * clamp(max(0, -anglefromCenter) + DarkAmount, 0.0, 1.0);
+    finalColor.a = ColorModulator.a;
+    fragColor = finalColor;
 }

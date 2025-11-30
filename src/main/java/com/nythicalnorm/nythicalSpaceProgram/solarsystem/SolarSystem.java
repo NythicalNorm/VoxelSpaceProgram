@@ -6,6 +6,7 @@ import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundLoginSolarSystem
 import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundSpaceShipsPosUpdate;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
+import com.nythicalnorm.nythicalSpaceProgram.planetdimgen.OverworldBiomeGen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,6 +24,7 @@ public class SolarSystem {
     public SolarSystem(MinecraftServer server) {
         timePassPerSecond = 1;
         this.server = server;
+        OverworldBiomeGen.setBiome(server);
     }
 
     public Optional<MinecraftServer> getServer() {

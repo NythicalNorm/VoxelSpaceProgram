@@ -2,6 +2,7 @@ package com.nythicalnorm.nythicalSpaceProgram.common;
 
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
 import com.nythicalnorm.nythicalSpaceProgram.util.Calcs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,6 +21,8 @@ public abstract class OrbitalData {
     public Vector3d relativeOrbitalPosition;
     public Quaternionf Rotation;
     public PlanetaryBody currentPlanetOn;
+    public OrbitalElements currentOrbit;
+
 
     public void updatePlanetRot(Quaternionf existingRotation) {
         if (isOnPlanet()) {
@@ -35,11 +38,13 @@ public abstract class OrbitalData {
     public void updatePlanetPos(Level level, Vec3 position) {
         Optional<PlanetaryBody> planetOptional = PlanetDimensions.getDimPlanet(level.dimension());
         if (level != null) {
-            planetOptional.ifPresent(plnt -> {
+            planetOptional.ifPresentOrElse(plnt -> {
                 currentPlanetOn = plnt;
                 relativeOrbitalPosition = Calcs.planetDimPosToNormalizedVector(position, plnt.getRadius(), plnt.getPlanetRotation(), false);
                 Vector3d newAbs = plnt.getPlanetAbsolutePos();
                 absoluteOrbitalPosition = newAbs.add(relativeOrbitalPosition);
+            }, () -> {
+                currentPlanetOn = null;
             });
         }
     }
@@ -132,5 +137,9 @@ public abstract class OrbitalData {
         this.Rotation.y = buffer.readFloat();
         this.Rotation.z = buffer.readFloat();
         this.Rotation.w = buffer.readFloat();
+    }
+
+    public boolean isInOrbit() {
+        return currentOrbit != null;
     }
 }

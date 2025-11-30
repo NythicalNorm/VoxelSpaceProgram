@@ -59,7 +59,9 @@ public class ModCommonEvents {
 
     @SubscribeEvent
     public static void onPlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        NythicalSpaceProgram.getSolarSystem().playerJoined(event.getEntity());
+        if (NythicalSpaceProgram.getSolarSystem() != null) {
+            NythicalSpaceProgram.getSolarSystem().playerJoined(event.getEntity());
+        }
     }
 
     @SubscribeEvent
@@ -80,6 +82,11 @@ public class ModCommonEvents {
             });
         }
     }
+
+//    @SubscribeEvent
+//    public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent event) {
+//
+//    }
 
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {

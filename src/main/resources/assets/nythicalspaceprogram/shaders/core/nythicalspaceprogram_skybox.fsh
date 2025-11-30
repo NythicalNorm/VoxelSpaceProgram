@@ -14,7 +14,6 @@ void main() {
     vec4 color = vertexColor;
     vec3 normalizedVector = normalize(vertPos);
     float normalY =  normalizedVector.y + 0.5;
-    vec4 newColor = mix(nspBottomColor, nspTopColor, smoothstep(nspTransitionPoint - 0.0135, nspTransitionPoint + 0.5, normalY));
-    newColor.a *= nspOpacity;
+    vec4 newColor =  mix(nspBottomColor, nspTopColor, smoothstep(nspTransitionPoint - 0.0135, nspTransitionPoint, normalY));
     fragColor = newColor;
 }

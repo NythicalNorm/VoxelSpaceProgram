@@ -1,9 +1,11 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers;
 
 import com.mojang.blaze3d.vertex.*;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetShine;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.RenderableObjects;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -13,6 +15,7 @@ import org.joml.*;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class SpaceObjRenderer {
@@ -44,9 +47,36 @@ public class SpaceObjRenderer {
 
         Arrays.sort(renderPlanets, Comparator.comparingDouble(RenderableObjects::getDistanceSquared).reversed());
 
-        PlanetRenderer.renderPlanets(renderPlanets, css, poseStack, projectionMatrix, partialTick);
+        renderPlanets(renderPlanets, css, poseStack, projectionMatrix, partialTick);
 
         poseStack.popPose();
+    }
+
+    public static void renderPlanets(RenderableObjects[] renderPlanets, CelestialStateSupplier css, PoseStack poseStack, Matrix4f projectionMatrix, float partialTick) {
+        Optional<PlanetaryBody> planetOn = css.getPlayerData().getCurrentPlanet();
+        float currentAlbedo = 1.0f;
+        Optional<PlanetAtmosphere> atmosphere = Optional.empty();
+
+        if (planetOn.isPresent()) {
+            if (planetOn.get().getAtmoshpere().hasAtmosphere()) {
+                currentAlbedo = css.getPlayerData().getSunAngle() * 2;
+                atmosphere = Optional.of(planetOn.get().getAtmoshpere());
+            }
+        } else if (css.weInSpace()) {
+            AtmosphereRenderer.renderAtmospheres(renderPlanets, poseStack, projectionMatrix);
+        }
+
+        PlanetShine.drawStarBuffer(poseStack, projectionMatrix, css);
+
+        for (RenderableObjects plnt : renderPlanets) {
+            double distance = plnt.getDistance();
+
+            if (distance < (plnt.getBody().getRadius() + 320)) {
+                continue;
+            }
+
+            PlanetRenderer.render(plnt, atmosphere, poseStack, projectionMatrix, distance, currentAlbedo);
+        }
     }
 
     public static void PerspectiveShift(double PlanetDistance, Vector3d PlanetPos, Quaternionf planetRot, double bodyRadius,PoseStack poseStack){
@@ -58,21 +88,4 @@ public class SpaceObjRenderer {
         poseStack.scale(planetApparentSize, planetApparentSize, planetApparentSize);
         poseStack.mulPose(planetRot);
     }
-
-//    private static void PerspectiveShiftZscaleSeparate(double PlanetDistance, Vector3d PlanetPos, double bodyRadius,PoseStack poseStack){
-//        //double PlanetDistance = PlanetPos.distance(new Vector3d());
-//        PlanetPos.normalize();
-//        Vector3f relativePlanetDir = new Vector3f((float) PlanetPos.x, (float) PlanetPos.y, (float) PlanetPos.z);
-//
-//        //tan amd atan cancel each other out.
-//        float planetApparentSize = (float) (InWorldPlanetsDistance*2*bodyRadius/(bodyRadius+PlanetDistance));
-//        Quaternionf planetDirRotation = new Quaternionf();
-//        planetDirRotation.rotationTo(new Vector3f(0f,0f,1f), relativePlanetDir);
-//
-//        poseStack.mulPose(planetDirRotation);
-//        poseStack.translate(0,0, InWorldPlanetsDistance);
-//        poseStack.scale(planetApparentSize, planetApparentSize, planetApparentSize);
-//        planetDirRotation.rotationTo(relativePlanetDir, new Vector3f(0f,0f,1f));
-//        poseStack.mulPose(planetDirRotation);
-//    }
 }

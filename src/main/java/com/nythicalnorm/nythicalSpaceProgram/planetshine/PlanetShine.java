@@ -3,6 +3,7 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.SkyboxCubeGen;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.AtmosphereRenderer;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.PlanetRenderer;
@@ -57,30 +58,32 @@ public class PlanetShine {
         if (mc.player.getEyePosition(partialTick).y < mc.level.getMinBuildHeight()) {
             return;
         }
+        CelestialStateSupplier css = NythicalSpaceProgram.getCelestialStateSupplier();
 
-        Vec3 skyColor = Minecraft.getInstance().level.getSkyColor(camera.getPosition(), partialTick);
+        if (css.getPlayerData().isOnPlanet()) {
+            if (css.getPlayerData().getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
+                Vec3 skyColor = Minecraft.getInstance().level.getSkyColor(camera.getPosition(), partialTick);
 
-        RenderSystem.setShaderColor((float) skyColor.x,(float) skyColor.y,(float) skyColor.z, 1.0F);
-        ShaderInstance posShad = RenderSystem.getShader();
-        sky_Buffer.bind();
-        sky_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, posShad);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.setShaderColor((float) skyColor.x, (float) skyColor.y, (float) skyColor.z, 1.0F);
+                ShaderInstance posShad = RenderSystem.getShader();
+                sky_Buffer.bind();
+                sky_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, posShad);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            }
+        }
 
         RenderSystem.depthMask(false);
         poseStack.pushPose();
-        CelestialStateSupplier css = NythicalSpaceProgram.getCelestialStateSupplier();
         //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), NythicalSpaceProgram.getCelestialStateSupplier().getCurrentPlanetWithinSOI());
         css.UpdatePlanetaryBodies();
         poseStack.mulPose(NythicalSpaceProgram.getCelestialStateSupplier().getPlayerData().getRotation());
-
-        drawStarBuffer(poseStack, projectionMatrix, css);
 
         SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, css, camera, projectionMatrix, partialTick);
         RenderSystem.depthMask(true);
         poseStack.popPose();
     }
 
-    private static void drawStarBuffer(PoseStack poseStack, Matrix4f projectionMatrix, CelestialStateSupplier css) {
+    public static void drawStarBuffer(PoseStack poseStack, Matrix4f projectionMatrix, CelestialStateSupplier css) {
         float alpha = 1.0f;
 
         if (css.getPlayerData().isOnPlanet()) {

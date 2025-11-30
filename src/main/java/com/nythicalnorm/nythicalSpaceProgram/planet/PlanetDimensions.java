@@ -27,7 +27,7 @@ public class PlanetDimensions {
     //server side call only
     public static PlanetaryBody getDimensionPlanet(DimensionType dim) {
         for (ResourceKey<Level> level : planetDimensions.keySet()) {
-            if (level == null || NythicalSpaceProgram.getSolarSystem().getServer().isPresent()) {
+            if (level == null || NythicalSpaceProgram.getSolarSystem() == null) {
                 continue;
             }
             if (NythicalSpaceProgram.getSolarSystem().getServer().get().getLevel(level).dimensionType() == dim) {
@@ -39,6 +39,9 @@ public class PlanetDimensions {
 
     //server side call only
     public static ServerLevel getDimensionLevel(DimensionType dim) {
+        if (NythicalSpaceProgram.getSolarSystem() == null) {
+            return null;
+        }
         if (NythicalSpaceProgram.getSolarSystem().getServer().isEmpty()) {
             return null;
         }

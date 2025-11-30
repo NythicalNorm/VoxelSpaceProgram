@@ -23,6 +23,8 @@ public class PlanetaryBody {
     private Quaternionf planetRotation;
     private double SOI;
 
+
+
     public PlanetaryBody (@Nullable OrbitalElements orbitalElements, PlanetAtmosphere effects, @Nullable String[] childBody,
                           double radius, double mass, float inclinationAngle, float startingRot, float rotationPeriod, ResourceLocation texture) {
         this.orbitalElements = orbitalElements;
