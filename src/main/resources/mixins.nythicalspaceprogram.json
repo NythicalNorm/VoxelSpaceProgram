@@ -10,13 +10,11 @@
     "LevelRendererMixin",
     "DimensionSpecialEffectsMixin",
     "LevelTimeAccessMixin",
-    "LevelReaderMixin",
-    "MultiNoiseBiomeSourceMixin"
+    "LevelReaderMixin"
   ],
 
   "server": [
     "LevelTimeAccessMixin",
-    "LevelReaderMixin",
-    "MultiNoiseBiomeSourceMixin"
+    "LevelReaderMixin"
   ]
 }
