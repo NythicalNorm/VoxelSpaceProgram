@@ -1,6 +1,8 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.PlayerOrbitalData;
+import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlayerSpacecraftBody;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.network.ServerBoundTimeWarpChange;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
@@ -9,6 +11,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 
 import java.lang.Math;
+import java.util.Optional;
 
 //@OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier {
@@ -16,11 +19,13 @@ public class CelestialStateSupplier {
     private double clientSideSolarSystemTime = 0;
     private long clientSideTickTime = 0L;
     public double lastUpdatedTimeWarpPerSec = 0;
-    PlayerOrbitalData playerData;
+
+    private PlayerSpacecraftBody playerData;
+    private PlanetaryBody currentPlanetOn;
 
 
-    public CelestialStateSupplier(PlayerOrbitalData playerDataFromServer) {
-        playerData = playerDataFromServer;
+    public CelestialStateSupplier(EntityBody playerDataFromServer) {
+        playerData = new PlayerSpacecraftBody(playerDataFromServer);
     }
 
     public void UpdateState(double currentTime, double TimePassedPerSec){
@@ -33,7 +38,7 @@ public class CelestialStateSupplier {
         }
     }
 
-    public void UpdatePlanetaryBodies() {
+    public void UpdateOrbitalBodies() {
         long currentTime = Util.getMillis();
 
         if (!Minecraft.getInstance().isPaused()) {
@@ -43,19 +48,20 @@ public class CelestialStateSupplier {
 
         clientSideTickTime = currentTime;
         Planets.UpdatePlanets(clientSideSolarSystemTime);
-        playerData.updatePlayerPosRot(Minecraft.getInstance().player);
+
+        Optional<PlanetaryBody> planetOptional = PlanetDimensions.getDimPlanet(Minecraft.getInstance().level.dimension());
+        if (planetOptional.isPresent()) {
+            currentPlanetOn = planetOptional.get();
+            playerData.updatePlayerPosRot(Minecraft.getInstance().player, currentPlanetOn);
+        }
     }
 
     public double getLastUpdatedTimeWarpPerSec() {
         return lastUpdatedTimeWarpPerSec;
     }
 
-    public PlayerOrbitalData getPlayerData() {
+    public PlayerSpacecraftBody getPlayerData() {
         return playerData;
-    }
-
-    public void setPlayerData(PlayerOrbitalData playerData) {
-        this.playerData = playerData;
     }
 
     public void TryChangeTimeWarp(boolean DoInc) {
@@ -72,6 +78,21 @@ public class CelestialStateSupplier {
             return false;
         }
         return PlanetDimensions.isDimensionPlanet(mc.level.dimension()) || PlanetDimensions.isDimensionSpace(mc.level.dimension());
+    }
+
+
+    public Optional<PlanetaryBody> getCurrentPlanet() {
+        if (currentPlanetOn != null) {
+            return Optional.of(currentPlanetOn);
+        }
+        else  {
+            return Optional.empty();
+        }
+    }
+
+    public boolean isOnPlanet()
+    {
+        return currentPlanetOn != null;
     }
 
     public boolean weInSpace() {

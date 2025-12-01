@@ -1,16 +1,17 @@
 
-package com.nythicalnorm.nythicalSpaceProgram.planet;
+package com.nythicalnorm.nythicalSpaceProgram.common;
 
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
 import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.lang.Math;
+import java.util.HashMap;
 
-public class PlanetaryBody {
-    private final OrbitalElements orbitalElements;
-    private final String[] childBodies;
+public class PlanetaryBody extends Orbit {
+    //private final String[] childBodies;
     private final double radius;
     private final double mass;
     private final AxisAngle4f NorthPoleDir;
@@ -18,71 +19,63 @@ public class PlanetaryBody {
     private final PlanetAtmosphere atmoshpericEffects;
     public ResourceLocation texture; //temp val
 
-    private Vector3d planetRelativePos;
-    private Vector3d planetAbsolutePos;
-    private Quaternionf planetRotation;
     private double SOI;
 
-
-
-    public PlanetaryBody (@Nullable OrbitalElements orbitalElements, PlanetAtmosphere effects, @Nullable String[] childBody,
+    public PlanetaryBody (@Nullable OrbitalElements orbitalElements, PlanetAtmosphere effects, HashMap<String, Orbit>  childBodies,
                           double radius, double mass, float inclinationAngle, float startingRot, float rotationPeriod, ResourceLocation texture) {
         this.orbitalElements = orbitalElements;
         this.radius = radius;
         this.texture = texture;
         this.RotationPeriod = rotationPeriod;
         this.atmoshpericEffects = effects;
-        this.childBodies = childBody;
+        this.childElements = childBodies;
         this.mass = mass;
 
         Vector3f normalizedNorthPoleDir = new Vector3f(0f, (float) Math.cos(inclinationAngle),(float) Math.sin(inclinationAngle));
         this.NorthPoleDir = new AxisAngle4f(startingRot, normalizedNorthPoleDir);
-        planetRelativePos = new Vector3d(0d, 0d, 0d);
-        planetAbsolutePos = new Vector3d(0d, 0d, 0d);
-        planetRotation = new Quaternionf();
+        relativeOrbitalPos = new Vector3d(0d, 0d, 0d);
+        absoluteOrbitalPos = new Vector3d(0d, 0d, 0d);
+        rotation = new Quaternionf();
     }
 
-    public void simulate(double TimeElapsed, Vector3d parentPos) {
+    private void simulate(double TimeElapsed, Vector3d parentPos) {
         if (orbitalElements != null) {
-            this.planetRelativePos = orbitalElements.ToCartesian(TimeElapsed);
+            this.relativeOrbitalPos = orbitalElements.ToCartesian(TimeElapsed);
             Vector3d newAbs = new Vector3d(parentPos);
-            this.planetAbsolutePos = newAbs.add(planetRelativePos);
+            this.absoluteOrbitalPos = newAbs.add(relativeOrbitalPos);
 
             float rotationAngle = NorthPoleDir.angle + (float)((2*Math.PI/RotationPeriod)*TimeElapsed);
-            this.planetRotation = new Quaternionf().rotationTo(NorthPoleDir.x,NorthPoleDir.y,NorthPoleDir.z, 0f, 1f, 0f);
+            this.rotation = new Quaternionf().rotationTo(NorthPoleDir.x,NorthPoleDir.y,NorthPoleDir.z, 0f, 1f, 0f);
             Quaternionf rotated = new Quaternionf(new AxisAngle4f(rotationAngle, 0f, 1f, 0f));
-            this.planetRotation.mul(rotated);
+            this.rotation.mul(rotated);
         }
     }
 
-    public void simulateChildren(double TimeElapsed, Vector3d parentPos) {
+    public void simulatePropagate(double TimeElapsed, Vector3d parentPos, double mass) {
         simulate(TimeElapsed, parentPos);
 
-        if (childBodies != null) {
-            for (String body : childBodies) {
-                Planets.PLANETARY_BODIES.get(body).simulateChildren(TimeElapsed, planetAbsolutePos);
+        if (childElements != null) {
+            for (Orbit body : childElements.values()) {
+                body.simulatePropagate(TimeElapsed, absoluteOrbitalPos, this.mass);
             }
         }
     }
 
     public void UpdateSOIs() {
-        if (childBodies != null) {
-            for (String bodyname : childBodies) {
-                PlanetaryBody body =  Planets.PLANETARY_BODIES.get(bodyname);
-                double soi = Math.pow(body.mass/this.mass, 0.4d);
-                soi = soi * body.orbitalElements.SemiMajorAxis;
-                body.setSphereOfInfluence(soi);
-                body.UpdateSOIs();
+        if (childElements != null) {
+            for (Orbit orbitBody : childElements.values()) {
+                if (orbitBody instanceof PlanetaryBody body) {
+                    double soi = Math.pow(body.mass/this.mass, 0.4d);
+                    soi = soi * body.orbitalElements.SemiMajorAxis;
+                    body.setSphereOfInfluence(soi);
+                    body.UpdateSOIs();
+                }
             }
         }
     }
 
     public double getRadius(){
         return radius;
-    }
-
-    public Quaternionf getPlanetRotation() {
-        return planetRotation;
     }
 
     public PlanetAtmosphere getAtmoshpere() {
@@ -96,14 +89,6 @@ public class PlanetaryBody {
     public double getAccelerationDueToGravity() {
         double val = OrbitalElements.UniversalGravitationalConstant*this.mass;
         return val/(radius*radius);
-    }
-
-    public Vector3d getPlanetRelativePos() {
-        return new Vector3d(planetRelativePos);
-    }
-
-    public Vector3d getPlanetAbsolutePos() {
-        return new Vector3d(planetAbsolutePos);
     }
 
     public double getSphereOfInfluence() {
@@ -121,14 +106,19 @@ public class PlanetaryBody {
         return this.atmoshpericEffects.getAtmosphereHeight() + this.radius;
     }
 
+    public double getMass() {
+        return this.mass;
+    }
+
     protected void calculateOrbitalPeriod() {
-        if (childBodies != null) {
-            for (String bodyname : childBodies) {
-                PlanetaryBody body =  Planets.PLANETARY_BODIES.get(bodyname);
-                if (body.orbitalElements != null) {
-                    body.orbitalElements.setOrbitalPeriod(this.mass);
+        if (childElements != null) {
+            for (Orbit orbitBody : childElements.values()) {
+                if (orbitBody instanceof PlanetaryBody body) {
+                    if (orbitBody.orbitalElements != null) {
+                        orbitBody.orbitalElements.setOrbitalPeriod(this.mass);
+                    }
+                    body.calculateOrbitalPeriod();
                 }
-                body.calculateOrbitalPeriod();
             }
         }
     }

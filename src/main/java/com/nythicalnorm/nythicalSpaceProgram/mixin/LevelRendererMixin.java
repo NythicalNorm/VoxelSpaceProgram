@@ -3,8 +3,8 @@ package com.nythicalnorm.nythicalSpaceProgram.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetShine;
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -17,6 +17,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 @Mixin(LevelRenderer.class)
@@ -33,16 +35,17 @@ public class LevelRendererMixin {
         LevelRenderer levelRenderer = (LevelRenderer) (Object) this;
         Minecraft mc = Minecraft.getInstance();
         //long beforeTimes = Util.getNanos();
+        Optional<CelestialStateSupplier> css = NythicalSpaceProgram.getCelestialStateSupplier();
 
-        if (mc.level == null || NythicalSpaceProgram.getCelestialStateSupplier() == null) {
+        if (mc.level == null || css.isEmpty()) {
             return;
         }
-        if (NythicalSpaceProgram.getCelestialStateSupplier().doRender()) {
+        if (css.get().doRender()) {
             pSkyFogSetup.run();
             if (!pIsFoggy) {
                 FogType fogtype = pCamera.getFluidInCamera();
                 if (fogtype != FogType.POWDER_SNOW && fogtype != FogType.LAVA && !this.doesMobEffectBlockSky(pCamera)) {
-                    PlanetShine.renderSkybox(mc, levelRenderer, pPoseStack, pProjectionMatrix, pPartialTick, pCamera, skyBuffer);
+                    PlanetShine.renderSkybox(mc, levelRenderer, pPoseStack, pProjectionMatrix, pPartialTick, pCamera, skyBuffer, css.get());
                 }
             }
             ci.cancel();

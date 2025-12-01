@@ -2,7 +2,7 @@ package com.nythicalnorm.nythicalSpaceProgram.util;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -40,8 +40,8 @@ public class DayNightCycleHandler {
         Optional<PlanetaryBody> planet = PlanetDimensions.getDimPlanet(level.dimension());
         if (planet.isPresent()) {
             PlanetaryBody plnt = planet.get();
-            Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getPlanetRotation(), false);
-            Vector3d planetAbsolutePos = plnt.getPlanetAbsolutePos().add(blockPosOnPlanet);
+            Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), false);
+            Vector3d planetAbsolutePos = plnt.getAbsolutePos().add(blockPosOnPlanet);
             return Optional.of(getSunAngle(blockPosOnPlanet, planetAbsolutePos));
         }
         else {
@@ -83,9 +83,9 @@ public class DayNightCycleHandler {
 
     public static float getSunAngleAtSpawn(PlanetaryBody planetaryBody) {
         Vector3d spawnLocation = new Vector3d(planetaryBody.getRadius(), 0f, 0f);
-        Quaternionf planetRot = planetaryBody.getPlanetRotation();
+        Quaternionf planetRot = planetaryBody.getRotation();
         spawnLocation.rotate(new Quaterniond(planetRot.x, planetRot.y,planetRot.z, planetRot.w));
-        Vector3d planetAbsolutePos = planetaryBody.getPlanetAbsolutePos().add(spawnLocation);
+        Vector3d planetAbsolutePos = planetaryBody.getAbsolutePos().add(spawnLocation);
         return getSunAngle(spawnLocation, planetAbsolutePos);
     }
 }

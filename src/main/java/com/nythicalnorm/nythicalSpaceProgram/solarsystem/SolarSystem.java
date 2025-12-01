@@ -1,12 +1,10 @@
 package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.PlayerOrbitalData;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlayerOrbitalDataProvider;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlayerSpacecraftBody;
 import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundLoginSolarSystemState;
 import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundSpaceShipsPosUpdate;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
-import com.nythicalnorm.nythicalSpaceProgram.planetdimgen.OverworldBiomeGen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,11 +18,13 @@ public class SolarSystem {
     public double timePassPerSecond;
     //public static double tickTimeStamp;
     private MinecraftServer server;
+    private HashMap<String, ServerPlayerOrbitalData> allPlayerOrbitalData;
+
 
     public SolarSystem(MinecraftServer server) {
         timePassPerSecond = 1;
+        allPlayerOrbitalData = new HashMap<>();
         this.server = server;
-        OverworldBiomeGen.setBiome(server);
     }
 
     public Optional<MinecraftServer> getServer() {
@@ -36,11 +36,6 @@ public class SolarSystem {
         HashMap<String, Vector3d> PlanetPositions = new HashMap<>();
 
         Planets.UpdatePlanets(currentTime);
-        for (Player player : server.getPlayerList().getPlayers()) {
-            player.getCapability(PlayerOrbitalDataProvider.ORBITAL_DATA).ifPresent(playerOrbitalData -> {
-                playerOrbitalData.updatePlayerPosRot(player);
-            });
-        }
 
         PacketHandler.sendToAllClients(new ClientBoundSpaceShipsPosUpdate(currentTime,timePassPerSecond));
     }
@@ -54,13 +49,11 @@ public class SolarSystem {
     }
 
     public void playerJoined(Player entity) {
-        Optional <PlayerOrbitalData> plrdata = entity.getCapability(PlayerOrbitalDataProvider.ORBITAL_DATA).resolve();
-
-        if (plrdata.isPresent()) {
-            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(plrdata.get()), (ServerPlayer) entity);
+        if (allPlayerOrbitalData.containsKey(entity.getStringUUID())) {
+            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(allPlayerOrbitalData.get(entity.getStringUUID())), (ServerPlayer) entity);
         }
         else {
-            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(new PlayerOrbitalData()), (ServerPlayer) entity);
+            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(new PlayerSpacecraftBody()), (ServerPlayer) entity);
         }
     }
 }

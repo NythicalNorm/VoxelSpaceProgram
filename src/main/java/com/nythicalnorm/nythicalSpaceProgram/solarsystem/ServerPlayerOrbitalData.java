@@ -1,22 +1,19 @@
 package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.OrbitalData;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
+import net.minecraft.server.level.ServerPlayer;
 
-import javax.swing.text.html.parser.Entity;
-
-public class ServerPlayerOrbitalData extends OrbitalData {
-    private Entity playerEntity;
-    private String UUid;
+public class ServerPlayerOrbitalData extends EntityBody {
+    private ServerPlayer playerEntity;
     private boolean isStableOrbit;
     private boolean isShipBound;
 
-    public Entity getPlayerEntity() {
+    public ServerPlayer getPlayerEntity() {
         return playerEntity;
     }
 
     public String getUUid() {
-        return UUid;
+        return playerEntity.getStringUUID();
     }
 
     public boolean isStableOrbit() {

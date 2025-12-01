@@ -29,7 +29,9 @@ public class ClientBoundSpaceShipsPosUpdate {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> NythicalSpaceProgram.getCelestialStateSupplier().UpdateState(currenttime, timePassPerSecond));
+            NythicalSpaceProgram.getCelestialStateSupplier().ifPresent( celestialStateSupplier -> {
+                context.enqueueWork(() -> celestialStateSupplier.UpdateState(currenttime, timePassPerSecond));
+            });
             context.setPacketHandled(true);
         }
     }

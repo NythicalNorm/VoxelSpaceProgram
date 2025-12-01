@@ -2,7 +2,7 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers;
 
 import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetShine;
@@ -39,10 +39,10 @@ public class SpaceObjRenderer {
         poseStack.pushPose();
 
         for (RenderableObjects obj : renderPlanets) {
-            Vector3d differenceVector = obj.getBody().getPlanetAbsolutePos();
-            differenceVector.sub(css.getPlayerData().getAbsolutePositon());
+            Vector3d differenceVector = obj.getBody().getAbsolutePos();
+            differenceVector.sub(css.getPlayerData().getAbsolutePos());
             obj.setDifferenceVector(differenceVector);
-            obj.setDistanceSquared(css.getPlayerData().getAbsolutePositon().distanceSquared(obj.getBody().getPlanetAbsolutePos()));
+            obj.setDistanceSquared(css.getPlayerData().getAbsolutePos().distanceSquared(obj.getBody().getAbsolutePos()));
         }
 
         Arrays.sort(renderPlanets, Comparator.comparingDouble(RenderableObjects::getDistanceSquared).reversed());
@@ -53,7 +53,7 @@ public class SpaceObjRenderer {
     }
 
     public static void renderPlanets(RenderableObjects[] renderPlanets, CelestialStateSupplier css, PoseStack poseStack, Matrix4f projectionMatrix, float partialTick) {
-        Optional<PlanetaryBody> planetOn = css.getPlayerData().getCurrentPlanet();
+        Optional<PlanetaryBody> planetOn = css.getCurrentPlanet();
         float currentAlbedo = 1.0f;
         Optional<PlanetAtmosphere> atmosphere = Optional.empty();
 

@@ -1,6 +1,7 @@
 package com.nythicalnorm.nythicalSpaceProgram.planet;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -54,7 +55,7 @@ public class PlanetDimensions {
         return null;
     }
 
-        public static Optional<PlanetaryBody> getDimPlanet(ResourceKey<Level> dim) {
+    public static Optional<PlanetaryBody> getDimPlanet(ResourceKey<Level> dim) {
         if (planetDimensions.containsKey(dim)) {
             return Optional.of(Planets.PLANETARY_BODIES.get(planetDimensions.get(dim)));
         }

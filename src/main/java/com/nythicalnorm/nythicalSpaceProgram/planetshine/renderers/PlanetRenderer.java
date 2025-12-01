@@ -6,9 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Star;
-import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.RenderableObjects;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.QuadSphereModelGenerator;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
@@ -42,7 +40,7 @@ public class PlanetRenderer {
     public static void render(RenderableObjects obj, Optional<PlanetAtmosphere> atmosphere, PoseStack poseStack,
                               Matrix4f projectionMatrix, double distance, float currentAlbedo) {
         poseStack.pushPose();
-        Quaternionf planetRot =  obj.getBody().getPlanetRotation();
+        Quaternionf planetRot =  obj.getBody().getRotation();
         RenderSystem.enableBlend();
 
         if (atmosphere.isPresent()) {
@@ -58,7 +56,7 @@ public class PlanetRenderer {
         QuadSphereModelGenerator.getSphereBuffer().bind();
         RenderSystem.setShaderTexture(0, obj.getBody().texture);
 
-        Vector3d absoluteDir = obj.getBody().getPlanetAbsolutePos().normalize();
+        Vector3d absoluteDir = obj.getBody().getAbsolutePos().normalize();
         Vector3f lightDir = new Vector3f((float) absoluteDir.x,(float) absoluteDir.y,(float) absoluteDir.z);
         lightDir.rotate(planetRot.invert());
         lightDir.normalize();

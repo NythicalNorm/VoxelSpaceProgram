@@ -40,15 +40,15 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
             }
             else if (this instanceof WorldGenRegion) {
                 WorldGenRegion worldGenLevel = (WorldGenRegion) this;
-                // can be replaced with another entire set of usage run on worldgenlevel instead of converting it to a level
+                // TO DO add a capabilit to the level storing its PlanetAddressStack
                 level = PlanetDimensions.getDimensionLevel(worldGenLevel.dimensionType());
             }
             if (level != null) {
                 // need to use pLevel.getNearestPlayer to get the sun angle of the nearest player, so this code would be faster in theory.
                 if (!level.isClientSide()) {
                     darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
-                } else {
-                    darkLevelFromPlanet  = DayNightCycleHandler.getDarknessLightLevel(Optional.of(NythicalSpaceProgram.getCelestialStateSupplier().getPlayerData().getSunAngle()), level);
+                } else if (NythicalSpaceProgram.getCelestialStateSupplier().isPresent()) {
+                    darkLevelFromPlanet  = DayNightCycleHandler.getDarknessLightLevel(Optional.of(NythicalSpaceProgram.getCelestialStateSupplier().get().getPlayerData().getSunAngle()), level);
                 }
             }
         }

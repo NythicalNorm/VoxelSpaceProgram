@@ -2,8 +2,6 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.SkyboxCubeGen;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.AtmosphereRenderer;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.PlanetRenderer;
@@ -48,7 +46,7 @@ public class PlanetShine {
     }
 
     public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack,
-                                      Matrix4f projectionMatrix, float partialTick, Camera camera, VertexBuffer sky_Buffer)
+    Matrix4f projectionMatrix, float partialTick, Camera camera, VertexBuffer sky_Buffer, CelestialStateSupplier css)
     {
         if (isFirstTime) {
             setupShaders();
@@ -58,10 +56,12 @@ public class PlanetShine {
         if (mc.player.getEyePosition(partialTick).y < mc.level.getMinBuildHeight()) {
             return;
         }
-        CelestialStateSupplier css = NythicalSpaceProgram.getCelestialStateSupplier();
 
-        if (css.getPlayerData().isOnPlanet()) {
-            if (css.getPlayerData().getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
+        css.UpdateOrbitalBodies();
+        RenderSystem.depthMask(false);
+
+        if (css.isOnPlanet()) {
+            if (css.getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
                 Vec3 skyColor = Minecraft.getInstance().level.getSkyColor(camera.getPosition(), partialTick);
 
                 RenderSystem.setShaderColor((float) skyColor.x, (float) skyColor.y, (float) skyColor.z, 1.0F);
@@ -72,11 +72,9 @@ public class PlanetShine {
             }
         }
 
-        RenderSystem.depthMask(false);
         poseStack.pushPose();
         //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), NythicalSpaceProgram.getCelestialStateSupplier().getCurrentPlanetWithinSOI());
-        css.UpdatePlanetaryBodies();
-        poseStack.mulPose(NythicalSpaceProgram.getCelestialStateSupplier().getPlayerData().getRotation());
+        poseStack.mulPose(css.getPlayerData().getRotation());
 
         SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, css, camera, projectionMatrix, partialTick);
         RenderSystem.depthMask(true);
@@ -86,8 +84,8 @@ public class PlanetShine {
     public static void drawStarBuffer(PoseStack poseStack, Matrix4f projectionMatrix, CelestialStateSupplier css) {
         float alpha = 1.0f;
 
-        if (css.getPlayerData().isOnPlanet()) {
-            if (css.getPlayerData().getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
+        if (css.isOnPlanet()) {
+            if (css.getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
                 alpha = 2*css.getPlayerData().getSunAngle();
             }
         }

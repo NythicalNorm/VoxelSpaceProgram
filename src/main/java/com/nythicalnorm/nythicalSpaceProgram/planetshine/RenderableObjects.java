@@ -1,6 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 

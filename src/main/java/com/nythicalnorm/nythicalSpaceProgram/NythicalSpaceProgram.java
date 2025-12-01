@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModCreativeModeTab;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlayerOrbitalData;
+import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
@@ -21,6 +21,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.util.Optional;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(NythicalSpaceProgram.MODID)
@@ -90,7 +92,7 @@ public class NythicalSpaceProgram
         }
     }
 
-    public static void startClient(PlayerOrbitalData playerData) {
+    public static void startClient(EntityBody playerData) {
         Planets.planetInit();
         celestialStateSupplier = new CelestialStateSupplier(playerData);
     }
@@ -99,7 +101,12 @@ public class NythicalSpaceProgram
         return solarSystem;
     }
 
-    public static CelestialStateSupplier getCelestialStateSupplier() {
-        return celestialStateSupplier;
+    public static Optional<CelestialStateSupplier> getCelestialStateSupplier() {
+        if (celestialStateSupplier != null) {
+            return Optional.of(celestialStateSupplier);
+        }
+        else {
+            return Optional.empty();
+        }
     }
 }

@@ -14,9 +14,11 @@ public class ForgeClientEvents {
     @SubscribeEvent
     public static void OnKeyInput (InputEvent.Key event) {
         if (KeyBindings.INC_TIME_WARP_KEY.consumeClick()) {
-            NythicalSpaceProgram.getCelestialStateSupplier().TryChangeTimeWarp(true);
+            NythicalSpaceProgram.getCelestialStateSupplier().ifPresent((celestialStateSupplier ->
+                    celestialStateSupplier.TryChangeTimeWarp(true)));
         } else if (KeyBindings.DEC_TIME_WARP_KEY.consumeClick()) {
-            NythicalSpaceProgram.getCelestialStateSupplier().TryChangeTimeWarp(false);
+            NythicalSpaceProgram.getCelestialStateSupplier().ifPresent((celestialStateSupplier ->
+                    celestialStateSupplier.TryChangeTimeWarp(false)));
         }
     }
 }

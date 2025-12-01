@@ -3,7 +3,7 @@ package com.nythicalnorm.nythicalSpaceProgram.mixin;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.util.DayNightCycleHandler;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelTimeAccess;
@@ -26,9 +26,9 @@ public interface LevelTimeAccessMixin extends LevelReader {
     @Overwrite
     default float getTimeOfDay(float pPartialTick) {
         if (this.isClientSide()) {
-            if (NythicalSpaceProgram.getCelestialStateSupplier() != null) {
-                if (NythicalSpaceProgram.getCelestialStateSupplier().getPlayerData().isOnPlanet()) {
-                    return NythicalSpaceProgram.getCelestialStateSupplier().getPlayerData().getSunAngle();
+            if (NythicalSpaceProgram.getCelestialStateSupplier().isPresent()) {
+                if (NythicalSpaceProgram.getCelestialStateSupplier().get().isOnPlanet()) {
+                    return NythicalSpaceProgram.getCelestialStateSupplier().get().getPlayerData().getSunAngle();
                 }
             }
         }

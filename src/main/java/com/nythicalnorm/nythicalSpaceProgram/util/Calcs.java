@@ -1,6 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.util;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.OrbitalData;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;
@@ -93,15 +93,15 @@ public class Calcs {
     }
 
 
-
-    public static Vector3f getUpVectorForPlanetRot(Vector3f playerRelativePos, OrbitalData data) {
+    //client side only
+    public static Vector3f getUpVectorForPlanetRot(Vector3f playerRelativePos, PlanetaryBody planet) {
         Vector3f upDir = new Vector3f(0f,-1f,0f);
-        if (data.getCurrentPlanet().isPresent()) {
-            AxisAngle4f northPole = data.getCurrentPlanet().get().getNorthPoleDir();
-            upDir = new Vector3f(northPole.x, northPole.z, northPole.y);
-            upDir.normalize();
-        }
+        AxisAngle4f northPole = planet.getNorthPoleDir();
+        upDir = new Vector3f(northPole.x, northPole.z, northPole.y);
+
+        upDir.normalize();
         Quaternionf rot = new Quaternionf(new AxisAngle4f(hPI, 1f, 0f, 0f));
+
         upDir.rotate(rot);
         return upDir;
     }
