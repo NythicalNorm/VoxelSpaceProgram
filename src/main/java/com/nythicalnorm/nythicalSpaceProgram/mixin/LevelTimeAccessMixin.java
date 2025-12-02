@@ -2,7 +2,6 @@ package com.nythicalnorm.nythicalSpaceProgram.mixin;
 
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
 import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.util.DayNightCycleHandler;
 import net.minecraft.world.level.LevelReader;
@@ -33,11 +32,14 @@ public interface LevelTimeAccessMixin extends LevelReader {
             }
         }
         else {
-            PlanetaryBody planet = PlanetDimensions.getDimensionPlanet(dimensionType());
-            //there might be some issue
-            if (planet != null) {
-                return DayNightCycleHandler.getSunAngleAtSpawn(planet);
+            if (NythicalSpaceProgram.getSolarSystem().isPresent()){
+                PlanetaryBody planet = NythicalSpaceProgram.getSolarSystem().get().getPlanets().getDimensionPlanet(dimensionType());
+                //there might be some issue
+                if (planet != null) {
+                    return DayNightCycleHandler.getSunAngleAtSpawn(planet);
+                }
             }
+
         }
 
         return this.dimensionType().timeOfDay(this.dayTime());

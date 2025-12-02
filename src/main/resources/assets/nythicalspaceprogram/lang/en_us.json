@@ -13,5 +13,6 @@
   "key.nythicalspaceprogram.increase_time_warp": "Increase Time Warp Speed",
   "key.nythicalspaceprogram.decrease_time_warp": "Decrease Time Warp Speed",
 
-  "nythicalspaceprogram.commands.dimTeleport": "Teleported to the Space Dimension"
+  "nythicalspaceprogram.commands.dimTeleport": "Teleported to the Space Dimension",
+  "nythicalspaceprogram.commands.planet_invalid": "Invalid Planet at: "
 }

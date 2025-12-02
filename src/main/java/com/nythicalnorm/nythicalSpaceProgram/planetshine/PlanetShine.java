@@ -42,7 +42,7 @@ public class PlanetShine {
     private static void setupShaders() {
         PlanetRenderer.setupShader();
         AtmosphereRenderer.setupShader(Skybox_Buffer);
-        SpaceObjRenderer.PopulateRenderPlanets();
+        //SpaceObjRenderer.PopulateRenderPlanets();
     }
 
     public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack,

@@ -3,11 +3,14 @@ package com.nythicalnorm.nythicalSpaceProgram.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
 import com.nythicalnorm.nythicalSpaceProgram.dimensions.DimensionTeleporter;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -25,10 +28,30 @@ public class NSPTeleportCommand {
         dispatcher.register(Commands.literal("nsp-tp").requires((stack) -> {
             return stack.hasPermission(2);
         })
-        .then(Commands.argument("targets", EntityArgument.entities())
-        .executes((stack) -> {
-            return NSPTeleport(stack.getSource(), Collections.singleton(stack.getSource().getEntityOrException()));
-        })));
+            .then(Commands.argument("targets", EntityArgument.entities())
+                .then(Commands.argument("planets", PlanetArgument.planetArgument())
+                    .then(Commands.argument("orbit", Vec3Argument.vec3()).executes((stack) -> {
+                        return TeleportToOrbit(stack.getSource(), Collections.singleton(stack.getSource().getEntityOrException()), stack.getArgument("planets", String.class), stack.getSource().getPosition());
+                    })
+                    )
+                )
+            )
+        );
+    }
+
+    private int TeleportToOrbit(CommandSourceStack pSource, Collection<? extends Entity> pTargets, String body, Vec3 pos) {
+        for(Entity entity : pTargets) {
+            if (entity instanceof ServerPlayer) {
+                if (NythicalSpaceProgram.getSolarSystem().isPresent()) {
+                    OrbitalElements orbitalElement = new OrbitalElements(pos.x, 0d, pos.y, pos.z, 0f, 0f);
+                    NythicalSpaceProgram.getSolarSystem().get().playerJoinOrbit(body, (ServerPlayer) entity, orbitalElement);
+                }
+            }
+            pSource.sendSuccess(() -> {
+                return Component.translatable("nythicalspaceprogram.commands.dimTeleport");
+            }, true);
+        }
+        return 1;
     }
 
     private int NSPTeleport(CommandSourceStack pSource, Collection<? extends Entity> pTargets) throws CommandSyntaxException {

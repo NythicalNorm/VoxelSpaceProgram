@@ -1,7 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.util;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
 import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -20,6 +19,8 @@ import java.util.Optional;
 @Mod.EventBusSubscriber(modid = NythicalSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DayNightCycleHandler {
 
+    //serverside Only Starting from here to
+
     @SubscribeEvent
     public static void OnSleepingTimeCheckEvent(SleepingTimeCheckEvent event) {
         Optional<Boolean> isday = isDay(event.getEntity().blockPosition(), event.getEntity().level());
@@ -37,7 +38,11 @@ public class DayNightCycleHandler {
     }
 
     public static Optional<Float> getSunAngle(BlockPos pos, Level level) {
-        Optional<PlanetaryBody> planet = PlanetDimensions.getDimPlanet(level.dimension());
+        if (NythicalSpaceProgram.getSolarSystem().isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<PlanetaryBody> planet =  NythicalSpaceProgram.getSolarSystem().get().getPlanets().getDimPlanet(level);
         if (planet.isPresent()) {
             PlanetaryBody plnt = planet.get();
             Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), false);
@@ -49,6 +54,7 @@ public class DayNightCycleHandler {
         }
     }
 
+
     public static Optional<Boolean> isDay(BlockPos pos, Level level) {
         Optional<Integer> DarkenAmount = getDarknessLightLevel(pos,level);
         return DarkenAmount.map(integer -> !level.dimensionType().hasFixedTime() && integer < 4);
@@ -59,6 +65,8 @@ public class DayNightCycleHandler {
         return getDarknessLightLevel(sunAngle, level);
     }
 
+
+    // client side here
     public static Optional<Integer> getDarknessLightLevel(Optional<Float> sunAngle, Level level) {
         if (sunAngle.isEmpty()) {
             return Optional.empty();
@@ -71,6 +79,7 @@ public class DayNightCycleHandler {
         return Optional.of(result);
     }
 
+    //common static ones here
     public static float getSunAngle(Vector3d EntityRelativePos, Vector3d planetAbsolutePos) {
         Vector3f entityDir = new Vector3f((float) EntityRelativePos.x,(float) EntityRelativePos.y,(float) EntityRelativePos.z);
         Vector3f sunDir = new Vector3f((float) planetAbsolutePos.x,(float) planetAbsolutePos.y,(float) planetAbsolutePos.z);

@@ -3,12 +3,17 @@ package com.nythicalnorm.nythicalSpaceProgram.common;
 
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
 import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.ServerPlayerOrbitalData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.lang.Math;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 public class PlanetaryBody extends Orbit {
     //private final String[] childBodies;
@@ -30,7 +35,7 @@ public class PlanetaryBody extends Orbit {
         this.atmoshpericEffects = effects;
         this.childElements = childBodies;
         this.mass = mass;
-
+        this.isStableOrbit = true;
         Vector3f normalizedNorthPoleDir = new Vector3f(0f, (float) Math.cos(inclinationAngle),(float) Math.sin(inclinationAngle));
         this.NorthPoleDir = new AxisAngle4f(startingRot, normalizedNorthPoleDir);
         relativeOrbitalPos = new Vector3d(0d, 0d, 0d);
@@ -72,6 +77,22 @@ public class PlanetaryBody extends Orbit {
                 }
             }
         }
+    }
+
+    public void setChildAddresses(HashMap<String, Stack<String>> allPlanetsAddresses, Stack<String> currentAddress, String name) {
+        currentAddress.push(name);
+        allPlanetsAddresses.put(name, currentAddress);
+
+        for (Map.Entry<String, Orbit> orbitBody : childElements.entrySet()) {
+            if (orbitBody.getValue() instanceof PlanetaryBody) {
+                PlanetaryBody plntBody = (PlanetaryBody) orbitBody.getValue();
+                plntBody.setChildAddresses(allPlanetsAddresses, (Stack<String>) currentAddress.clone(), orbitBody.getKey());
+            }
+        }
+    }
+
+    public void addChildSpacecraft(String key, EntityBody orbitData) {
+        this.childElements.put(key ,orbitData);
     }
 
     public double getRadius(){

@@ -4,12 +4,18 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.commands.NSPTeleportCommand;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelData;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelDataProvider;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.SolarSystem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -21,16 +27,16 @@ import net.minecraftforge.server.command.ConfigCommand;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = NythicalSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class ModCommonEvents {
+public class ForgeServerEvents {
 
     @SubscribeEvent
     public static void OnTick(TickEvent.ServerTickEvent event) {
         if (event.side != LogicalSide.SERVER && event.phase != TickEvent.Phase.END) {
             return;
         }
-        if (NythicalSpaceProgram.getSolarSystem() != null) {
-            NythicalSpaceProgram.getSolarSystem().OnTick();
-        }
+        NythicalSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
+            solarSystem.OnTick();
+        });
     }
 
     @SubscribeEvent
@@ -54,15 +60,30 @@ public class ModCommonEvents {
 
     @SubscribeEvent
     public static void onPlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        if (NythicalSpaceProgram.getSolarSystem() != null) {
-            NythicalSpaceProgram.getSolarSystem().playerJoined(event.getEntity());
-        }
+        NythicalSpaceProgram.log("Hello");
+        NythicalSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
+            solarSystem.playerJoined(event.getEntity());
+        });
     }
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if(event.isWasDeath() && event.getEntity() instanceof ServerPlayer) {
-            NythicalSpaceProgram.getSolarSystem().playerJoined(event.getEntity());
+            //NythicalSpaceProgram.getSolarSystem().playerJoined(event.getEntity());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAttachCapabilitiesLevel(AttachCapabilitiesEvent<Level> event) {
+        if(!event.getObject().getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA).isPresent()) {
+            if (NythicalSpaceProgram.getSolarSystem().isPresent()) {
+                SolarSystem solarSystem = NythicalSpaceProgram.getSolarSystem().get();
+                if (solarSystem.getPlanets().isDimensionPlanet(event.getObject().dimension())) {
+                    String planetName = solarSystem.getPlanets().getDimensionPlanet(event.getObject().dimension());
+                    PlanetLevelDataProvider planetDataprovider = new PlanetLevelDataProvider(new PlanetLevelData(planetName));
+                    event.addCapability(ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "planetleveldata"), planetDataprovider);
+                }
+            }
         }
     }
 

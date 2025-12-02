@@ -16,23 +16,22 @@ import org.joml.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class SpaceObjRenderer {
     private static final float InWorldPlanetsDistance = 64f;
     private static RenderableObjects[] renderPlanets;
 
-    public static Boolean PopulateRenderPlanets() {
-        if (Planets.PLANETARY_BODIES != null) {
-            renderPlanets = new RenderableObjects[Planets.PLANETARY_BODIES.size()];
-            int i = 0;
-            for (PlanetaryBody elementVariable : Planets.PLANETARY_BODIES.values()) {
-                renderPlanets[i] = new RenderableObjects(elementVariable);
-                i++;
-            }
-            return true;
+    public static void PopulateRenderPlanets(Planets planets) {
+        Set<String> planetList = planets.getAllPlanetNames();
+
+        renderPlanets = new RenderableObjects[planetList.size()];
+        int i = 0;
+        for (String elementVariable : planetList) {
+            renderPlanets[i] = new RenderableObjects(planets.getPlanet(elementVariable));
+            i++;
         }
-        return false;
     }
 
     public static void renderPlanetaryBodies(PoseStack poseStack, Minecraft mc, CelestialStateSupplier css, Camera camera, Matrix4f projectionMatrix, float partialTick) {

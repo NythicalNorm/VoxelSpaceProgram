@@ -5,8 +5,8 @@ import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.common.PlayerSpacecraftBody;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.network.ServerBoundTimeWarpChange;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.SpaceObjRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 
@@ -23,9 +23,12 @@ public class CelestialStateSupplier {
     private PlayerSpacecraftBody playerData;
     private PlanetaryBody currentPlanetOn;
 
+    private Planets planets;
 
-    public CelestialStateSupplier(EntityBody playerDataFromServer) {
+    public CelestialStateSupplier(EntityBody playerDataFromServer, Planets planets) {
         playerData = new PlayerSpacecraftBody(playerDataFromServer);
+        this.planets = planets;
+        SpaceObjRenderer.PopulateRenderPlanets(planets);
     }
 
     public void UpdateState(double currentTime, double TimePassedPerSec){
@@ -47,11 +50,11 @@ public class CelestialStateSupplier {
         }
 
         clientSideTickTime = currentTime;
-        Planets.UpdatePlanets(clientSideSolarSystemTime);
+        planets.UpdatePlanets(clientSideSolarSystemTime);
 
-        Optional<PlanetaryBody> planetOptional = PlanetDimensions.getDimPlanet(Minecraft.getInstance().level.dimension());
-        if (planetOptional.isPresent()) {
-            currentPlanetOn = planetOptional.get();
+        String planetName = planets.getDimensionPlanet(Minecraft.getInstance().level.dimension());
+        if (planets.getAllPlanetNames().contains(planetName)) {
+            currentPlanetOn = planets.getPlanet(planetName);
             playerData.updatePlayerPosRot(Minecraft.getInstance().player, currentPlanetOn);
         }
     }
@@ -77,7 +80,7 @@ public class CelestialStateSupplier {
         if (mc.level == null) {
             return false;
         }
-        return PlanetDimensions.isDimensionPlanet(mc.level.dimension()) || PlanetDimensions.isDimensionSpace(mc.level.dimension());
+        return planets.isDimensionPlanet(mc.level.dimension()) || planets.isDimensionSpace(mc.level.dimension());
     }
 
 
@@ -95,7 +98,11 @@ public class CelestialStateSupplier {
         return currentPlanetOn != null;
     }
 
+    public Planets getPlanets() {
+        return planets;
+    }
+
     public boolean weInSpace() {
-        return PlanetDimensions.isDimensionSpace(Minecraft.getInstance().level.dimension());
+        return planets.isDimensionSpace(Minecraft.getInstance().level.dimension());
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModCreativeModeTab;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
+import com.nythicalnorm.nythicalSpaceProgram.commands.ModArguments;
 import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
@@ -13,6 +14,7 @@ import com.nythicalnorm.nythicalSpaceProgram.sound.ModSounds;
 import com.nythicalnorm.nythicalSpaceProgram.util.ModItemProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,6 +46,8 @@ public class NythicalSpaceProgram
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModArguments.register(modEventBus);
+
         MinecraftForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(this::commonSetup);
@@ -74,10 +78,10 @@ public class NythicalSpaceProgram
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
+    public void onServerAboutToStart(ServerAboutToStartEvent event)
     {
-        Planets.planetInit();
-        solarSystem = new SolarSystem(event.getServer());
+        Planets planets = new Planets(false);
+        solarSystem = new SolarSystem(event.getServer(), planets);
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
@@ -93,12 +97,15 @@ public class NythicalSpaceProgram
     }
 
     public static void startClient(EntityBody playerData) {
-        Planets.planetInit();
-        celestialStateSupplier = new CelestialStateSupplier(playerData);
+        Planets planets = new Planets(true);
+        celestialStateSupplier = new CelestialStateSupplier(playerData, planets);
     }
 
-    public static SolarSystem getSolarSystem() {
-        return solarSystem;
+    public static Optional<SolarSystem> getSolarSystem() {
+        if (solarSystem != null) {
+            return Optional.of(solarSystem);
+        }
+        return Optional.empty();
     }
 
     public static Optional<CelestialStateSupplier> getCelestialStateSupplier() {

@@ -25,7 +25,9 @@ public class ServerBoundTimeWarpChange {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_SERVER ) {
             NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> NythicalSpaceProgram.getSolarSystem().ChangeTimeWarp(ProposedSetTimeWarpSpeed, contextSupplier.get().getSender()));
+            NythicalSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
+                context.enqueueWork(() -> solarSystem.ChangeTimeWarp(ProposedSetTimeWarpSpeed, contextSupplier.get().getSender()));
+            });
             context.setPacketHandled(true);
         }
     }

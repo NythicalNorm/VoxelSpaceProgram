@@ -3,19 +3,21 @@ package com.nythicalnorm.nythicalSpaceProgram.util;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetDimensions;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelData;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelDataProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = NythicalSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -25,14 +27,17 @@ public class EntityGravityHandler {
     @SubscribeEvent
     public static void onFallDamage(LivingFallEvent event) {
         float fallDistance = event.getDistance();
-        Optional<Double> planetAcceleration = PlanetDimensions.getAccelerationDueToGravityAt(event.getEntity().level().dimension());
-        if (planetAcceleration.isPresent()) {
-            if (planetAcceleration.get() <= 0){
+        Level level = event.getEntity().level();
+
+        level.getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA).ifPresent(planetLevelData -> {
+            double planetAcceleration = planetLevelData.getAccelerationDueToGravity(NythicalSpaceProgram.getSolarSystem().get().getPlanets());
+
+            if (planetAcceleration <= 0){
                 event.setCanceled(true);
             }
-            double multfactor = ForgeMod.ENTITY_GRAVITY.get().getDefaultValue() / planetAcceleration.get();
+            double multfactor = ForgeMod.ENTITY_GRAVITY.get().getDefaultValue() / planetAcceleration;
             event.setDistance(fallDistance/(float) multfactor);
-        }
+        });
     }
 
     @SubscribeEvent // on the mod event bus
@@ -40,10 +45,14 @@ public class EntityGravityHandler {
         Entity entity = event.getEntity();
         if (entity instanceof LivingEntity) {
             AttributeMap entityAttributes = ((LivingEntity)entity).getAttributes();
-            Optional<Double> levelGravity = PlanetDimensions.getAccelerationDueToGravityAt(entity.level().dimension());
+            LazyOptional<PlanetLevelData> plntData = event.getLevel().getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA);
+
+            //Optional<Double> levelGravity = PlanetDimensions.getAccelerationDueToGravityAt(entity.level());
             double tempGravity = 0;
-            if (levelGravity.isPresent()) {
-                tempGravity = levelGravity.get();
+            boolean hasGravity = plntData.resolve().isPresent() && NythicalSpaceProgram.getSolarSystem().isPresent();
+
+            if (hasGravity) {
+                tempGravity = plntData.resolve().get().getAccelerationDueToGravity(NythicalSpaceProgram.getSolarSystem().get().getPlanets());
             }
 
             AttributeModifier gravityModifier = new AttributeModifier(gravityUUID, "NythicalSpaceProgram.PlanetGravity",
@@ -55,7 +64,7 @@ public class EntityGravityHandler {
                     ogModifier.put(ForgeMod.ENTITY_GRAVITY.get(), gravityModifier);
                     entityAttributes.removeAttributeModifiers(ogModifier);
                 }
-                if (levelGravity.isPresent()) {
+                if (hasGravity) {
                     entityAttributes.getInstance(ForgeMod.ENTITY_GRAVITY.get()).addTransientModifier(gravityModifier);
                 }
             }

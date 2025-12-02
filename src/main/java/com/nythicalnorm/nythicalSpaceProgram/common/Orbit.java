@@ -7,6 +7,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 public abstract class Orbit {
     public Vector3d relativeOrbitalPos;
@@ -14,7 +15,7 @@ public abstract class Orbit {
     public Quaternionf rotation;
     public OrbitalElements orbitalElements;
     public HashMap<String, Orbit> childElements;
-    boolean isStaleOrbit;
+    public boolean isStableOrbit;
 
     public Vector3d getRelativePos() {
         return new Vector3d(relativeOrbitalPos);
@@ -30,6 +31,20 @@ public abstract class Orbit {
 
     public abstract void simulatePropagate(double TimeElapsed, Vector3d parentPos, double parentMass);
 
+
+    public Orbit getOrbit(Stack<String> stack) {
+        if (!stack.isEmpty()) {
+            String key = stack.pop();
+            Orbit childElement = childElements.get(key);
+            if (childElement != null) {
+                return childElement.getOrbit(stack);
+            }
+            else {
+                return null;
+            }
+        }
+        return this;
+    }
 
     public CompoundTag saveNBT(CompoundTag nbt) {
         nbt.putDouble("NSP.AbsoluteOrbitalPosX", this.absoluteOrbitalPos.x);
