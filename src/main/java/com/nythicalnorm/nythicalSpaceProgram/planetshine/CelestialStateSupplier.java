@@ -21,6 +21,7 @@ public class CelestialStateSupplier {
     private double clientSideSolarSystemTime = 0;
     private long clientSideTickTime = 0L;
     public double lastUpdatedTimeWarpPerSec = 0;
+    private boolean isMapScreenOpen = false;
 
     private ClientPlayerSpacecraftBody playerData;
     private PlanetaryBody currentPlanetOn;
@@ -121,5 +122,13 @@ public class CelestialStateSupplier {
 
     public boolean weInSpace() {
         return planets.isDimensionSpace(Minecraft.getInstance().level.dimension());
+    }
+
+    public void setMapScreenOpen(boolean open) {
+        this.isMapScreenOpen = open;
+    }
+
+    public boolean isMapScreenOpen() {
+        return isMapScreenOpen;
     }
 }

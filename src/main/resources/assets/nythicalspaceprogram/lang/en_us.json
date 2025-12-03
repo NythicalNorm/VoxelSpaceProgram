@@ -12,6 +12,7 @@
   "key.category.nythicalspaceprogram.main": "Nythical Space Program",
   "key.nythicalspaceprogram.increase_time_warp": "Increase Time Warp Speed",
   "key.nythicalspaceprogram.decrease_time_warp": "Decrease Time Warp Speed",
+  "key.nythicalspaceprogram.open_solar_system_map": "Open Solar System Map",
 
   "nythicalspaceprogram.commands.dimTeleport": "Teleported to the Space Dimension",
   "nythicalspaceprogram.commands.planet_invalid": "Invalid Planet at: "

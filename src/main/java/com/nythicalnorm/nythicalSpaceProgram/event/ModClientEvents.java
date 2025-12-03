@@ -35,6 +35,7 @@ public class ModClientEvents {
     public static void OnKeyRegister (RegisterKeyMappingsEvent event) {
         event.register(KeyBindings.INC_TIME_WARP_KEY);
         event.register(KeyBindings.DEC_TIME_WARP_KEY);
+        event.register(KeyBindings.OPEN_SOLAR_SYSTEM_MAP_KEY);
     }
 
     @SubscribeEvent

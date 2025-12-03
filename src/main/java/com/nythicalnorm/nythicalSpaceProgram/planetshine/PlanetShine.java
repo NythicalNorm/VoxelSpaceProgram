@@ -58,6 +58,10 @@ public class PlanetShine {
         }
 
         css.UpdateOrbitalBodies();
+        if (css.isMapScreenOpen()) {
+            return;
+        }
+
         RenderSystem.depthMask(false);
 
         if (css.isOnPlanet()) {
@@ -84,15 +88,7 @@ public class PlanetShine {
         poseStack.popPose();
     }
 
-    public static void drawStarBuffer(PoseStack poseStack, Matrix4f projectionMatrix, CelestialStateSupplier css) {
-        float alpha = 1.0f;
-
-        if (css.isOnPlanet()) {
-            if (css.getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
-                alpha = 2*css.getPlayerData().getSunAngle();
-            }
-        }
-
+    public static void drawStarBuffer(PoseStack poseStack, Matrix4f projectionMatrix, float alpha) {
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         Star_Buffer.bind();

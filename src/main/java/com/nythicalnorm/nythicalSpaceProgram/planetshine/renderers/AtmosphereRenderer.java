@@ -89,7 +89,11 @@ public class AtmosphereRenderer {
             }
         }
         if (!alreadyRendered) {
-            render(null, 0, EmptySpaceAtmo, poseStack, projectionMatrix);
+            renderSpaceSky(poseStack, projectionMatrix);
         }
+    }
+
+    public static void renderSpaceSky(PoseStack poseStack, Matrix4f projectionMatrix) {
+        render(null, 0, EmptySpaceAtmo, poseStack, projectionMatrix);
     }
 }

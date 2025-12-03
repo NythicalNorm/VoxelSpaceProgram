@@ -37,21 +37,23 @@ public class PlanetRenderer {
         }
     }
 
-    public static void render(RenderableObjects obj, Optional<PlanetAtmosphere> atmosphere, PoseStack poseStack,
+    public static void render(RenderableObjects obj, boolean doPerspectiveShift, Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack,
                               Matrix4f projectionMatrix, double distance, float currentAlbedo) {
         poseStack.pushPose();
         Quaternionf planetRot =  obj.getBody().getRotation();
         RenderSystem.enableBlend();
 
-        if (atmosphere.isPresent()) {
+        if (currentPlanetAtmosphere.isPresent()) {
                 //AtmosphereRenderer.render(obj,atmosphere, poseStack, projectionMatrix, partialTick);
             PlanetAtmosphere bodyAtmos = obj.getBody().getAtmoshpere();
             float renderOpacity = (currentAlbedo * (bodyAtmos.getExposureNight() - bodyAtmos.getExposureDay())) + bodyAtmos.getExposureDay();
             RenderSystem.setShaderColor(1.0f,1.0f,1.0f,renderOpacity);
         }
 
-        SpaceObjRenderer.PerspectiveShift(distance, obj.getDifferenceVector(), planetRot,
-                obj.getBody().getRadius(), poseStack);
+        if (doPerspectiveShift) {
+            SpaceObjRenderer.PerspectiveShift(distance, obj.getDifferenceVector(), planetRot,
+                    obj.getBody().getRadius(), poseStack);
+        }
 
         QuadSphereModelGenerator.getSphereBuffer().bind();
         RenderSystem.setShaderTexture(0, obj.getBody().texture);

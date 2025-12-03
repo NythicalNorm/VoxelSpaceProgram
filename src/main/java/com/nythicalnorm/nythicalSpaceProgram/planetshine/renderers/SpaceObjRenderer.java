@@ -65,7 +65,15 @@ public class SpaceObjRenderer {
             AtmosphereRenderer.renderAtmospheres(renderPlanets, poseStack, projectionMatrix);
         }
 
-        PlanetShine.drawStarBuffer(poseStack, projectionMatrix, css);
+        float alpha = 1.0f;
+
+        if (css.isOnPlanet()) {
+            if (css.getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
+                alpha = 2*css.getPlayerData().getSunAngle();
+            }
+        }
+
+        PlanetShine.drawStarBuffer(poseStack, projectionMatrix, alpha);
 
         for (RenderableObjects plnt : renderPlanets) {
             double distance = plnt.getDistance();
@@ -74,7 +82,7 @@ public class SpaceObjRenderer {
                 continue;
             }
 
-            PlanetRenderer.render(plnt, atmosphere, poseStack, projectionMatrix, distance, currentAlbedo);
+            PlanetRenderer.render(plnt, true, atmosphere, poseStack, projectionMatrix, distance, currentAlbedo);
         }
     }
 
@@ -86,5 +94,9 @@ public class SpaceObjRenderer {
         poseStack.translate(PlanetPos.x,PlanetPos.y, PlanetPos.z);
         poseStack.scale(planetApparentSize, planetApparentSize, planetApparentSize);
         poseStack.mulPose(planetRot);
+    }
+
+    public static RenderableObjects[] getRenderPlanets() {
+        return renderPlanets;
     }
 }
