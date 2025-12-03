@@ -1,17 +1,20 @@
 package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
-import com.nythicalnorm.nythicalSpaceProgram.common.Orbit;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlayerSpacecraftBody;
+import com.nythicalnorm.nythicalSpaceProgram.dimensions.DimensionTeleporter;
+import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.*;
 import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundLoginSolarSystemState;
 import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundSpaceShipsPosUpdate;
+import com.nythicalnorm.nythicalSpaceProgram.network.ClientBoundTrackedOrbitUpdate;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
-import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import java.util.HashMap;
 import java.util.Optional;
@@ -21,9 +24,9 @@ public class SolarSystem {
     public double currentTime; // time passed since start in seconds
     public double timePassPerSecond;
     //public static double tickTimeStamp;
-    private MinecraftServer server;
+    private final MinecraftServer server;
     private HashMap<String, Stack<String>> allPlayerOrbitalAddresses;
-    private Planets planets;
+    private final Planets planets;
 
     public SolarSystem(MinecraftServer server, Planets pPlanets) {
         timePassPerSecond = 1;
@@ -32,8 +35,8 @@ public class SolarSystem {
         this.planets = pPlanets;
     }
 
-    public Optional<MinecraftServer> getServer() {
-        return Optional.of(server);
+    public MinecraftServer getServer() {
+        return server;
     }
 
     public Planets getPlanets() {
@@ -49,6 +52,10 @@ public class SolarSystem {
         PacketHandler.sendToAllClients(new ClientBoundSpaceShipsPosUpdate(currentTime,timePassPerSecond));
     }
 
+    public double getCurrentTime() {
+        return currentTime;
+    }
+
     public void ChangeTimeWarp(double proposedSetTimeWarpSpeed, ServerPlayer player) {
         if (player == null) {
             return;
@@ -58,27 +65,43 @@ public class SolarSystem {
     }
 
     public void playerJoined(Player entity) {
+        // this is not working check before making a saving system
         if (allPlayerOrbitalAddresses.containsKey(entity.getStringUUID())) {
-            Orbit obt = planets.getPlanet(allPlayerOrbitalAddresses.get(entity.getStringUUID()));
-            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState((EntityBody) obt), (ServerPlayer) entity);
+            PlanetaryBody obt = planets.getPlanet(allPlayerOrbitalAddresses.get(entity.getStringUUID()));
+            EntityOrbitalBody playerEntity = (EntityOrbitalBody)obt.getChild(entity.getStringUUID());
+            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(playerEntity), (ServerPlayer) entity);
         }
         else {
-            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(new PlayerSpacecraftBody()), (ServerPlayer) entity);
+            if (entity.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
+                ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
+                entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
+            }
+            PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(new ClientPlayerSpacecraftBody()), (ServerPlayer) entity);
         }
     }
 
+    // Called when the player changes SOIs or joins on orbit artificially like the teleport command
     public void playerJoinOrbit(String body, ServerPlayer player, OrbitalElements elements) {
-        Optional<Stack<String>> oldAddress = Optional.empty();
-
-        if (allPlayerOrbitalAddresses.containsKey(player.getStringUUID())) {
-            oldAddress = Optional.of(allPlayerOrbitalAddresses.get(player.getStringUUID()));
+        Stack<String> newAddress = planets.getPlanetAddress(body);
+        String PlayerUUid = player.getStringUUID();
+        if (player.level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
+            player.changeDimension(server.getLevel(SpaceDimension.SPACE_LEVEL_KEY), new DimensionTeleporter(new Vec3(0d, 128d, 0d)));
         }
-        ServerPlayerOrbitalData orbitData = new ServerPlayerOrbitalData(player, true, false, elements);
-        Stack<String> address = planets.getPlanetAddress(body);
-        allPlayerOrbitalAddresses.put(player.getStringUUID(), address);
-        Orbit newOrbitPlanet = planets.getPlanet(address);
-        if (newOrbitPlanet instanceof PlanetaryBody plnt) {
-            plnt.addChildSpacecraft(player.getStringUUID(), orbitData);
+
+        if (allPlayerOrbitalAddresses.containsKey(PlayerUUid)) {
+            Stack<String> oldAddress = allPlayerOrbitalAddresses.get(PlayerUUid);
+            planets.playerChangeOrbitalSOIs(PlayerUUid, oldAddress, newAddress, elements);
+            allPlayerOrbitalAddresses.remove(PlayerUUid);
+            PacketHandler.sendToPlayer(new ClientBoundTrackedOrbitUpdate(player, oldAddress, newAddress, elements), player);
+        }
+        else  {
+            Quaternionf playerRot = new Quaternionf();
+            ServerPlayerSpacecraftBody newOrbitalData = new ServerPlayerSpacecraftBody(player, true, true, playerRot, elements);
+            planets.playerJoinedOrbital(PlayerUUid, newAddress, newOrbitalData);
+            allPlayerOrbitalAddresses.put(PlayerUUid, newAddress);
+            PacketHandler.sendToPlayer(new ClientBoundTrackedOrbitUpdate(player, null, newAddress, elements), player);
         }
     }
+
+
 }

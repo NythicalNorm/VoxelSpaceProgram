@@ -1,10 +1,11 @@
-package com.nythicalnorm.nythicalSpaceProgram.planet;
+package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.common.Orbit;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.*;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelData;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelDataProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -66,6 +67,43 @@ public class Planets {
         return null;
     }
 
+    public Orbit getOrbit(Stack<String> address) {
+        Orbit orb = SURIYAN.getOrbit((Stack<String>)address.clone());
+        return (PlanetaryBody) orb;
+    }
+
+    //also called when someone joins an orbit
+    public void playerChangeOrbitalSOIs(String playerUUid, Stack<String> oldAddress, Stack<String> newAddress, OrbitalElements orbitalElementsNew) {
+        PlanetaryBody oldPlanet = null;
+
+        if  (oldAddress != null) {//(allPlayerOrbitalAddresses.containsKey(oldAddress.firstElement())) {
+            //copying the orbit so that new SOI has the same info
+            oldPlanet = (PlanetaryBody) getOrbit(oldAddress);
+            EntityOrbitalBody entitybody = (EntityOrbitalBody) oldPlanet.getChild(playerUUid);
+            entitybody.orbitalElements = orbitalElementsNew;
+
+            //removing the old reference to the object
+            oldPlanet.removeChild(playerUUid);
+
+            //adding to the new orbit
+            Orbit newOrbitPlanet = getPlanet(newAddress);
+            if (newOrbitPlanet instanceof PlanetaryBody plnt) {
+                plnt.addChildSpacecraft(playerUUid, entitybody);
+            }
+        } else {
+            NythicalSpaceProgram.logError("No Old Orbit given for changing SOIs");
+            return;
+        }
+    }
+
+    public void playerJoinedOrbital(String PlayerUUid, Stack<String> newAddress, EntityOrbitalBody OrbitalDataNew) {
+        Orbit newOrbitPlanet = getPlanet(newAddress);
+
+        if (newOrbitPlanet instanceof PlanetaryBody plnt) {
+            plnt.addChildSpacecraft(PlayerUUid, OrbitalDataNew);
+        }
+    }
+
     public Set<String> getAllPlanetNames() {
         return allPlanetsAddresses.keySet();
     }
@@ -95,7 +133,7 @@ public class Planets {
             if (level == null || NythicalSpaceProgram.getSolarSystem().isEmpty()) {
                 continue;
             }
-            Level currentLevel = NythicalSpaceProgram.getSolarSystem().get().getServer().get().getLevel(level);
+            Level currentLevel = NythicalSpaceProgram.getSolarSystem().get().getServer().getLevel(level);
             if (currentLevel != null) {
                 if (currentLevel.dimensionType() == dim) {
                     return NythicalSpaceProgram.getSolarSystem().get().getPlanets().getPlanet((planetDimensions.get(level)));

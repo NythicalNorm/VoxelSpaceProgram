@@ -1,6 +1,7 @@
 package com.nythicalnorm.nythicalSpaceProgram.dimensions;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
@@ -28,6 +29,11 @@ public class DimensionTeleporter implements ITeleporter {
 //
 //        return entity;
 //    }
+
+    @Override
+    public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
+        return false;
+    }
 
     @Override
     public @Nullable PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {

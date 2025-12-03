@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.RenderableObjects;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
 import net.minecraft.client.renderer.ShaderInstance;

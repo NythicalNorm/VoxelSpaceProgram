@@ -1,6 +1,6 @@
-package com.nythicalnorm.nythicalSpaceProgram.common;
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
+import com.nythicalnorm.nythicalSpaceProgram.network.NetworkEncoders;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.joml.Quaternionf;
@@ -46,6 +46,14 @@ public abstract class Orbit {
         return this;
     }
 
+    public Orbit getChild(String name) {
+        return childElements.get(name) ;
+    }
+
+    public void setOrbitalElements(OrbitalElements orbitalElements) {
+        this.orbitalElements = orbitalElements;
+    }
+
     public CompoundTag saveNBT(CompoundTag nbt) {
         nbt.putDouble("NSP.AbsoluteOrbitalPosX", this.absoluteOrbitalPos.x);
         nbt.putDouble("NSP.AbsoluteOrbitalPosY", this.absoluteOrbitalPos.y);
@@ -87,6 +95,8 @@ public abstract class Orbit {
         buffer.writeFloat(this.rotation.y);
         buffer.writeFloat(this.rotation.z);
         buffer.writeFloat(this.rotation.w);
+
+        NetworkEncoders.writeOrbitalElements(buffer, this.orbitalElements);
     }
 
     public void decode (FriendlyByteBuf buffer) {
@@ -102,5 +112,7 @@ public abstract class Orbit {
         this.rotation.y = buffer.readFloat();
         this.rotation.z = buffer.readFloat();
         this.rotation.w = buffer.readFloat();
+
+        this.orbitalElements = NetworkEncoders.readOrbitalElements(buffer);
     }
 }

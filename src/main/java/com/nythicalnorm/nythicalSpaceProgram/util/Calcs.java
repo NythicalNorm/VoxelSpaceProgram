@@ -1,6 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.util;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;

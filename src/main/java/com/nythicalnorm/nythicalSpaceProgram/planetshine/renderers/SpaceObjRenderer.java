@@ -2,8 +2,8 @@ package com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers;
 
 import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
-import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetShine;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.RenderableObjects;

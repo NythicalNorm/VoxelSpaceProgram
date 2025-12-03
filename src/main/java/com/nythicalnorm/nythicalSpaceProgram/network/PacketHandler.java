@@ -3,7 +3,6 @@ package com.nythicalnorm.nythicalSpaceProgram.network;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -18,19 +17,27 @@ public class PacketHandler {
     );
 
     public static void register() {
-        INSTANCE.messageBuilder(ClientBoundLoginSolarSystemState.class, NetworkDirection.LOGIN_TO_CLIENT.ordinal())
+        int id = 500;
+
+        INSTANCE.messageBuilder(ClientBoundLoginSolarSystemState.class, ++id)
                 .encoder(ClientBoundLoginSolarSystemState::encode)
                 .decoder(ClientBoundLoginSolarSystemState::new)
                 .consumerMainThread(ClientBoundLoginSolarSystemState::handle)
                 .add();
 
-        INSTANCE.messageBuilder(ClientBoundSpaceShipsPosUpdate.class, NetworkDirection.PLAY_TO_CLIENT.ordinal())
+        INSTANCE.messageBuilder(ClientBoundSpaceShipsPosUpdate.class, ++id)
                 .encoder(ClientBoundSpaceShipsPosUpdate::encode)
                 .decoder(ClientBoundSpaceShipsPosUpdate::new)
                 .consumerMainThread(ClientBoundSpaceShipsPosUpdate::handle)
                 .add();
 
-        INSTANCE.messageBuilder(ServerBoundTimeWarpChange.class, NetworkDirection.PLAY_TO_SERVER.ordinal())
+        INSTANCE.messageBuilder(ClientBoundTrackedOrbitUpdate.class, ++id)
+                .encoder(ClientBoundTrackedOrbitUpdate::encode)
+                .decoder(ClientBoundTrackedOrbitUpdate::new)
+                .consumerMainThread(ClientBoundTrackedOrbitUpdate::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ServerBoundTimeWarpChange.class, ++id)
                 .encoder(ServerBoundTimeWarpChange::encode)
                 .decoder(ServerBoundTimeWarpChange::new)
                 .consumerMainThread(ServerBoundTimeWarpChange::handle)

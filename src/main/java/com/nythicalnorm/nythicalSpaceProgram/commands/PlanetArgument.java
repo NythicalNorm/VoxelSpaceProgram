@@ -9,8 +9,6 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.planet.Planets;
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.SolarSystem;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -42,13 +40,17 @@ public class PlanetArgument implements ArgumentType<String> {
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         String parsedBody = null;
-
-        if(NythicalSpaceProgram.getSolarSystem().isPresent()) {
-            if (reader.canRead()) {
-                String planetName = reader.readString();
-                    if (!planetName.isEmpty() && NythicalSpaceProgram.getCelestialStateSupplier().get().getPlanets().getPlanet(planetName) != null) {
-                        parsedBody = planetName;
-                    }
+        if (reader.canRead()) {
+            String planetName = reader.readString();
+            if (NythicalSpaceProgram.getCelestialStateSupplier().isPresent()) {
+                if (!planetName.isEmpty() && NythicalSpaceProgram.getCelestialStateSupplier().get().getPlanets().getPlanet(planetName) != null) {
+                    parsedBody = planetName;
+                }
+            }
+            else if (NythicalSpaceProgram.getSolarSystem().isPresent()) {
+                if (!planetName.isEmpty() && NythicalSpaceProgram.getSolarSystem().get().getPlanets().getPlanet(planetName) != null) {
+                    parsedBody = planetName;
+                }
             }
         }
         if (parsedBody == null) {

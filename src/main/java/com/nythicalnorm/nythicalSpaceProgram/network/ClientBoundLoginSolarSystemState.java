@@ -1,8 +1,8 @@
 package com.nythicalnorm.nythicalSpaceProgram.network;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlayerSpacecraftBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.EntityOrbitalBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.ClientPlayerSpacecraftBody;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -10,14 +10,14 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class ClientBoundLoginSolarSystemState {
-    private final PlayerSpacecraftBody playerData;
+    private final ClientPlayerSpacecraftBody playerData;
 
-    public ClientBoundLoginSolarSystemState(EntityBody playerData) {
-        this.playerData = new PlayerSpacecraftBody(playerData);
+    public ClientBoundLoginSolarSystemState(EntityOrbitalBody playerData) {
+        this.playerData = new ClientPlayerSpacecraftBody(playerData);
     }
 
     public ClientBoundLoginSolarSystemState(FriendlyByteBuf friendlyByteBuf) {
-        this.playerData = new PlayerSpacecraftBody();
+        this.playerData = new ClientPlayerSpacecraftBody();
         playerData.decode(friendlyByteBuf);
     }
 

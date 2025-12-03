@@ -1,4 +1,4 @@
-package com.nythicalnorm.nythicalSpaceProgram.mixin;
+package com.nythicalnorm.nythicalSpaceProgram.mixin.daynightcycle;
 
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;

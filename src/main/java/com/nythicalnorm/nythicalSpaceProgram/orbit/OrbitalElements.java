@@ -1,4 +1,4 @@
-package com.nythicalnorm.nythicalSpaceProgram.solarsystem;
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
 import org.joml.Vector3d;
 
@@ -34,11 +34,17 @@ public class OrbitalElements {
         double e = this.Eccentricity;
         //double p = this.LongitudeOfPeriapsis;
 
-        //double M = L - p; // Calculates Mean Anomally i think
+        //temp halting check
+        if (e >= 1) {
+            e = 1d - Double.MIN_VALUE;
+        }
+
+        //double M = L - p; // Calculates Mean Anomaly i think
         // Calculating Mean Anamoly
         double M = this.MeanAngularMotion*(timeElapsed - this.StartingAnamoly);
         //double w = p - W; //This calcultes Argument of periapsis
 
+        //Eccentric anomaly
         double E = M;
         while (true)
         {

@@ -3,13 +3,13 @@ package com.nythicalnorm.nythicalSpaceProgram.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
 import com.nythicalnorm.nythicalSpaceProgram.dimensions.DimensionTeleporter;
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.OrbitalElements;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -31,7 +31,7 @@ public class NSPTeleportCommand {
             .then(Commands.argument("targets", EntityArgument.entities())
                 .then(Commands.argument("planets", PlanetArgument.planetArgument())
                     .then(Commands.argument("orbit", Vec3Argument.vec3()).executes((stack) -> {
-                        return TeleportToOrbit(stack.getSource(), Collections.singleton(stack.getSource().getEntityOrException()), stack.getArgument("planets", String.class), stack.getSource().getPosition());
+                        return TeleportToOrbit(stack.getSource(), Collections.singleton(stack.getSource().getEntityOrException()), stack.getArgument("planets", String.class), Vec3Argument.getCoordinates(stack, "orbit"));
                     })
                     )
                 )
@@ -39,11 +39,14 @@ public class NSPTeleportCommand {
         );
     }
 
-    private int TeleportToOrbit(CommandSourceStack pSource, Collection<? extends Entity> pTargets, String body, Vec3 pos) {
+    private int TeleportToOrbit(CommandSourceStack pSource, Collection<? extends Entity> pTargets, String body, Coordinates pos) {
+        Vec3 orbitalValues = pos.getPosition(pSource);
+
         for(Entity entity : pTargets) {
             if (entity instanceof ServerPlayer) {
                 if (NythicalSpaceProgram.getSolarSystem().isPresent()) {
-                    OrbitalElements orbitalElement = new OrbitalElements(pos.x, 0d, pos.y, pos.z, 0f, 0f);
+                    double semiMajorAxis = (orbitalValues.x*1000d) + NythicalSpaceProgram.getSolarSystem().get().getPlanets().getPlanet(body).getRadius();
+                    OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, orbitalValues.y,  orbitalValues.z, 0d, 0d, 0d);
                     NythicalSpaceProgram.getSolarSystem().get().playerJoinOrbit(body, (ServerPlayer) entity, orbitalElement);
                 }
             }

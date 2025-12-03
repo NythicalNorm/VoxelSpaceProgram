@@ -3,6 +3,7 @@ package com.nythicalnorm.nythicalSpaceProgram.util;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
+import com.nythicalnorm.nythicalSpaceProgram.dimensions.SpaceDimension;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelData;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetLevelDataProvider;
 import net.minecraft.world.entity.Entity;
@@ -38,6 +39,10 @@ public class EntityGravityHandler {
             double multfactor = ForgeMod.ENTITY_GRAVITY.get().getDefaultValue() / planetAcceleration;
             event.setDistance(fallDistance/(float) multfactor);
         });
+
+        if (level.dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
+            event.setDistance(0);
+        }
     }
 
     @SubscribeEvent // on the mod event bus
@@ -49,9 +54,9 @@ public class EntityGravityHandler {
 
             //Optional<Double> levelGravity = PlanetDimensions.getAccelerationDueToGravityAt(entity.level());
             double tempGravity = 0;
-            boolean hasGravity = plntData.resolve().isPresent() && NythicalSpaceProgram.getSolarSystem().isPresent();
+            boolean applyGravityModifier = (plntData.resolve().isPresent() && NythicalSpaceProgram.getSolarSystem().isPresent());
 
-            if (hasGravity) {
+            if (applyGravityModifier) {
                 tempGravity = plntData.resolve().get().getAccelerationDueToGravity(NythicalSpaceProgram.getSolarSystem().get().getPlanets());
             }
 
@@ -64,7 +69,8 @@ public class EntityGravityHandler {
                     ogModifier.put(ForgeMod.ENTITY_GRAVITY.get(), gravityModifier);
                     entityAttributes.removeAttributeModifiers(ogModifier);
                 }
-                if (hasGravity) {
+
+                if (applyGravityModifier || event.getLevel().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
                     entityAttributes.getInstance(ForgeMod.ENTITY_GRAVITY.get()).addTransientModifier(gravityModifier);
                 }
             }

@@ -8,13 +8,13 @@
   },
   "client": [
     "LevelRendererMixin",
-    "DimensionSpecialEffectsMixin",
-    "LevelTimeAccessMixin",
-    "LevelReaderMixin"
+    "daynightcycle.DimensionSpecialEffectsMixin"
   ],
 
-  "server": [
-    "LevelTimeAccessMixin",
-    "LevelReaderMixin"
+  "mixins": [
+    "daynightcycle.WorldGenRegionMixin",
+    "daynightcycle.LevelMixin",
+    "daynightcycle.LevelReaderMixin",
+    "daynightcycle.LevelTimeAccessMixin"
   ]
 }

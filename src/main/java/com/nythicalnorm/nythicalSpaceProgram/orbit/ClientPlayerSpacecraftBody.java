@@ -1,4 +1,4 @@
-package com.nythicalnorm.nythicalSpaceProgram.common;
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
 import com.nythicalnorm.nythicalSpaceProgram.util.Calcs;
 import com.nythicalnorm.nythicalSpaceProgram.util.DayNightCycleHandler;
@@ -10,19 +10,21 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public class PlayerSpacecraftBody extends EntityBody {
+public class ClientPlayerSpacecraftBody extends EntityOrbitalBody {
     private float sunAngle = 0f;
 
-    public PlayerSpacecraftBody() {
+    public ClientPlayerSpacecraftBody() {
         absoluteOrbitalPos = new Vector3d();
         relativeOrbitalPos = new Vector3d();
         rotation = new Quaternionf();
+        orbitalElements = new OrbitalElements(0f,0f, 0f, 0f, 0f, 0f);
     }
 
-    public PlayerSpacecraftBody(EntityBody playerData) {
+    public ClientPlayerSpacecraftBody(EntityOrbitalBody playerData) {
         absoluteOrbitalPos = playerData.absoluteOrbitalPos;
         relativeOrbitalPos = playerData.relativeOrbitalPos;
         rotation = playerData.getRotation();
+        orbitalElements = playerData.orbitalElements;
     }
 
     public void updatePlayerPosRot(Player player, PlanetaryBody currentPlanetOn) {

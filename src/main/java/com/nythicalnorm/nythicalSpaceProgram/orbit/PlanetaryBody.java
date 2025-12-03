@@ -1,12 +1,8 @@
 
-package com.nythicalnorm.nythicalSpaceProgram.common;
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.OrbitalElements;
-import com.nythicalnorm.nythicalSpaceProgram.solarsystem.ServerPlayerOrbitalData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
@@ -91,12 +87,19 @@ public class PlanetaryBody extends Orbit {
         }
     }
 
-    public void addChildSpacecraft(String key, EntityBody orbitData) {
+    public void addChildSpacecraft(String key, EntityOrbitalBody orbitData) {
         this.childElements.put(key ,orbitData);
     }
 
+    public void removeChild(String oldAddress) {
+        this.childElements.remove(oldAddress);
+    }
     public double getRadius(){
         return radius;
+    }
+
+    public float getRotationPeriod() {
+        return RotationPeriod;
     }
 
     public PlanetAtmosphere getAtmoshpere() {

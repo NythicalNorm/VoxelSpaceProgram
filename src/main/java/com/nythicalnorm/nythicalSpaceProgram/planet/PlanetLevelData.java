@@ -1,14 +1,12 @@
 package com.nythicalnorm.nythicalSpaceProgram.planet;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.solarsystem.Planets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.Stack;
 
 public class PlanetLevelData {
     private String planetName;
@@ -45,16 +43,16 @@ public class PlanetLevelData {
     public void loadNBT(CompoundTag nbt) {
         this.planetName = nbt.getString("NSP.planetName");
     }
-
-    public void copyFrom(@NotNull PlanetLevelData oldStore) {
-        planetName = oldStore.planetName;
-    }
-
-    public void encode (FriendlyByteBuf buffer) {
-        buffer.writeUtf (this.planetName);
-    }
-
-    public void decode (FriendlyByteBuf buffer) {
-        this.planetName = buffer.readUtf();
-    }
+//
+//    public void copyFrom(@NotNull PlanetLevelData oldStore) {
+//        planetName = oldStore.planetName;
+//    }
+//
+//    public void encode (FriendlyByteBuf buffer) {
+//        buffer.writeUtf (this.planetName);
+//    }
+//
+//    public void decode (FriendlyByteBuf buffer) {
+//        this.planetName = buffer.readUtf();
+//    }
 }

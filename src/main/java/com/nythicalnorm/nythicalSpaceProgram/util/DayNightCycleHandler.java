@@ -1,7 +1,7 @@
 package com.nythicalnorm.nythicalSpaceProgram.util;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -45,7 +45,7 @@ public class DayNightCycleHandler {
         Optional<PlanetaryBody> planet =  NythicalSpaceProgram.getSolarSystem().get().getPlanets().getDimPlanet(level);
         if (planet.isPresent()) {
             PlanetaryBody plnt = planet.get();
-            Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), false);
+            Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), true);
             Vector3d planetAbsolutePos = plnt.getAbsolutePos().add(blockPosOnPlanet);
             return Optional.of(getSunAngle(blockPosOnPlanet, planetAbsolutePos));
         }
@@ -96,5 +96,38 @@ public class DayNightCycleHandler {
         spawnLocation.rotate(new Quaterniond(planetRot.x, planetRot.y,planetRot.z, planetRot.w));
         Vector3d planetAbsolutePos = planetaryBody.getAbsolutePos().add(spawnLocation);
         return getSunAngle(spawnLocation, planetAbsolutePos);
+    }
+
+
+    // this will not work when the starting earth rotation at time 0 is different that it is now
+    // reference: https://stackoverflow.com/questions/5188561/signed-angle-between-two-3d-vectors-with-same-origin-within-the-same-plane
+    public static Optional<Long> getDayTime(BlockPos pos, PlanetaryBody plnt, double TimeElapsed) {
+        Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), true);
+        blockPosOnPlanet.normalize();
+        Vector3d planetAbsolutePos = plnt.getAbsolutePos().add(blockPosOnPlanet);
+        float signedAngle = getSunAngle(blockPosOnPlanet, planetAbsolutePos);
+
+//        Vector3d crossProduct = planetAbsolutePos.cross(blockPosOnPlanet);
+//        Vector3d Vn = new Vector3d(0,-1,0);
+//
+//        if (crossProduct.dot(Vn) < 0) {
+//            signedAngle = -signedAngle;
+//        }
+//
+//        if (signedAngle < 0f) {
+//            signedAngle = 1 - signedAngle;
+//        }
+//
+//        signedAngle += 0.25f;
+//
+//        double timeNormalized = signedAngle + (TimeElapsed+Math.sin(plnt.getNorthPoleDir().angle))/plnt.getRotationPeriod();
+//        timeNormalized = timeNormalized * 24000d;
+//
+//        if (timeNormalized < 0) {
+//            timeNormalized = timeNormalized + 24000d;
+//        }
+        double extraTime = TimeElapsed/plnt.getRotationPeriod();
+        float normalTime = 6000f + ((signedAngle*2)*12000f) + (float) Math.floor(extraTime)*24000f;
+        return Optional.of((long) normalTime);
     }
 }

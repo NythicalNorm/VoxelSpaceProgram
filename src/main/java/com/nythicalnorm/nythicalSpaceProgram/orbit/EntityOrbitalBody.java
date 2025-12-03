@@ -1,13 +1,14 @@
-package com.nythicalnorm.nythicalSpaceProgram.common;
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
 import org.joml.Vector3d;
 
-public abstract class EntityBody extends Orbit {
+public abstract class EntityOrbitalBody extends Orbit {
 
     public void simulatePropagate(double TimeElapsed, Vector3d parentPos, double mass) {
         orbitalElements.setOrbitalPeriod(mass);
         relativeOrbitalPos = orbitalElements.ToCartesian(TimeElapsed);
-        absoluteOrbitalPos = parentPos.add(relativeOrbitalPos);
+        Vector3d newAbs = new Vector3d(parentPos);
+        absoluteOrbitalPos = newAbs.add(relativeOrbitalPos);
     }
 
     public boolean isInOrbit() {

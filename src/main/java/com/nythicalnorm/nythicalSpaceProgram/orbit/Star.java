@@ -1,10 +1,7 @@
-package com.nythicalnorm.nythicalSpaceProgram.planet;
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
-import com.nythicalnorm.nythicalSpaceProgram.common.EntityBody;
-import com.nythicalnorm.nythicalSpaceProgram.common.Orbit;
-import com.nythicalnorm.nythicalSpaceProgram.common.PlanetaryBody;
+import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
