@@ -2,6 +2,7 @@ package com.nythicalnorm.nythicalSpaceProgram.Item;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
+import com.nythicalnorm.nythicalSpaceProgram.fluid.ModFluids;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,8 +21,15 @@ public class ModCreativeModeTab {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.HANDHELD_PROPELLER.get());
                         output.accept(ModItems.MAGNET_BOOTS.get());
+                        output.accept(ModItems.MAGNETIZED_IRON_INGOT.get());
+
                         output.accept(ModBlocks.OXYGEN_PROPELLANT_TANK.get());
+                        output.accept(ModBlocks.MAGNETIZED_IRON_BLOCK.get());
                         output.accept(ModBlocks.LUNAR_REGOLITH.get());
+                        output.accept(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get());
+                        output.accept(ModBlocks.MAGNETIZER.get());
+
+                        output.accept(ModFluids.LIQUID_OXYGEN.fluidContainer.get());
                     })
                     .build());
 

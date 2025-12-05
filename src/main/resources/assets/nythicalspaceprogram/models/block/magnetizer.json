@@ -1,0 +1,30 @@
+{
+  "parent": "nythicalspaceprogram:block/magnetizer_without_magnet",
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "nythicalspaceprogram:block/magnetizer_without_magnet"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    },
+    "ground": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    },
+    "fixed": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    },
+    "thirdperson_righthand": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    },
+    "thirdperson_lefthand": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    },
+    "firstperson_righthand": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    },
+    "firstperson_lefthand": {
+      "parent": "nythicalspaceprogram:block/magnetizer_with_magnet"
+    }
+  }
+}

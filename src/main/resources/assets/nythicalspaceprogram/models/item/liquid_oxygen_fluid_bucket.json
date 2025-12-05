@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "nythicalspaceprogram:item/liquid_oxygen_drip_bucket"
+  }
+}

@@ -4,12 +4,17 @@ import com.mojang.logging.LogUtils;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModCreativeModeTab;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
+import com.nythicalnorm.nythicalSpaceProgram.block.entity.ModBlockEntities;
+import com.nythicalnorm.nythicalSpaceProgram.fluid.ModFluids;
+import com.nythicalnorm.nythicalSpaceProgram.recipe.ModRecipes;
+import com.nythicalnorm.nythicalSpaceProgram.screen.CryogenicAirSeparatorScreen;
+import com.nythicalnorm.nythicalSpaceProgram.screen.MagnetizerScreen;
+import com.nythicalnorm.nythicalSpaceProgram.screen.ModMenuTypes;
 import com.nythicalnorm.nythicalSpaceProgram.sound.ModSounds;
 import com.nythicalnorm.nythicalSpaceProgram.util.ModItemProperties;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +31,7 @@ public class NythicalSpaceProgram
     // Define mod id in a common place for everything to reference
     public static final String MODID = "nythicalspaceprogram";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public NythicalSpaceProgram(FMLJavaModLoadingContext context)
     {
@@ -35,6 +40,12 @@ public class NythicalSpaceProgram
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
+        ModFluids.FLUID_TYPES.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
+
         MinecraftForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(this::commonSetup);
@@ -48,16 +59,6 @@ public class NythicalSpaceProgram
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
-    }
-
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS)
-        {
-            event.accept(ModItems.HANDHELD_PROPELLER);
-            event.accept(ModItems.MAGNET_BOOTS);
-        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -76,6 +77,9 @@ public class NythicalSpaceProgram
         {
             // Some client setup code
             ModItemProperties.addCustomItemProperties();
+
+            MenuScreens.register(ModMenuTypes.MAGNETIZER_MENU.get(), MagnetizerScreen::new);
+            MenuScreens.register(ModMenuTypes.CRYOGENIC_AIR_SEPARATOR_MENU.get(), CryogenicAirSeparatorScreen::new);
         }
     }
 }

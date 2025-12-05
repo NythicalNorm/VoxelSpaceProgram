@@ -17,8 +17,8 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         item3dOnlyinHand(ModItems.HANDHELD_PROPELLER);
-
         simpleItem(ModItems.MAGNET_BOOTS);
+        simpleItem(ModItems.MAGNETIZED_IRON_INGOT);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

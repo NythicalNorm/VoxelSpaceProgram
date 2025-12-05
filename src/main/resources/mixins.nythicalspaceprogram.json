@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_17",
+  "package": "com.nythicalnorm.nythicalSpaceProgram.mixin",
+  "refmap": "mixins.nythicalspaceprogram.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
