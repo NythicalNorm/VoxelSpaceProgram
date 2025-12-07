@@ -36,12 +36,16 @@ public class PlanetaryBody extends Orbit {
         this.NorthPoleDir = new AxisAngle4f(startingRot, normalizedNorthPoleDir);
         relativeOrbitalPos = new Vector3d(0d, 0d, 0d);
         absoluteOrbitalPos = new Vector3d(0d, 0d, 0d);
+        relativeVelocity = new Vector3d(0d, 0d, 0d);
         rotation = new Quaternionf();
     }
 
     private void simulate(double TimeElapsed, Vector3d parentPos) {
         if (orbitalElements != null) {
-            this.relativeOrbitalPos = orbitalElements.ToCartesian(TimeElapsed);
+            Vector3d[] stateVectors = orbitalElements.ToCartesian(TimeElapsed);
+            this.relativeOrbitalPos = stateVectors[0];
+            this.relativeVelocity = stateVectors[1];
+
             Vector3d newAbs = new Vector3d(parentPos);
             this.absoluteOrbitalPos = newAbs.add(relativeOrbitalPos);
 

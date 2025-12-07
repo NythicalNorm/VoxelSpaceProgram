@@ -11,6 +11,7 @@ import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.PlanetRendere
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.SpaceObjRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.*;
 
@@ -20,6 +21,7 @@ public class MapRenderer {
     Quaternionf currentRotation;
     private static final float SCALE_FACTOR = 1/1000000000f;
     private static VertexBuffer playerHeadBillBoard;
+    private static VertexBuffer arrow = new VertexBuffer(VertexBuffer.Usage.DYNAMIC);
 
     public static void initModel() {
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
@@ -53,8 +55,8 @@ public class MapRenderer {
             } else if (currentFocus.hasChild(plnt.getBody())) {
                 renderPlanetAt(toMapCoordinate(plnt.getBody().getRelativePos()), plnt, poseStack, projectionMatrix);
             } else {
-                Vector3d differenceVector = currentFocus.getAbsolutePos() ;
-                differenceVector.sub(plnt.getBody().getAbsolutePos());
+                Vector3d differenceVector = plnt.getBody().getAbsolutePos();
+                differenceVector.sub(currentFocus.getAbsolutePos());
 
                 renderPlanetAt(toMapCoordinate(differenceVector), plnt, poseStack, projectionMatrix);
             }
@@ -70,12 +72,31 @@ public class MapRenderer {
         poseStack.pushPose();
         poseStack.translate(mapCoordinate.x, mapCoordinate.y, mapCoordinate.z);
 
+        //test Velocity Lines
+        drawDebugLines(plnt.getBody().getRelativeVelocity().normalize(), poseStack, projectionMatrix);
+
         float PlanetSize = (float) (2f*SCALE_FACTOR*plnt.getBody().getRadius());
         poseStack.scale(PlanetSize, PlanetSize, PlanetSize);
         poseStack.mulPose(plnt.getBody().getRotation());
 
         PlanetRenderer.render(plnt,false, Optional.empty(), poseStack, projectionMatrix, 0, 1.0f);
         poseStack.popPose();
+    }
+
+    //draw test lines
+    private static void drawDebugLines(Vector3d dir, PoseStack pose, Matrix4f projectionMatrix) {
+        Vector3f smallDir = new Vector3f((float) dir.x,(float) dir.y,(float) dir.z);
+        smallDir.mul(0.1f);
+
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        bufferbuilder.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        bufferbuilder.vertex(0f,0f,0f).color(255,0,0,255).endVertex();
+        bufferbuilder.vertex(smallDir.x,smallDir.y,smallDir.z).color(255,0,0,255).endVertex();
+        arrow.bind();
+        arrow.upload(bufferbuilder.end());
+        arrow.drawWithShader(pose.last().pose(), projectionMatrix, GameRenderer.getPositionColorShader());
+        VertexBuffer.unbind();
     }
 
     private static void renderPlayerHeadOnPlanet(Vector3f PlayerRelativePos, Vector3f cameraPos, PoseStack poseStack, Matrix4f projectionMatrix) {

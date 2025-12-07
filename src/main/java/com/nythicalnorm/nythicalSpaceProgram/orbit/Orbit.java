@@ -12,6 +12,7 @@ import java.util.Stack;
 public abstract class Orbit {
     protected Vector3d relativeOrbitalPos;
     protected Vector3d absoluteOrbitalPos;
+    protected Vector3d relativeVelocity;
     protected Quaternionf rotation;
     protected OrbitalElements orbitalElements;
     protected HashMap<String, Orbit> childElements;
@@ -23,6 +24,10 @@ public abstract class Orbit {
 
     public Vector3d getAbsolutePos() {
         return new Vector3d(absoluteOrbitalPos);
+    }
+
+    public Vector3d getRelativeVelocity() {
+        return new Vector3d(relativeVelocity);
     }
 
     public Quaternionf getRotation() {
