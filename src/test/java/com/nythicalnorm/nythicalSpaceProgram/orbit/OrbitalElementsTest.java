@@ -79,8 +79,8 @@ class OrbitalElementsTest {
     @Test
     void HyperbolicOrbitTest() {
         long currentnanotime = System.nanoTime();
-        Vector3d position = new Vector3d(6871000,50,5);
-        Vector3d velocity = new Vector3d(5, 5, 12000);
+        Vector3d position = new Vector3d(6871000,0,0);
+        Vector3d velocity = new Vector3d(0, 0, 7700);
 
         OrbitalElements orbitFromState = new OrbitalElements(position, velocity, 0, 5.972E24);
         System.out.println("--------------- Original ---------------");
@@ -94,6 +94,8 @@ class OrbitalElementsTest {
             Vector3d[] stateVectors = orbitFromState.ToCartesian(time);
             Vector3d pos = stateVectors[0];
             Vector3d vel = stateVectors[1];
+
+            //orbitFromState.fromCartesian(pos, vel, time);
 
             System.out.println("---------------" + time + "---------------");
             System.out.println("posX: " + pos.x + " posY: " + pos.y + " posZ: " + pos.z);

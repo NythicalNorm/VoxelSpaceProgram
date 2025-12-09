@@ -55,7 +55,7 @@ public class OrbitalElements {
 
         if (e < 1 && e > 0) { // Eccentric Anomoly
             //newton-ralphson method Ei+1 = -E(i)/ E'(i)
-            for (int iter = 0; iter < 20; iter++) {
+            for (int iter = 0; iter < 100; iter++) {
                 double Eiplus1 = (Anomaly - e * Math.sin(Anomaly) - M) /  // E(i+1) = (E - e*sin(E))/(1-e*cos(E))
                         (1 - e * Math.cos(Anomaly));
                 Anomaly -= Eiplus1;
@@ -63,14 +63,21 @@ public class OrbitalElements {
                 if (Math.abs(Eiplus1) < 1e-15)
                     break;
             }
-        } else if (e > 1) { // Hyperbolic Anomoly
-            for (int iter = 0; iter < 36; iter++) {
-                double Hiplus1 = (M - (e * Math.sinh(Anomaly)) + Anomaly) /  // E(i+1) = (E - e*sin(E))/(1-e*cos(E))
-                        (e * Math.cosh(Anomaly) - 1);
-                Anomaly += Hiplus1;
+        } else if (e > 1) {
+            // better initial guess: https://arxiv.org/html/2411.15374v1#S4.F2
+            if (M != 0) {
+                Anomaly = Math.log((2*M) / (e+1.8));
+            }
 
-                if (Math.abs(Hiplus1) < 1e-15)
+            // Hyperbolic Anomoly
+            for (int iter = 0; iter < 512; iter++) {
+                double Hiplus1 = ((e * Math.sinh(Anomaly)) - Anomaly - M) / ((e * Math.cosh(Anomaly)) - 1);
+                Anomaly -= Hiplus1;
+
+                if (Math.abs(Hiplus1) < 1e-15 || Double.isNaN(Anomaly)) {
+                    //System.out.println("Iter: " + iter);
                     break;
+                }
             }
         } else {
             NythicalSpaceProgram.logError("we have an unhandled orbit on our hands");
@@ -80,6 +87,7 @@ public class OrbitalElements {
 
         double sinAnomaly =  (e < 1) ? Math.sin(Anomaly) : Math.sinh(Anomaly);
         double cosAnomaly =  (e < 1) ?  org.joml.Math.cosFromSin(sinAnomaly, Anomaly) : Math.cosh(Anomaly);
+
 
         double P = a * (cosAnomaly - e);
         double Q = semiMinorAxis * sinAnomaly;
@@ -198,11 +206,19 @@ public class OrbitalElements {
             this.MeanAngularMotion = Math.sqrt(Mu/(SemiMajorAxis * SemiMajorAxis * SemiMajorAxis));
             this.periapsisTime = TimeElapsed - (E - Eccentricity*Math.sin(E))/this.MeanAngularMotion;
         } else {
-            double H = 2*Math.atan2( Math.tan(trueAnomoly*0.5d), Math.sqrt((Eccentricity+1)/(Eccentricity-1) ));
+            double cosTrueAnomoly = Math.cos(trueAnomoly);
+            double H = invCosh((Eccentricity + cosTrueAnomoly) / (1+Eccentricity*cosTrueAnomoly) );
 
             this.MeanAngularMotion = Math.sqrt(Mu/-(SemiMajorAxis * SemiMajorAxis * SemiMajorAxis));
             this.periapsisTime = TimeElapsed - (Eccentricity*Math.sinh(H) - H)/this.MeanAngularMotion;
         }
+    }
+
+    private double invCosh(double x) {
+        if (x < 1.0) {
+            return Double.NaN;
+        }
+        return Math.log(x + Math.sqrt(Math.pow(x, 2) - 1));
     }
 
     public void setOrbitalPeriod(double parentMass) {
