@@ -192,6 +192,10 @@ repositories {
         url = 'https://maven.valkyrienskies.org'
     }
 
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 //
@@ -222,7 +226,6 @@ dependencies {
     implementation         ("org.valkyrienskies.core:api-game:${vs_core_version}")
     implementation         ("org.valkyrienskies.core:util:${vs_core_version}")
     implementation fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}")
-
     implementation "org.joml:joml:1.10.5"
     implementation "com.fasterxml.jackson.core:jackson-annotations:2.13.3"
     implementation 'thedarkcolour:kotlinforforge:4.10.0'
@@ -242,6 +245,8 @@ dependencies {
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
+
+    implementation fg.deobf("maven.modrinth:fusion-connected-textures:${fusion_version}-forge-mc${minecraft_version}")
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"

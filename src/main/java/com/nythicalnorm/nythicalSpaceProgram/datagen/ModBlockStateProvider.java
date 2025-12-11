@@ -37,6 +37,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/magnetizer")));
 
         fluidBlock(ModFluids.LIQUID_OXYGEN.block);
+        //simpleBlockWithItem(ModBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get(), models().getExistingFile(ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/cryogenic_air_separator_part")));
+        connectedBlock(ModBlocks.CRYOGENIC_AIR_SEPARATOR_PART);
     }
 
     protected void modelBlockWithItem(Block block, ModelFile model) {
@@ -74,22 +76,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(block.get(), cubeAll(block.get()));
     }
 
-    protected void genCryogenicAirSeparatorPartState (RegistryObject<Block> block) {
-        getVariantBuilder(block.get()).forAllStates(state -> {
-            FootprintedType myEnumval = state.getValue(FOOTPRINTTYPE);
-            if (myEnumval == FootprintedType.NOFOOTPRINTS) {
-                return new ConfiguredModel[]{new ConfiguredModel(models().cubeAll("lunar_regolith",
-                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith")))};
-            }
-
-            else { //if (state.getValue(FOOTPRINTTYPE) == FootprintedType.TWOBOOTZFACING) {
-                return new ConfiguredModel[]{new ConfiguredModel(models().cubeTop("lunar_regolith_" + state.getValue(FOOTPRINTTYPE),
-                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith"),
-                        ResourceLocation.fromNamespaceAndPath(NythicalSpaceProgram.MODID, "block/lunar_regolith_" + state.getValue(FOOTPRINTTYPE))
-                ))};
-            }
-        });
-
-        simpleBlockItem(block.get(), cubeAll(block.get()));
+    protected void connectedBlock(RegistryObject<Block> block) {
+        simpleBlockWithItem(block.get(), models().getExistingFile(block.getKey().location()));
     }
 }

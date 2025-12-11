@@ -27,6 +27,7 @@ public class ModCreativeModeTab {
                         output.accept(ModBlocks.MAGNETIZED_IRON_BLOCK.get());
                         output.accept(ModBlocks.LUNAR_REGOLITH.get());
                         output.accept(ModBlocks.CRYOGENIC_AIR_SEPARATOR.get());
+                        output.accept(ModBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get());
                         output.accept(ModBlocks.MAGNETIZER.get());
 
                         output.accept(ModFluids.LIQUID_OXYGEN.fluidContainer.get());

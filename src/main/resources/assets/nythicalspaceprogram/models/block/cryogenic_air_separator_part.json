@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "loader": "fusion:model",
+  "type": "connecting",
+  "textures": {
+    "sides": "nythicalspaceprogram:block/cryogenic_air_separator_side_tiles",
+    "top": "nythicalspaceprogram:block/cryogenic_air_separator_top_tiles",
+    "particle": "nythicalspaceprogram:block/cryogenic_air_separator_side_tiles"
+  },
+  "connections": {
+    "sides": [
+      {
+        "type": "is_same_block"
+      },
+      {
+        "type": "match_block",
+        "block": "nythicalspaceprogram:cryogenic_air_separator"
+      }
+    ],
+    "top": [
+      {
+        "type": "is_same_block"
+      },
+      {
+        "type": "match_block",
+        "block": "nythicalspaceprogram:cryogenic_air_separator"
+      }
+    ]
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": { "texture": "#top"},
+        "down": { "texture": "#top"},
+        "north": { "texture": "#sides" },
+        "south": { "texture": "#sides" },
+        "east": { "texture": "#sides" },
+        "west": { "texture": "#sides" }
+      }
+    }
+  ]
+}
