@@ -1,4 +1,4 @@
-package com.nythicalnorm.nythicalSpaceProgram.Item;
+package com.nythicalnorm.nythicalSpaceProgram.Item.armor;
 
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import net.minecraft.sounds.SoundEvent;
@@ -12,8 +12,10 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterial implements ArmorMaterial {
     MAGNETIC("magnet", 18, new int[]{2,5,6,2}, 10, SoundEvents.ARMOR_EQUIP_IRON,
-            0.2f, 0.5f, () -> Ingredient.of(Items.IRON_INGOT));
+            0.2f, 0.5f, () -> Ingredient.of(Items.IRON_INGOT)),
 
+    SPACESUIT("spacesuit", 18, new int[]{2,5,6,2}, 10, SoundEvents.ARMOR_EQUIP_GOLD,
+            0.2f, 0.0f, () -> Ingredient.of(Items.GOLD_INGOT));
 
     private final String name;
     private final int durabilityMultiplier;

@@ -46,7 +46,7 @@ public class SolarSystem {
 
         planets.UpdatePlanets(currentTime);
 
-        PacketHandler.sendToAllClients(new ClientBoundSpaceShipsPosUpdate(currentTime,timePassPerSecond));
+        PacketHandler.sendToAllClients(new ClientBoundSolarSystemTimeUpdate(currentTime,timePassPerSecond));
     }
 
     public double getCurrentTime() {

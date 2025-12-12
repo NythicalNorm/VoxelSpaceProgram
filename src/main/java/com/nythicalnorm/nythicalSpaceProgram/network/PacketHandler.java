@@ -25,10 +25,10 @@ public class PacketHandler {
                 .consumerMainThread(ClientBoundLoginSolarSystemState::handle)
                 .add();
 
-        INSTANCE.messageBuilder(ClientBoundSpaceShipsPosUpdate.class, ++id)
-                .encoder(ClientBoundSpaceShipsPosUpdate::encode)
-                .decoder(ClientBoundSpaceShipsPosUpdate::new)
-                .consumerMainThread(ClientBoundSpaceShipsPosUpdate::handle)
+        INSTANCE.messageBuilder(ClientBoundSolarSystemTimeUpdate.class, ++id)
+                .encoder(ClientBoundSolarSystemTimeUpdate::encode)
+                .decoder(ClientBoundSolarSystemTimeUpdate::new)
+                .consumerMainThread(ClientBoundSolarSystemTimeUpdate::handle)
                 .add();
 
         INSTANCE.messageBuilder(ClientBoundTrackedOrbitUpdate.class, ++id)

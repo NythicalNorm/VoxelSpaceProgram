@@ -1,5 +1,8 @@
 package com.nythicalnorm.nythicalSpaceProgram.Item;
 
+import com.nythicalnorm.nythicalSpaceProgram.Item.armor.CreativeJetpack;
+import com.nythicalnorm.nythicalSpaceProgram.Item.armor.MagneticBoots;
+import com.nythicalnorm.nythicalSpaceProgram.Item.armor.ModArmorMaterial;
 import com.nythicalnorm.nythicalSpaceProgram.Item.custom.HandheldPropellerItem;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import net.minecraft.world.item.ArmorItem;
@@ -16,7 +19,10 @@ public class ModItems {
             () -> new HandheldPropellerItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> MAGNET_BOOTS = ITEMS.register("magnet_boots", () ->
-            new ModArmorItem(ModArmorMaterial.MAGNETIC, ArmorItem.Type.BOOTS,  new Item.Properties()));
+            new MagneticBoots(ModArmorMaterial.MAGNETIC, ArmorItem.Type.BOOTS,  new Item.Properties()));
+
+    public static final RegistryObject<Item> CREATIVE_JETPACK =  ITEMS.register("creative_spacesuit_jetpack", () ->
+            new CreativeJetpack(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus)
     {

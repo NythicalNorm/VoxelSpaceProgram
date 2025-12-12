@@ -1,5 +1,6 @@
-package com.nythicalnorm.nythicalSpaceProgram.Item;
+package com.nythicalnorm.nythicalSpaceProgram.Item.armor;
 
+import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -11,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ModArmorItem extends ArmorItem {
-    public ModArmorItem(ArmorMaterial pMaterial, Type pType, Properties pProperties) {
+public class MagneticBoots extends ArmorItem {
+    public MagneticBoots(ArmorMaterial pMaterial, Type pType, Properties pProperties) {
         super(pMaterial, pType, pProperties);
     }
 

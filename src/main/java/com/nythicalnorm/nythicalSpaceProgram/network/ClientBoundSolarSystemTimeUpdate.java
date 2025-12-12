@@ -8,16 +8,16 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ClientBoundSpaceShipsPosUpdate {
+public class ClientBoundSolarSystemTimeUpdate {
     private final double currenttime;
     private final double timePassPerSecond;
 
-    public ClientBoundSpaceShipsPosUpdate(double currenttime, double timePassPerSecond) {
+    public ClientBoundSolarSystemTimeUpdate(double currenttime, double timePassPerSecond) {
         this.currenttime = currenttime;
         this.timePassPerSecond = timePassPerSecond;
     }
 
-    public ClientBoundSpaceShipsPosUpdate(FriendlyByteBuf friendlyByteBuf) {
+    public ClientBoundSolarSystemTimeUpdate(FriendlyByteBuf friendlyByteBuf) {
         this.currenttime = friendlyByteBuf.readDouble();
         this.timePassPerSecond = friendlyByteBuf.readDouble();
     }

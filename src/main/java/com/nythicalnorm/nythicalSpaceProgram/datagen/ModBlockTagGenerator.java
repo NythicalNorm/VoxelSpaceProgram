@@ -22,7 +22,6 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         this.tag(ModTags.Blocks.MAGNETIC_METALS).add(Blocks.IRON_BLOCK, Blocks.COPPER_BLOCK, Blocks.GOLD_BLOCK, Blocks.REDSTONE_BLOCK);
-
         this.tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.OXYGEN_PROPELLANT_TANK.get(), ModBlocks.LUNAR_REGOLITH.get());
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.OXYGEN_PROPELLANT_TANK.get()).add(ModBlocks.LUNAR_REGOLITH.get());
         this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.LUNAR_REGOLITH.get());
