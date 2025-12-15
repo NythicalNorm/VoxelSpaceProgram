@@ -1,0 +1,31 @@
+package com.nythicalnorm.nythicalSpaceProgram.planettexgen;
+
+import java.awt.*;
+
+public class GradientSupplier {
+    public static PlanetGradient OVERWORLD_GRADIENT = new PlanetGradient(new BiomeGroup[]{
+            new BiomeGroup("Ocean", -1f, 0.1f, new BiomeGradient[]{
+                    new BiomeGradient(0,0.75f, 0, 1, 1f, Color.decode("#3938C9")),
+                    new BiomeGradient(0.75f,1f, 0, 1, 1f, Color.decode("#3D57D6")),
+            }),
+            new BiomeGroup("Land", 0.1f, 1f, new BiomeGradient[]{
+                    new BiomeGradient(0f,0.4f, 0, 1f, 1f, Color.decode("#71A74D")),
+                    new BiomeGradient(0.4f,0.6f, 0, 1f, 1f, Color.decode("#737373")),
+                    new BiomeGradient(0.6f,1f, 0.78f, 1, 0.5f, Color.decode("#ffffff")),
+            }),
+    });
+
+    public static PlanetGradient NILA_GRADIENT = new PlanetGradient(new BiomeGroup[]{
+            new BiomeGroup("Mare", -1f, -0.3f, new BiomeGradient[]{
+                    new BiomeGradient(0f,0.5f, 0, 1, 1f, Color.decode("#5d5d5d")),
+                    new BiomeGradient(0.5f,0.90f, 0, 1, 1f, Color.decode("#3c3c3c")),
+                    new BiomeGradient(0.90f,1f, 0, 1, 1f, Color.decode("#595959")),
+            }),
+
+            new BiomeGroup("Land", -0.3f, 1f, new BiomeGradient[]{
+                    new BiomeGradient(0f,0.15f, 0, 1f, 1f, Color.decode("#959293")),
+                    new BiomeGradient(0.15f,0.3f, 0, 1f, 1f, Color.decode("#c3c1c2")),
+                    new BiomeGradient(0.3f,1f, 0, 1f, 1f, Color.decode("#d0d0d0")),
+            }),
+    });
+}

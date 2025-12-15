@@ -24,12 +24,14 @@ public class SolarSystem {
     private final MinecraftServer server;
     private HashMap<String, Stack<String>> allPlayerOrbitalAddresses;
     private final Planets planets;
+    private PlanetTexHandler planetTexHandler;
 
     public SolarSystem(MinecraftServer server, Planets pPlanets) {
         timePassPerSecond = 1;
         allPlayerOrbitalAddresses = new HashMap<>();
         this.server = server;
         this.planets = pPlanets;
+
     }
 
     public MinecraftServer getServer() {
@@ -47,6 +49,11 @@ public class SolarSystem {
         planets.UpdatePlanets(currentTime);
 
         PacketHandler.sendToAllClients(new ClientBoundSolarSystemTimeUpdate(currentTime,timePassPerSecond));
+    }
+
+    public void serverStarted() {
+        this.planetTexHandler = new PlanetTexHandler();
+        server.execute(() -> planetTexHandler.loadOrCreateTex(server, this.planets));
     }
 
     public double getCurrentTime() {
