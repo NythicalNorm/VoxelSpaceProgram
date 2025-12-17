@@ -1,6 +1,5 @@
 package com.nythicalnorm.nythicalSpaceProgram.gui;
 
-import com.nythicalnorm.nythicalSpaceProgram.util.KeyBindings;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -10,13 +9,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PlayerInputAxis {
     private float AxisValue;
+    private float AxisRateOfChange;
     private final float AxisMinValue;
     private final float AxisMaxValue;
     private final float AxisMultiplier;
     private final float RateOfChangeMax;
-    private float AxisRateOfChange;
-    private KeyMapping DecreaseKey;
-    private KeyMapping IncreaseKey;
+    private final KeyMapping DecreaseKey;
+    private final KeyMapping IncreaseKey;
 
 
     public PlayerInputAxis(float axisMultiplier, float minAxis, float maxAxis, float rateOfChangeMax, float initalAxisValue,

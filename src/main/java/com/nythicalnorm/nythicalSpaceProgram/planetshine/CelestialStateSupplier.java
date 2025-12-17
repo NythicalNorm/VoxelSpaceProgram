@@ -1,7 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine;
 
 import com.nythicalnorm.nythicalSpaceProgram.gui.ModScreenManager;
-import com.nythicalnorm.nythicalSpaceProgram.gui.PlayerSpacecraftScreen;
 import com.nythicalnorm.nythicalSpaceProgram.orbit.*;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.network.ServerBoundTimeWarpChange;
@@ -9,7 +8,6 @@ import com.nythicalnorm.nythicalSpaceProgram.planetshine.networking.ClientTimeHa
 import com.nythicalnorm.nythicalSpaceProgram.solarsystem.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers.SpaceObjRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.syncher.EntityDataAccessor;
 
 import java.util.Optional;
 import java.util.Stack;
@@ -22,12 +20,12 @@ public class CelestialStateSupplier {
     private ClientPlayerSpacecraftBody playerOrbit;
     private PlanetaryBody currentPlanetOn;
     private PlanetaryBody currentPlanetSOIin;
-    private ClientEntityOrbitalBody controllingBody;
+    private ClientPlayerSpacecraftBody controllingBody;
 
     private final Planets planets;
     private ModScreenManager screenManager;
 
-    public CelestialStateSupplier(EntityOrbitalBody playerDataFromServer, Planets planets) {
+    public CelestialStateSupplier(EntitySpacecraftBody playerDataFromServer, Planets planets) {
         playerOrbit = new ClientPlayerSpacecraftBody(playerDataFromServer);
         this.planets = planets;
         SpaceObjRenderer.PopulateRenderPlanets(planets);
@@ -35,8 +33,8 @@ public class CelestialStateSupplier {
     }
 
     public void tick() {
-        if (controllingBody != null && Minecraft.getInstance().screen instanceof PlayerSpacecraftScreen screen) {
-            controllingBody.processMovement(screen.getInputs());
+        if (controllingBody != null && screenManager.isSpacecraftScreenOpen()) {
+            screenManager.getSpacecraftScreen().sendInputs(controllingBody);
         }
     }
 
@@ -132,7 +130,7 @@ public class CelestialStateSupplier {
         return Optional.empty();
     }
 
-    public void setControllingBody(ClientEntityOrbitalBody controllingBody) {
+    public void setControllingBody(ClientPlayerSpacecraftBody controllingBody) {
         this.controllingBody = controllingBody;
     }
 

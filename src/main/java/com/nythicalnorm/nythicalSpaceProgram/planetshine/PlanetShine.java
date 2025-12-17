@@ -82,10 +82,7 @@ public class PlanetShine {
 
         poseStack.pushPose();
         //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), NythicalSpaceProgram.getCelestialStateSupplier().getCurrentPlanetWithinSOI());
-        //temp check because space rotation isnt't calculated yet
-        if (css.isOnPlanet()) {
-            poseStack.mulPose(css.getPlayerOrbit().getRotation());
-        }
+        poseStack.mulPose(css.getPlayerOrbit().getRotation());
 
         SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, css, camera, projectionMatrix, partialTick);
         RenderSystem.depthMask(true);

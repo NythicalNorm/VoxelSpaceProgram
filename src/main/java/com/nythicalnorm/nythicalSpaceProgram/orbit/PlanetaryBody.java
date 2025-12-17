@@ -84,14 +84,13 @@ public class PlanetaryBody extends Orbit {
         allPlanetsAddresses.put(name, currentAddress);
 
         for (Map.Entry<String, Orbit> orbitBody : childElements.entrySet()) {
-            if (orbitBody.getValue() instanceof PlanetaryBody) {
-                PlanetaryBody plntBody = (PlanetaryBody) orbitBody.getValue();
+            if (orbitBody.getValue() instanceof PlanetaryBody plntBody) {
                 plntBody.setChildAddresses(allPlanetsAddresses, (Stack<String>) currentAddress.clone(), orbitBody.getKey());
             }
         }
     }
 
-    public void addChildSpacecraft(String key, EntityOrbitalBody orbitData) {
+    public void addChildSpacecraft(String key, EntitySpacecraftBody orbitData) {
         this.childElements.put(key ,orbitData);
     }
 

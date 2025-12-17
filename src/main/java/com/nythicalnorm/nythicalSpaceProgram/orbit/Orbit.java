@@ -35,6 +35,10 @@ public abstract class Orbit {
         return rotation;
     }
 
+    public void setRotation(Quaternionf rotation) {
+        this.rotation = rotation;
+    }
+
     public abstract void simulatePropagate(double TimeElapsed, Vector3d parentPos, double parentMass);
 
 

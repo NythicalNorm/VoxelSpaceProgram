@@ -4,7 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.gui.MouseLookScreen;
-import com.nythicalnorm.nythicalSpaceProgram.orbit.EntityOrbitalBody;
+import com.nythicalnorm.nythicalSpaceProgram.gui.widgets.NavballWidget;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.EntitySpacecraftBody;
 import com.nythicalnorm.nythicalSpaceProgram.orbit.Orbit;
 import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
@@ -12,11 +13,9 @@ import com.nythicalnorm.nythicalSpaceProgram.gui.widgets.TimeWarpWidget;
 import com.nythicalnorm.nythicalSpaceProgram.util.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
@@ -27,15 +26,15 @@ public class MapSolarSystem extends MouseLookScreen {
     private CelestialStateSupplier css;
     private Orbit[] FocusableBodies;
     private int currentFocusedBodyIndex;
-    private final Screen lastScreen;
+    private final boolean isSpacecraftScreenOpen;
 
-    public MapSolarSystem(@Nullable Screen lastScreen) {
+    public MapSolarSystem(boolean PisSpacecraftScreenOpen) {
         super(Component.empty());
         NythicalSpaceProgram.getCelestialStateSupplier().ifPresent (celestialStateSupplier -> {
             css = celestialStateSupplier;
             celestialStateSupplier.getScreenManager().setMapScreenOpen(true);
         });
-        this.lastScreen = lastScreen;
+        this.isSpacecraftScreenOpen = PisSpacecraftScreenOpen;
     }
 
     @Override
@@ -43,6 +42,9 @@ public class MapSolarSystem extends MouseLookScreen {
         populateFocusedBodiesList();
         MapRenderer.setScreen(this);
         this.addRenderableWidget(new TimeWarpWidget(0,0, width, height, Component.empty()));
+        if (isSpacecraftScreenOpen) {
+            this.addRenderableWidget(new NavballWidget(width/2, height, width, height, Component.empty()));
+        }
         super.init();
     }
 
@@ -78,9 +80,14 @@ public class MapSolarSystem extends MouseLookScreen {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+
         if (KeyBindings.OPEN_SOLAR_SYSTEM_MAP_KEY.matches(pKeyCode, pScanCode)) {
             this.onClose();
             return true;
+        }  else if (isSpacecraftScreenOpen) {
+            if (css.getScreenManager().getSpacecraftScreen().keyPressed(pKeyCode, pScanCode, pModifiers)) {
+                return true;
+            }
         }
 
         else if (GLFW.GLFW_KEY_TAB == pKeyCode){
@@ -90,10 +97,20 @@ public class MapSolarSystem extends MouseLookScreen {
     }
 
     @Override
+    public boolean keyReleased(int pKeyCode, int pScanCode, int pModifiers) {
+        if (isSpacecraftScreenOpen) {
+            if (css.getScreenManager().getSpacecraftScreen().keyReleased(pKeyCode, pScanCode, pModifiers)) {
+                return true;
+            }
+        }
+        return super.keyReleased(pKeyCode, pScanCode, pModifiers);
+    }
+
+    @Override
     public void onClose() {
         super.onClose();
-        if (lastScreen != null) {
-            Minecraft.getInstance().setScreen(lastScreen);
+        if (isSpacecraftScreenOpen) {
+            Minecraft.getInstance().setScreen(css.getScreenManager().getSpacecraftScreen());
         }
         css.getScreenManager().closeMapScreen();
     }
@@ -113,7 +130,7 @@ public class MapSolarSystem extends MouseLookScreen {
                 }
             }
             radiusZoomLevel = ((PlanetaryBody) FocusableBodies[currentFocusedBodyIndex]).getRadius();
-        } else if (FocusableBodies[currentFocusedBodyIndex] instanceof EntityOrbitalBody) {
+        } else if (FocusableBodies[currentFocusedBodyIndex] instanceof EntitySpacecraftBody) {
             radiusZoomLevel = 1000000;
         }
 
@@ -131,7 +148,7 @@ public class MapSolarSystem extends MouseLookScreen {
         }
 
         int totalFocusAmount = css.getPlanets().allPlanetsAddresses.size();
-        if (currentFocusedBody instanceof EntityOrbitalBody) {
+        if (currentFocusedBody instanceof EntitySpacecraftBody) {
             totalFocusAmount += 1;
         }
 

@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -42,8 +43,6 @@ public class SolarSystem {
 
     public void OnTick() {
         currentTime = currentTime + (timePassPerSecond/20);
-        HashMap<String, Vector3d> PlanetPositions = new HashMap<>();
-
         planets.UpdatePlanets(currentTime);
 
         PacketHandler.sendToAllClients(new ClientBoundSolarSystemTimeUpdate(currentTime,timePassPerSecond));
@@ -66,7 +65,7 @@ public class SolarSystem {
         // this is not working check before making a saving system
         if (allPlayerOrbitalAddresses.containsKey(entity.getStringUUID())) {
             PlanetaryBody obt = planets.getPlanet(allPlayerOrbitalAddresses.get(entity.getStringUUID()));
-            EntityOrbitalBody playerEntity = (EntityOrbitalBody)obt.getChild(entity.getStringUUID());
+            EntitySpacecraftBody playerEntity = (EntitySpacecraftBody)obt.getChild(entity.getStringUUID());
             PacketHandler.sendToPlayer(new ClientBoundLoginSolarSystemState(playerEntity), (ServerPlayer) entity);
         }
         else {
@@ -99,6 +98,15 @@ public class SolarSystem {
             planets.playerJoinedOrbital(PlayerUUid, newAddress, newOrbitalData);
             allPlayerOrbitalAddresses.put(PlayerUUid, newAddress);
             PacketHandler.sendToPlayer(new ClientBoundTrackedOrbitUpdate(player, null, newAddress, elements), player);
+        }
+    }
+
+    public void playerCloned(Entity player) {
+        Stack<String> playerAddress = allPlayerOrbitalAddresses.get(player.getStringUUID());
+        if (playerAddress != null && player instanceof ServerPlayer serverPlayer && player.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
+            if (planets.getOrbit(playerAddress) instanceof ServerPlayerSpacecraftBody serverPlayerSpacecraftBody) {
+                serverPlayerSpacecraftBody.setPlayerEntity(serverPlayer);
+            }
         }
     }
 }

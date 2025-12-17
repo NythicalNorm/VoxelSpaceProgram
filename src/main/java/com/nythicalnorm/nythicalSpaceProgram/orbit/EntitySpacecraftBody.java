@@ -1,0 +1,44 @@
+package com.nythicalnorm.nythicalSpaceProgram.orbit;
+
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+
+public abstract class EntitySpacecraftBody extends Orbit {
+    protected Vector3f angularVelocity;
+    protected boolean velocityChangedLastFrame;
+    private static final float tolerance = 1e-8f;
+    public void simulatePropagate(double TimeElapsed, Vector3d parentPos, double mass) {
+        if (!velocityChangedLastFrame) {
+            Vector3d[] stateVectors = orbitalElements.ToCartesian(TimeElapsed);
+            this.relativeOrbitalPos = stateVectors[0];
+            this.relativeVelocity = stateVectors[1];
+        } else {
+            orbitalElements.fromCartesian(this.relativeOrbitalPos, this.relativeVelocity, TimeElapsed);
+            velocityChangedLastFrame = false;
+        }
+        absoluteOrbitalPos = new Vector3d(parentPos).add(relativeOrbitalPos);
+        updateRotationFromVelocity();
+    }
+
+    private void updateRotationFromVelocity() {
+        if (angularVelocity.x > tolerance || angularVelocity.y > tolerance || angularVelocity.z > tolerance) {
+            Quaternionf rotationalVel = new Quaternionf(angularVelocity.x, angularVelocity.y, angularVelocity.z, 0f);
+            this.rotation.mul(rotationalVel.mul(0.5f));
+        }
+    }
+
+    public Vector3f getAngularVelocity() {
+        return new Vector3f(angularVelocity);
+    }
+
+    public void setVelocityForUpdate(Vector3d velocity, Vector3f angularVelocity) {
+        this.relativeVelocity = velocity;
+        this.angularVelocity = angularVelocity;
+        velocityChangedLastFrame = true;
+    }
+
+    public abstract void processMovement(SpacecraftControlState state);
+
+    public abstract PhysicsContext getPhysicsContext();
+}

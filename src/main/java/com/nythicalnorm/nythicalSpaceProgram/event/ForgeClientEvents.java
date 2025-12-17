@@ -14,9 +14,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,7 +35,7 @@ public class ForgeClientEvents {
         } else if (KeyBindings.OPEN_SOLAR_SYSTEM_MAP_KEY.consumeClick()) {
             NythicalSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
                 if (celestialStateSupplier.doRender()) {
-                    Minecraft.getInstance().setScreen(new MapSolarSystem(null));
+                    Minecraft.getInstance().setScreen(new MapSolarSystem(false));
                 }
             });
         }
@@ -71,5 +71,14 @@ public class ForgeClientEvents {
         if (event.phase == TickEvent.Phase.END) {
             NythicalSpaceProgram.getCelestialStateSupplier().ifPresent(CelestialStateSupplier::tick);
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerCloned(ClientPlayerNetworkEvent.Clone event) {
+        NythicalSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
+            if (celestialStateSupplier.getPlayerOrbit() != null) {
+                celestialStateSupplier.getPlayerOrbit().setPlayerEntity(event.getNewPlayer());
+            }
+        });
     }
 }

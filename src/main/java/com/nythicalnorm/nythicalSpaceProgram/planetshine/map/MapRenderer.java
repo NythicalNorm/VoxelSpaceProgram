@@ -102,7 +102,7 @@ public class MapRenderer {
 
                 if (childBody instanceof PlanetaryBody planetaryBody) {
                     renderInMap = new MapRenderablePlanet(planetaryBody, mapState, parentBody);
-                } else if (childBody instanceof EntityOrbitalBody clientBody) {
+                } else if (childBody instanceof EntitySpacecraftBody clientBody) {
                     ResourceLocation playerHeadTexture = Minecraft.getInstance().player.getSkinTextureLocation();
                     MapRenderableIcon iconMap = new MapRenderableIcon(clientBody, playerHeadTexture, mapState, parentBody);
                     iconsList.add(iconMap);

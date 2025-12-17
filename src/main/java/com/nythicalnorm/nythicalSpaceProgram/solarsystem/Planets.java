@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.util.LazyOptional;
+import org.joml.Quaternionf;
 
 import java.util.*;
 
@@ -76,7 +77,7 @@ public class Planets {
             oldPlanet = (PlanetaryBody) getOrbit(oldAddress);
             Orbit newOrbitPlanet = getPlanet(newAddress);
 
-            EntityOrbitalBody entitybody = (EntityOrbitalBody) oldPlanet.getChild(playerUUid);
+            EntitySpacecraftBody entitybody = (EntitySpacecraftBody) oldPlanet.getChild(playerUUid);
             orbitalElementsNew.setOrbitalPeriod(((PlanetaryBody)newOrbitPlanet).getMass());
             entitybody.setOrbitalElements(orbitalElementsNew);
 
@@ -94,11 +95,13 @@ public class Planets {
         }
     }
 
-    public PlanetaryBody playerJoinedOrbital(String PlayerUUid, Stack<String> newAddress, EntityOrbitalBody OrbitalDataNew) {
+    public PlanetaryBody playerJoinedOrbital(String PlayerUUid, Stack<String> newAddress, EntitySpacecraftBody OrbitalDataNew) {
         Orbit newOrbitPlanet = getPlanet(newAddress);
 
         if (newOrbitPlanet instanceof PlanetaryBody plnt) {
             OrbitalDataNew.getOrbitalElements().setOrbitalPeriod(plnt.getMass());
+            //temp default Rotation
+            OrbitalDataNew.setRotation(new Quaternionf());
             plnt.addChildSpacecraft(PlayerUUid, OrbitalDataNew);
         }
         return (PlanetaryBody) newOrbitPlanet;

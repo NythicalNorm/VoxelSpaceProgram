@@ -32,8 +32,9 @@ public class NavballWidget extends AbstractWidget {
         int yPos = getY() - 86;
 
         pGuiGraphics.blit(NAVBALL_GUI_TEXTURE, xPos, yPos,0,0,94,86);
+        PlayerSpacecraftScreen spacecraftScreen = NythicalSpaceProgram.getCelestialStateSupplier().get().getScreenManager().getSpacecraftScreen();
 
-        if (Minecraft.getInstance().screen instanceof PlayerSpacecraftScreen spacecraftScreen) {
+        if (spacecraftScreen != null) {
             renderThrottleBar(pGuiGraphics, xPos, yPos, spacecraftScreen);
             renderButtons(pGuiGraphics, xPos, yPos, spacecraftScreen);
             renderGForceBar(pGuiGraphics, xPos, yPos);

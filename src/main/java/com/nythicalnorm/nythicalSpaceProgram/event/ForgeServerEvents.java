@@ -13,7 +13,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -69,7 +68,7 @@ public class ForgeServerEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if(event.isWasDeath() && event.getEntity() instanceof ServerPlayer) {
-            //NythicalSpaceProgram.getSolarSystem().playerJoined(event.getEntity());
+            NythicalSpaceProgram.getSolarSystem().get().playerCloned(event.getEntity());
         }
     }
 

@@ -5,7 +5,7 @@ import com.nythicalnorm.nythicalSpaceProgram.Item.ModCreativeModeTab;
 import com.nythicalnorm.nythicalSpaceProgram.Item.ModItems;
 import com.nythicalnorm.nythicalSpaceProgram.block.ModBlocks;
 import com.nythicalnorm.nythicalSpaceProgram.commands.ModArguments;
-import com.nythicalnorm.nythicalSpaceProgram.orbit.EntityOrbitalBody;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.EntitySpacecraftBody;
 import com.nythicalnorm.nythicalSpaceProgram.network.PacketHandler;
 import com.nythicalnorm.nythicalSpaceProgram.solarsystem.Planets;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
@@ -95,7 +95,7 @@ public class NythicalSpaceProgram
         }
     }
 
-    public static void startClient(EntityOrbitalBody playerData) {
+    public static void startClient(EntitySpacecraftBody playerData) {
         Planets planets = new Planets(true);
         celestialStateSupplier = new CelestialStateSupplier(playerData, planets);
     }

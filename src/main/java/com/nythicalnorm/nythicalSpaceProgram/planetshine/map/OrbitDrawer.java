@@ -92,7 +92,7 @@ public class OrbitDrawer {
         poseStack.translate(-distanceFromCenterToFoci, 0f, 0f);
         poseStack.scale((float) a,1f,(float) b);
 
-        if (orbitalBody instanceof EntityOrbitalBody) {
+        if (orbitalBody instanceof EntitySpacecraftBody) {
             RenderSystem.setShaderColor(0.0f,0.0f,1.0f,1.0f);
         } else {
             RenderSystem.setShaderColor(1.0f,1.0f,1.0f,1.0f);

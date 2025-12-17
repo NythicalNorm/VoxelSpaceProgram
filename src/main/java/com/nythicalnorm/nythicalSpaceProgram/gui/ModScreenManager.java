@@ -13,14 +13,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModScreenManager {
     private boolean isMapScreenOpen = false;
-    private boolean isSpacecraftScreenOpen = false;
+    private PlayerSpacecraftScreen openSpacecraftScreen = null;
 
     public void setMapScreenOpen(boolean open) {
         this.isMapScreenOpen = open;
     }
 
-    public void setSpacecraftScreenOpen(boolean open) {
-        this.isSpacecraftScreenOpen = open;
+    public void setOpenSpacecraftScreen(PlayerSpacecraftScreen opened) {
+        this.openSpacecraftScreen = opened;
     }
 
     public boolean doPlanetShineDraw() {
@@ -33,7 +33,7 @@ public class ModScreenManager {
             if (isMapScreenOpen) {
                 closeMapScreen();
             }
-            if (isSpacecraftScreenOpen) {
+            if (openSpacecraftScreen != null) {
                 closeSpacecraftScreen();
             }
         }
@@ -45,14 +45,18 @@ public class ModScreenManager {
     }
 
     public boolean isSpacecraftScreenOpen() {
-        return isSpacecraftScreenOpen;
+        return openSpacecraftScreen != null;
+    }
+
+    public PlayerSpacecraftScreen getSpacecraftScreen() {
+        return openSpacecraftScreen;
     }
 
     public void closeSpacecraftScreen() {
         Options minecraftOptions = Minecraft.getInstance().options;
         minecraftOptions.hideGui = false;
         minecraftOptions.setCameraType(CameraType.FIRST_PERSON);
-        isSpacecraftScreenOpen = false;
+        openSpacecraftScreen = null;
         NythicalSpaceProgram.getCelestialStateSupplier().get().setControllingBody(null);
     }
 }

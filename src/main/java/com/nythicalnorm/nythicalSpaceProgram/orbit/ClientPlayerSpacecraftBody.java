@@ -2,7 +2,9 @@ package com.nythicalnorm.nythicalSpaceProgram.orbit;
 
 import com.nythicalnorm.nythicalSpaceProgram.util.Calcs;
 import com.nythicalnorm.nythicalSpaceProgram.util.DayNightCycleHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4f;
@@ -10,21 +12,24 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public class ClientPlayerSpacecraftBody extends ClientEntityOrbitalBody {
+public class ClientPlayerSpacecraftBody extends PlayerSpacecraftBody {
     private float sunAngle = 0f;
 
     public ClientPlayerSpacecraftBody() {
         absoluteOrbitalPos = new Vector3d();
         relativeOrbitalPos = new Vector3d();
         rotation = new Quaternionf();
+        angularVelocity = new Vector3f();
         orbitalElements = new OrbitalElements(0f,0f, 0f, 0f, 0f, 0f);
+        this.player = Minecraft.getInstance().player;
     }
 
-    public ClientPlayerSpacecraftBody(EntityOrbitalBody playerData) {
+    public ClientPlayerSpacecraftBody(EntitySpacecraftBody playerData) {
         absoluteOrbitalPos = playerData.absoluteOrbitalPos;
         relativeOrbitalPos = playerData.relativeOrbitalPos;
         rotation = playerData.getRotation();
         orbitalElements = playerData.orbitalElements;
+        this.player = Minecraft.getInstance().player;
     }
 
     public void updatePlayerPosRot(Player player, PlanetaryBody currentPlanetOn) {
@@ -48,9 +53,28 @@ public class ClientPlayerSpacecraftBody extends ClientEntityOrbitalBody {
         absoluteOrbitalPos = newAbs.add(relativeOrbitalPos);
     }
 
-    @Override
-    public void processMovement(SpacecraftControlState inputs) {
-        
+    public void processLocalMovement(ItemStack jetpackItem, float inputAD, float inputSW, float inputQE, float inputShiftCTRL, float throttle, boolean SAS, boolean RCS, boolean inDockingMode) {
+        if (!RCS) {
+            return;
+        }
+        PhysicsContext currentContext = getPhysicsContext();
+        Vector3f angularAcceleration = new Vector3f();
+        double accelerationX = 0d;
+        double accelerationY = 0d;
+        double accelerationZ = 0d;
+
+
+        if (inDockingMode) {
+            accelerationX = inputAD*JetpackTranslationForce;
+            accelerationY = inputShiftCTRL*JetpackTranslationForce;
+            accelerationZ = inputSW*JetpackTranslationForce;
+        } else {
+            angularAcceleration = new Vector3f(inputAD, inputQE, inputSW);
+            angularAcceleration.mul((JetpackRotationalForce));
+            accelerationZ = inputShiftCTRL;
+        }
+        //Acceleration.mul(Minecraft.getInstance().getDeltaFrameTime());
+        currentContext.applyAcceleration(accelerationX, accelerationY, accelerationZ, angularAcceleration);
     }
 
     public float getSunAngle() {
