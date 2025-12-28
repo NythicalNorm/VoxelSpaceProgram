@@ -8,12 +8,14 @@ import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
 import com.nythicalnorm.nythicalSpaceProgram.orbit.Star;
+import com.nythicalnorm.nythicalSpaceProgram.planetshine.PlanetShine;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.generators.QuadSphereModelGenerator;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.shaders.ModShaders;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
@@ -29,11 +31,13 @@ import java.util.function.Supplier;
 public class PlanetRenderer {
     private static Supplier<ShaderInstance> planetShader;
     private static Uniform sunDirUniform;
+    private static Uniform AtmoFilterColorUniform;
 
     public static void setupShader() {
         planetShader = ModShaders.getPlanetShaderInstance();
         if (planetShader.get() != null) {
             sunDirUniform = planetShader.get().getUniform("SunDirection");
+            AtmoFilterColorUniform = planetShader.get().getUniform("AtmoFilterColor");
         }
         else {
             NythicalSpaceProgram.logError("Shader not loading");
@@ -60,7 +64,11 @@ public class PlanetRenderer {
                 //AtmosphereRenderer.render(obj,atmosphere, poseStack, projectionMatrix, partialTick);
             PlanetAtmosphere bodyAtmos = planet.getAtmoshpere();
             float renderOpacity = (currentAlbedo * (bodyAtmos.getExposureNight() - bodyAtmos.getExposureDay())) + bodyAtmos.getExposureDay();
-            RenderSystem.setShaderColor(1.0f,1.0f,1.0f,renderOpacity);
+            RenderSystem.setShaderColor(1.0f,1.0f,1.0f, renderOpacity);
+            Vec3 skyColor = PlanetShine.getLatestSkyColor();
+            AtmoFilterColorUniform.set((float) skyColor.x,(float) skyColor.y,(float) skyColor.z, 1.0f);
+        } else {
+            AtmoFilterColorUniform.set(0f,0f, 0f,1.0f);
         }
 
         if (differenceVector != null) {

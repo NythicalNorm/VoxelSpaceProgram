@@ -21,8 +21,7 @@ import org.joml.Vector3f;
 public class PlanetShine {
     private static VertexBuffer Star_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
     private static VertexBuffer Skybox_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-
-
+    private static Vec3 latestSkyColor;
     private static boolean isFirstTime = true;
 
     public static void setupBuffers() {
@@ -70,9 +69,9 @@ public class PlanetShine {
 
         if (css.isOnPlanet()) {
             if (css.getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
-                Vec3 skyColor = Minecraft.getInstance().level.getSkyColor(camera.getPosition(), partialTick);
+                latestSkyColor = Minecraft.getInstance().level.getSkyColor(camera.getPosition(), partialTick);
 
-                RenderSystem.setShaderColor((float) skyColor.x, (float) skyColor.y, (float) skyColor.z, 1.0F);
+                RenderSystem.setShaderColor((float) latestSkyColor.x, (float) latestSkyColor.y, (float) latestSkyColor.z, 1.0F);
                 ShaderInstance posShad = RenderSystem.getShader();
                 sky_Buffer.bind();
                 sky_Buffer.drawWithShader(poseStack.last().pose(), projectionMatrix, posShad);
@@ -170,5 +169,9 @@ public class PlanetShine {
         }
 
         return pBuilder.end();
+    }
+
+    public static Vec3 getLatestSkyColor() {
+        return latestSkyColor;
     }
 }

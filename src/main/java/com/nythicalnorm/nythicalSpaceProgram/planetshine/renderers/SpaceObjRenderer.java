@@ -1,6 +1,7 @@
 package com.nythicalnorm.nythicalSpaceProgram.planetshine.renderers;
 
 import com.mojang.blaze3d.vertex.*;
+import com.nythicalnorm.nythicalSpaceProgram.orbit.Star;
 import com.nythicalnorm.nythicalSpaceProgram.planet.PlanetAtmosphere;
 import com.nythicalnorm.nythicalSpaceProgram.orbit.PlanetaryBody;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.renderTypes.SpaceRenderable;
@@ -69,9 +70,15 @@ public class SpaceObjRenderer {
 
         for (SpaceRenderable plnt : renderPlanets) {
             plnt.render(atmosphere, poseStack, projectionMatrix, currentAlbedo);
+            //rendering only the sun's atmosphere for now
+            if (plnt instanceof RenderablePlanet renPlanet) {
+                if (renPlanet.getBody() instanceof Star) {
+                    AtmosphereRenderer.render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmoshpere(), poseStack, projectionMatrix);
+                }
+            }
         }
 
-        AtmosphereRenderer.renderAtmospheres(renderPlanets, poseStack, projectionMatrix, atmosphere);
+        //AtmosphereRenderer.renderAtmospheres(renderPlanets, poseStack, projectionMatrix, atmosphere);
     }
 
     public static void PerspectiveShift(double PlanetDistance, Vector3d PlanetPos, Quaternionf planetRot, double bodyRadius,PoseStack poseStack){

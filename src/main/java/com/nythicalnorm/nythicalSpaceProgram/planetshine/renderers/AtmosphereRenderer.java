@@ -50,14 +50,14 @@ public class AtmosphereRenderer {
         poseStack.mulPose(new Quaternionf().rotateTo(new Vector3f(0f,1f,0f), relativeDir));
 
         //reduce the atmosphere alpha as the player gets further away, only works if the atmosphere's alpha value is less than 1
-        float distDiffAtmo =  1f - (float)((distance - renBody.getRadius())/atmosphere.getAtmosphereHeight());
-        float colorAlpha = Mth.clamp(distDiffAtmo, atmosphere.getAtmosphereAlpha(), 1f);
+        //float distDiffAtmo =  1f - (float)((distance - renBody.getRadius())/atmosphere.getAtmosphereHeight());
+        float colorAlpha = Mth.clamp(atmosphere.getAtmosphereAlpha(),0f, 1f);// Mth.clamp(distDiffAtmo,0f,1f), 1f);
 
         float[] overlayColor = atmosphere.getOverlayColor(colorAlpha);
         float[] atmosphereColor = atmosphere.getAtmoColor();
 
-        float planetAnglularSize = cosOfAtan((float)(renBody.getRadius()/distance));
-        float atmoAnglularSize = cosOfAtan((float)(renBody.getAtmosphereRadius()/distance));
+        float planetAnglularSize = cosOfasin(renBody.getRadius()/distance);
+        float atmoAnglularSize = cosOfasin(renBody.getAtmosphereRadius()/distance);
 
         OverlayColor.set(overlayColor);
         AtmoColor.set(atmosphereColor);
@@ -71,33 +71,22 @@ public class AtmosphereRenderer {
         poseStack.popPose();
     }
 
-    private static float tanOf2Atan(float x) {
-        return 2*x/(1-(x*x));
-    }
+    private static float cosOfasin(double x) {
+        if (x > 1) {
+            x = x-2;
+            return (float) -Math.sqrt(1-x*x);
+        }
 
-    private static float cosOf2Atan(float x) {
-        return (1-(x*x))/(1+(x*x));
-    }
-
-    private static float cosOfAtan(float x) {
-        return 1/(float)Math.sqrt(1+(x*x));
+        return (float)  Math.sqrt(1-x*x);
     }
 
     public static void renderAtmospheres(SpaceRenderable[] renBody, PoseStack poseStack, Matrix4f projectionMatrix, Optional<PlanetAtmosphere> atmosphere) {
-
         for (SpaceRenderable ren : renBody) {
             if (ren instanceof RenderablePlanet renPlanet) {
                 if (renPlanet.getBody().getAtmoshpere().hasAtmosphere()) {
                     render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmoshpere(), poseStack, projectionMatrix);
                 }
             }
-//            PlanetaryBody plnt = ren.getBody();
-//            double distance = (ren.getDistance() - plnt.getRadius());
-//
-//            if (ren.getBody().getAtmoshpere().hasAtmosphere() && distance < plnt.getAtmoshpere().getAtmosphereHeight()) {
-//                alreadyRendered = true;
-//                render(ren, distance, plnt.getAtmoshpere(), poseStack, projectionMatrix);
-//            }
         }
     }
 
