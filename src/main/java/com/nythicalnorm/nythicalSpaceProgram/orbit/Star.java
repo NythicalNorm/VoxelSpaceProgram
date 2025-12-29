@@ -20,6 +20,8 @@ public class Star extends PlanetaryBody {
         this.setSphereOfInfluence(Double.POSITIVE_INFINITY);
         this.calculateOrbitalPeriod();
         super.UpdateSOIs();
+        this.parent = null;
+        this.setChildrenParents();
     }
 
     public void setChildAddresses(HashMap<String, Stack<String>> allPlanetsAddresses) {

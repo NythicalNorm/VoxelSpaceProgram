@@ -24,7 +24,8 @@ public abstract class EntitySpacecraftBody extends Orbit {
     private void updateRotationFromVelocity() {
         if (angularVelocity.x > tolerance || angularVelocity.y > tolerance || angularVelocity.z > tolerance) {
             Quaternionf rotationalVel = new Quaternionf(angularVelocity.x, angularVelocity.y, angularVelocity.z, 0f);
-            this.rotation.mul(rotationalVel.mul(0.5f));
+            //No Idea how this is going to work for Players ??? \_(ツ)_/
+            //this.rotation.mul(rotationalVel.mul(0.5f));
         }
     }
 

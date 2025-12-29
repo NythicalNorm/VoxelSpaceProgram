@@ -48,6 +48,9 @@ public class ClientPlayerSpacecraftBody extends PlayerSpacecraftBody {
     }
 
     private void updatePlanetPos(Level level, Vec3 position, PlanetaryBody currentPlanetOn) {
+        double seaLevel = level.getMinBuildHeight() + 127;
+        position = new Vec3(position.x, position.y - seaLevel, position.z);
+
         relativeOrbitalPos = Calcs.planetDimPosToNormalizedVector(position, currentPlanetOn.getRadius(), currentPlanetOn.getRotation(), false);
         Vector3d newAbs = currentPlanetOn.getAbsolutePos();
         absoluteOrbitalPos = newAbs.add(relativeOrbitalPos);

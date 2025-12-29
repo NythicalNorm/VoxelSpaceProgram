@@ -62,7 +62,7 @@ public class PlanetRenderer {
 
         if (currentPlanetAtmosphere.isPresent()) {
                 //AtmosphereRenderer.render(obj,atmosphere, poseStack, projectionMatrix, partialTick);
-            PlanetAtmosphere bodyAtmos = planet.getAtmoshpere();
+            PlanetAtmosphere bodyAtmos = planet.getAtmosphere();
             float renderOpacity = (currentAlbedo * (bodyAtmos.getExposureNight() - bodyAtmos.getExposureDay())) + bodyAtmos.getExposureDay();
             RenderSystem.setShaderColor(1.0f,1.0f,1.0f, renderOpacity);
             Vec3 skyColor = PlanetShine.getLatestSkyColor();

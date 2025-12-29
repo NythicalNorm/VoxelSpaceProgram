@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.math.Axis;
 import com.nythicalnorm.nythicalSpaceProgram.NythicalSpaceProgram;
 import com.nythicalnorm.nythicalSpaceProgram.gui.PlayerSpacecraftScreen;
 import com.nythicalnorm.nythicalSpaceProgram.planetshine.CelestialStateSupplier;
@@ -38,6 +39,8 @@ public class NavballWidget extends AbstractWidget {
         int xPos = getX() - 47;
         int yPos = getY() - 86;
 
+        NythicalSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> renderNavBall(celestialStateSupplier, pGuiGraphics));
+
         pGuiGraphics.blit(NAVBALL_GUI_TEXTURE, xPos, yPos,0,0,94,86);
         PlayerSpacecraftScreen spacecraftScreen = NythicalSpaceProgram.getCelestialStateSupplier().get().getScreenManager().getSpacecraftScreen();
 
@@ -46,20 +49,17 @@ public class NavballWidget extends AbstractWidget {
             renderButtons(pGuiGraphics, xPos, yPos, spacecraftScreen);
             renderGForceBar(pGuiGraphics, xPos, yPos);
             renderRelativeVelocity(pGuiGraphics, xPos, yPos);
-            NythicalSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
-                renderNavBall(celestialStateSupplier, pGuiGraphics, xPos, yPos);
-            });
         }
     }
 
-    private void renderNavBall(CelestialStateSupplier css, GuiGraphics pGuiGraphics, int xPos, int yPos) {
+    private void renderNavBall(CelestialStateSupplier css, GuiGraphics pGuiGraphics) {
         RenderSystem.depthMask(false);
         RenderSystem.enableDepthTest();
 
         PoseStack navballPosestack = new PoseStack();
         Window gameWindow =  Minecraft.getInstance().getWindow();
 
-        // 70f is the distance from the center of the sphere's place to the bottom
+        // 70f is the pixel distance from the center of the sphere's place to the bottom
         float Yheight = 70f/gameWindow.getGuiScaledHeight();
 
         float aspectRatio = (float) pGuiGraphics.guiWidth() / pGuiGraphics.guiHeight();
@@ -68,11 +68,12 @@ public class NavballWidget extends AbstractWidget {
 
         navballPosestack.translate(0f,-1f+Yheight,-1f);
 
-        float navballScale = (float) gameWindow.getGuiScale()*0.12109375f;
+        float navballScale = (float) gameWindow.getGuiScale() * (124f/gameWindow.getHeight());
         navballPosestack.scale(navballScale, navballScale, navballScale);
 
         if (css.getPlayerOrbit() != null) {
             if (css.getPlayerOrbit().getRotation() != null) {
+                navballPosestack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
                 navballPosestack.mulPose(css.getPlayerOrbit().getRotation());
             }
         }
@@ -98,7 +99,7 @@ public class NavballWidget extends AbstractWidget {
     }
 
     private void renderRelativeVelocity(GuiGraphics pGuiGraphics, int xPos, int yPos) {
-        if (NythicalSpaceProgram.getCelestialStateSupplier().get().weInSpace()) {
+        if (NythicalSpaceProgram.getCelestialStateSupplier().get().weInSpaceDim()) {
             int speed = (int)NythicalSpaceProgram.getCelestialStateSupplier().get().getPlayerOrbit().getRelativeVelocity().length();
             Component orbitalSpeedComp = Component.translatable("nythicalspaceprogram.screen.orbital_speed", speed);
             pGuiGraphics.drawString(Minecraft.getInstance().font, orbitalSpeedComp,xPos + 22, yPos + 5, 0x00ff2b, false);

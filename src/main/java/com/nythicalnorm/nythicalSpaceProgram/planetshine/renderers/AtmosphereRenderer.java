@@ -80,15 +80,15 @@ public class AtmosphereRenderer {
         return (float)  Math.sqrt(1-x*x);
     }
 
-    public static void renderAtmospheres(SpaceRenderable[] renBody, PoseStack poseStack, Matrix4f projectionMatrix, Optional<PlanetAtmosphere> atmosphere) {
-        for (SpaceRenderable ren : renBody) {
-            if (ren instanceof RenderablePlanet renPlanet) {
-                if (renPlanet.getBody().getAtmoshpere().hasAtmosphere()) {
-                    render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmoshpere(), poseStack, projectionMatrix);
-                }
-            }
-        }
-    }
+//    public static void renderAtmospheres(SpaceRenderable[] renBody, PoseStack poseStack, Matrix4f projectionMatrix, Optional<PlanetAtmosphere> atmosphere) {
+//        for (SpaceRenderable ren : renBody) {
+//            if (ren instanceof RenderablePlanet renPlanet) {
+//                if (renPlanet.getBody().getAtmosphere().hasAtmosphere()) {
+//                    render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmosphere(), poseStack, projectionMatrix);
+//                }
+//            }
+//        }
+//    }
 
     public static void renderSpaceSky(PoseStack poseStack, Matrix4f projectionMatrix) {
         poseStack.pushPose();

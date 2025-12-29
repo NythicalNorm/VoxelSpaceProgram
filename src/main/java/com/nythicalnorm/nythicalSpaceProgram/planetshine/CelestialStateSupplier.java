@@ -16,16 +16,16 @@ import java.util.Stack;
 //@OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier {
     private static final int[] timeWarpSettings = new int[]{1, 10, 100, 1000, 10000, 100000, 1000000};
-    private short currentTimeWarpSetting;
+    private short currentTimeWarpSetting = 0;
 
     private ClientPlayerSpacecraftBody playerOrbit;
     private PlanetaryBody currentPlanetOn;
-    private PlanetaryBody currentPlanetSOIin;
+    //private PlanetaryBody currentPlanetSOIin;
     private ClientPlayerSpacecraftBody controllingBody;
 
     private final Planets planets;
-    private ModScreenManager screenManager;
-    private PlanetTexManager planetTexManager;
+    private final ModScreenManager screenManager;
+    private final PlanetTexManager planetTexManager;
 
     public CelestialStateSupplier(EntitySpacecraftBody playerDataFromServer, Planets planets) {
         playerOrbit = new ClientPlayerSpacecraftBody(playerDataFromServer);
@@ -36,7 +36,7 @@ public class CelestialStateSupplier {
     }
 
     public void tick() {
-        if (controllingBody != null && screenManager.isSpacecraftScreenOpen()) {
+        if (controllingBody != null && screenManager.isSpacecraftScreenOpen() && currentTimeWarpSetting == 0) {
             screenManager.getSpacecraftScreen().sendInputs(controllingBody);
         }
     }
@@ -45,8 +45,8 @@ public class CelestialStateSupplier {
         //clientSideTickTime = currentTime;
         planets.UpdatePlanets(ClientTimeHandler.calculateCurrentTime(partialTick));
 
-        if (!weInSpace()) {
-            currentPlanetSOIin = null;
+        if (!weInSpaceDim()) {
+            playerOrbit.setParent(null);
         }
 
         String planetName = planets.getDimensionPlanet(Minecraft.getInstance().level.dimension());
@@ -92,10 +92,10 @@ public class CelestialStateSupplier {
         if (Minecraft.getInstance().player.getId() == shipID) {
             if (oldAddress == null) {
                 playerOrbit.setOrbitalElements(orbitalElements);
-                currentPlanetSOIin = planets.playerJoinedOrbital(Minecraft.getInstance().player.getStringUUID(), newAddress, playerOrbit);
+                planets.playerJoinedOrbital(Minecraft.getInstance().player.getStringUUID(), newAddress, playerOrbit);
             }
             else {
-                currentPlanetSOIin = planets.playerChangeOrbitalSOIs(Minecraft.getInstance().player.getStringUUID(), oldAddress, newAddress, orbitalElements);
+                planets.playerChangeOrbitalSOIs(Minecraft.getInstance().player.getStringUUID(), oldAddress, newAddress, orbitalElements);
             }
         }
     }
@@ -118,8 +118,10 @@ public class CelestialStateSupplier {
     }
 
     public Optional<PlanetaryBody> getCurrentPlanetSOIin() {
-        if (currentPlanetSOIin != null) {
-            return Optional.of(currentPlanetSOIin);
+        if (playerOrbit.getParent() != null && playerOrbit.getParent() instanceof PlanetaryBody body) {
+            return Optional.of(body);
+        } else if (currentPlanetOn != null) {
+            return Optional.of(currentPlanetOn);
         }
         else  {
             return Optional.empty();
@@ -146,7 +148,7 @@ public class CelestialStateSupplier {
         return planets;
     }
 
-    public boolean weInSpace() {
+    public boolean weInSpaceDim() {
         return planets.isDimensionSpace(Minecraft.getInstance().level.dimension());
     }
 

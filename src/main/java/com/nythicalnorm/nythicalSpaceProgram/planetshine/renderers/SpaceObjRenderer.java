@@ -57,9 +57,9 @@ public class SpaceObjRenderer {
         Optional<PlanetAtmosphere> atmosphere = Optional.empty();
 
         if (planetOn.isPresent()) {
-            if (planetOn.get().getAtmoshpere().hasAtmosphere()) {
+            if (planetOn.get().getAtmosphere().hasAtmosphere()) {
                 currentAlbedo = css.getPlayerOrbit().getSunAngle() * 2;
-                atmosphere = Optional.of(planetOn.get().getAtmoshpere());
+                atmosphere = Optional.of(planetOn.get().getAtmosphere());
                 starAlpha = 2*css.getPlayerOrbit().getSunAngle();
             }
         } else {
@@ -73,7 +73,7 @@ public class SpaceObjRenderer {
             //rendering only the sun's atmosphere for now
             if (plnt instanceof RenderablePlanet renPlanet) {
                 if (renPlanet.getBody() instanceof Star) {
-                    AtmosphereRenderer.render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmoshpere(), poseStack, projectionMatrix);
+                    AtmosphereRenderer.render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmosphere(), poseStack, projectionMatrix);
                 }
             }
         }

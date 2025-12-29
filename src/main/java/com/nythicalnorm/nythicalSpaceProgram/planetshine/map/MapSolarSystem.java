@@ -147,8 +147,7 @@ public class MapSolarSystem extends MouseLookScreen {
 
         if (css.isOnPlanet()) {
             currentFocusedBody = css.getCurrentPlanet().get();
-
-        } else if (css.getCurrentPlanetSOIin().isPresent() && css.getPlayerOrbit() != null) {
+        } else if (css.weInSpaceDim() && css.getPlayerOrbit() != null) {
             currentFocusedBody = css.getPlayerOrbit();
         }
 

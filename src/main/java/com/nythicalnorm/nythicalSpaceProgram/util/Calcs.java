@@ -46,7 +46,7 @@ public class Calcs {
         }
         Vector3d quadSpherePos =  getQuadPlanettoSquarePos(zWithinCell, xWithinCell, halfCellSize, QuadId, radius);
 
-        quadSpherePos.rotate(new Quaterniond(planetRot.x, planetRot.y,planetRot.z, planetRot.w));
+        quadSpherePos.rotate(new Quaterniond(planetRot.x, planetRot.y, planetRot.z, planetRot.w));
         return quadSpherePos;
     }
 
@@ -106,10 +106,10 @@ public class Calcs {
         return upDir;
     }
 
-    public static boolean IsNaN(Quaternionf q) {
-        return Double.isNaN(q.w()) ||
-                Double.isNaN(q.x()) ||
-                Double.isNaN(q.y()) ||
-                Double.isNaN(q.z());
-    }
+//    public static boolean IsNaN(Quaternionf q) {
+//        return Double.isNaN(q.w()) ||
+//                Double.isNaN(q.x()) ||
+//                Double.isNaN(q.y()) ||
+//                Double.isNaN(q.z());
+//    }
 }

@@ -17,6 +17,7 @@ public abstract class Orbit {
     protected Quaternionf rotation;
     protected OrbitalElements orbitalElements;
     protected HashMap<String, Orbit> childElements;
+    protected Orbit parent;
     protected boolean isStableOrbit;
 
     public Vector3d getRelativePos() {
@@ -33,6 +34,14 @@ public abstract class Orbit {
 
     public Quaternionf getRotation() {
         return rotation;
+    }
+
+    public void setParent(Orbit parent) {
+        this.parent = parent;
+    }
+
+    public Orbit getParent() {
+        return parent;
     }
 
     public void setRotation(Quaternionf rotation) {
@@ -84,6 +93,10 @@ public abstract class Orbit {
             }
         }
         return false;
+    }
+
+    public double getRelativePosDistance() {
+        return this.relativeOrbitalPos.length();
     }
 
     public CompoundTag saveNBT(CompoundTag nbt) {

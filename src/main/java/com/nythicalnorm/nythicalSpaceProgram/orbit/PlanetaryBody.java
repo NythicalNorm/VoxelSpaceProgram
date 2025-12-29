@@ -89,7 +89,8 @@ public class PlanetaryBody extends Orbit {
     }
 
     public void addChildSpacecraft(String key, EntitySpacecraftBody orbitData) {
-        this.childElements.put(key ,orbitData);
+        orbitData.setParent(this);
+        this.childElements.put(key, orbitData);
     }
 
     public void removeChild(String oldAddress) {
@@ -108,7 +109,7 @@ public class PlanetaryBody extends Orbit {
         return RotationPeriod;
     }
 
-    public PlanetAtmosphere getAtmoshpere() {
+    public PlanetAtmosphere getAtmosphere() {
         return atmoshpericEffects;
     }
 
@@ -148,6 +149,17 @@ public class PlanetaryBody extends Orbit {
                         orbitBody.orbitalElements.setOrbitalPeriod(this.mass);
                     }
                     body.calculateOrbitalPeriod();
+                }
+            }
+        }
+    }
+
+    protected void setChildrenParents() {
+        if (childElements != null) {
+            for (Orbit orbitBody : childElements.values()) {
+                orbitBody.setParent(this);
+                if (orbitBody instanceof PlanetaryBody planetaryBody) {
+                    planetaryBody.setChildrenParents();
                 }
             }
         }

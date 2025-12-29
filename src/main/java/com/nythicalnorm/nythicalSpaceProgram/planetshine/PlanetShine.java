@@ -76,7 +76,7 @@ public class PlanetShine {
         RenderSystem.depthMask(false);
 
         if (css.isOnPlanet()) {
-            if (css.getCurrentPlanet().get().getAtmoshpere().hasAtmosphere()) {
+            if (css.getCurrentPlanet().get().getAtmosphere().hasAtmosphere()) {
                 latestSkyColor = Minecraft.getInstance().level.getSkyColor(camera.getPosition(), partialTick);
 
                 RenderSystem.setShaderColor((float) latestSkyColor.x, (float) latestSkyColor.y, (float) latestSkyColor.z, 1.0F);

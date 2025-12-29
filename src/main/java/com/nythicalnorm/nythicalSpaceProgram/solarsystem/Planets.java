@@ -66,7 +66,7 @@ public class Planets {
         return SURIYAN.getOrbit((Stack<String>)address.clone());
     }
 
-    public PlanetaryBody playerChangeOrbitalSOIs(String playerUUid, Stack<String> oldAddress, Stack<String> newAddress, OrbitalElements orbitalElementsNew) {
+    public void playerChangeOrbitalSOIs(String playerUUid, Stack<String> oldAddress, Stack<String> newAddress, OrbitalElements orbitalElementsNew) {
         PlanetaryBody oldPlanet = null;
 
         if  (oldAddress != null) {//(allPlayerOrbitalAddresses.containsKey(oldAddress.firstElement())) {
@@ -85,14 +85,12 @@ public class Planets {
             if (newOrbitPlanet instanceof PlanetaryBody plnt) {
                 plnt.addChildSpacecraft(playerUUid, entitybody);
             }
-            return (PlanetaryBody) newOrbitPlanet;
         } else {
             NythicalSpaceProgram.logError("No Old Orbit given for changing SOIs");
-            return null;
         }
     }
 
-    public PlanetaryBody playerJoinedOrbital(String PlayerUUid, Stack<String> newAddress, EntitySpacecraftBody OrbitalDataNew) {
+    public void playerJoinedOrbital(String PlayerUUid, Stack<String> newAddress, EntitySpacecraftBody OrbitalDataNew) {
         Orbit newOrbitPlanet = getPlanet(newAddress);
 
         if (newOrbitPlanet instanceof PlanetaryBody plnt) {
@@ -101,7 +99,6 @@ public class Planets {
             OrbitalDataNew.setRotation(new Quaternionf());
             plnt.addChildSpacecraft(PlayerUUid, OrbitalDataNew);
         }
-        return (PlanetaryBody) newOrbitPlanet;
     }
 
     public Set<String> getAllPlanetNames() {
