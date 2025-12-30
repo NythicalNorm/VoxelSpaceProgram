@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "com.nythicalnorm.voxelspaceprogram.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "daynightcycle.LevelMixin",
+    "daynightcycle.LevelReaderMixin",
+    "daynightcycle.LevelTimeAccessMixin",
+    "daynightcycle.WorldGenRegionMixin",
+    "daynightcycle.isDay.MobMixin",
+    "vs.PhysShipImplMixin"
+  ],
+  "client": [
+    "CameraMixin",
+    "LevelRendererMixin",
+    "daynightcycle.FogRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8",
+  "refmap": "mixins.voxelspaceprogram.refmap.json"
+}

@@ -34,7 +34,7 @@ public class ClientboundPlanetTexturePacket {
             NetworkEvent.Context context = contextSupplier.get();
 
             VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
-                context.enqueueWork(() -> celestialStateSupplier.getPlanetTexManager().incomingTexture(planetName, planetTexture));
+                context.enqueueWork(() -> celestialStateSupplier.getPlanetTexManager().incomingPlanetTexture(planetName, planetTexture));
             });
         }
     }

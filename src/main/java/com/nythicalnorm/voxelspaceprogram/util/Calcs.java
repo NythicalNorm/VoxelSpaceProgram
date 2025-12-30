@@ -8,8 +8,6 @@ import org.joml.*;
 import java.lang.Math;
 
 public class Calcs {
-    public static final float hPI = 1.57079632679f;
-
     public static Vector3d planetDimPosToNormalizedVector(Vec3 pos, double planetRadius, Quaternionf planetRot, boolean isNormalized) {
         double cellSize = Math.PI*planetRadius*0.5d;
         double halfCellSize = cellSize*0.5d;
@@ -73,6 +71,8 @@ public class Calcs {
         return squarePos;
     }
 
+
+
     public static Vector3f getQuadSquarePos(float sidesUpIter, float sidesRightIter, float MaxPerSide, int squareSide, float radius) {
         float sidesrightP = sidesRightIter/MaxPerSide;
         float sidesupP = sidesUpIter/MaxPerSide;
@@ -100,7 +100,7 @@ public class Calcs {
         upDir = new Vector3f(northPole.x, northPole.z, northPole.y);
 
         upDir.normalize();
-        Quaternionf rot = new Quaternionf(new AxisAngle4f(hPI, 1f, 0f, 0f));
+        Quaternionf rot = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1f, 0f, 0f));
 
         upDir.rotate(rot);
         return upDir;

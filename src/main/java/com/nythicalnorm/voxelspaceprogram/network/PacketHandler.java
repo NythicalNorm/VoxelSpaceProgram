@@ -49,6 +49,14 @@ public class PacketHandler {
                 .consumerMainThread(ClientboundPlanetTexturePacket::handle)
                 .add();
 
+        INSTANCE.messageBuilder(ClientboundBiomeTexturePacket.class, ++id)
+                .encoder(ClientboundBiomeTexturePacket::encode)
+                .decoder(ClientboundBiomeTexturePacket::new)
+                .consumerMainThread(ClientboundBiomeTexturePacket::handle)
+                .add();
+
+
+        // Server to Client
         INSTANCE.messageBuilder(ServerboundSpacecraftMove.class, ++id)
                 .encoder(ServerboundSpacecraftMove::encode)
                 .decoder(ServerboundSpacecraftMove::new)

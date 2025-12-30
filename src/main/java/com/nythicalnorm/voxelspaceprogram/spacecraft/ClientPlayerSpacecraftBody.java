@@ -6,6 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -43,7 +44,7 @@ public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
 
     private void updatePlanetRot(Quaternionf existingrotation, PlanetaryBody currentPlanet) {
         //quaternion to rotate the output of lookalong function to the correct -y direction.
-        this.rotation = new Quaternionf(new AxisAngle4f(Calcs.hPI,1f,0f,0f));
+        this.rotation = new Quaternionf(new AxisAngle4f(Mth.HALF_PI,1f,0f,0f));
         Vector3f playerRelativePos = new Vector3f((float) relativeOrbitalPos.x, (float) relativeOrbitalPos.y, (float) relativeOrbitalPos.z);
         playerRelativePos.normalize();
         Vector3f upVector = Calcs.getUpVectorForPlanetRot(new Vector3f(playerRelativePos), currentPlanet);

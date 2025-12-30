@@ -3,50 +3,31 @@ package com.nythicalnorm.voxelspaceprogram.planettexgen.handlers;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.PlanetGradient;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.PlanetMapGen;
+import com.nythicalnorm.voxelspaceprogram.planettexgen.TexGenTask;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 
-public class WholePlanetTexGenTask implements Supplier<byte[]> {
-    private final Path planetDir;
+public class WholePlanetTexGenTask extends TexGenTask {
+    private final Path planetsDir;
     private final String planetName;
     private final long seed;
     private final PlanetGradient gradient;
 
-    public WholePlanetTexGenTask(Path planetDir, String planetName, long seed, PlanetGradient gradient) {
-        this.planetDir = planetDir;
+    public WholePlanetTexGenTask(Path planetsDir, String planetName, long seed, PlanetGradient gradient) {
+        this.planetsDir = planetsDir;
         this.planetName = planetName;
         this.seed = seed;
         this.gradient = gradient;
     }
 
-    public static byte[] convertBufferedImageToPngBytes(BufferedImage image) throws IOException {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            boolean success = ImageIO.write(image, "png", outputStream);
-
-            if (!success) {
-                VoxelSpaceProgram.logError("There is no png writer in this environment, Well then this mod won't work now will it?");
-                return null;
-            }
-
-            return outputStream.toByteArray();
-
-        } catch (IOException e) {
-            VoxelSpaceProgram.logError("Error writing planet texture to buffer");
-            throw e;
-        }
-    }
-
     @Override
     public byte[] get() {
-        Path planetTexPath = planetDir.resolve(planetName + ".png");
+        Path planetTexPath = planetsDir.resolve(planetName + ".png");
         File planetTexFileLocation = new File(planetTexPath.toUri());
 
         if (!planetTexFileLocation.exists()) {

@@ -3,6 +3,7 @@ package com.nythicalnorm.voxelspaceprogram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.DimensionTeleporter;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.network.*;
+import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeColorHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.handlers.PlanetTexHandler;
@@ -30,7 +31,7 @@ public class SolarSystem {
     public long timePassPerTick;
     //public static double tickTimeStamp;
     private final MinecraftServer server;
-    private HashMap<String, ServerPlayerSpacecraftBody> allPlayerOrbitalAddresses;
+    private final HashMap<String, ServerPlayerSpacecraftBody> allPlayerOrbitalAddresses;
     private final PlanetsProvider planetsProvider;
     private PlanetTexHandler planetTexHandler;
 
@@ -39,6 +40,7 @@ public class SolarSystem {
         allPlayerOrbitalAddresses = new HashMap<>();
         this.server = server;
         this.planetsProvider = pPlanets;
+        BiomeColorHolder.init();
     }
 
     public MinecraftServer getServer() {
@@ -58,7 +60,8 @@ public class SolarSystem {
 
     public void serverStarted() {
         this.planetTexHandler = new PlanetTexHandler();
-        server.execute(() -> planetTexHandler.loadOrCreateTex(server, this.planetsProvider));
+        server.execute(() -> planetTexHandler.loadOrCreatePlanetTex(server, this.planetsProvider));
+        server.execute(() -> planetTexHandler.getOrCreateBiomeTex(server.overworld()));
     }
 
     public long getCurrentTime() {
@@ -66,9 +69,6 @@ public class SolarSystem {
     }
 
     public void ChangeTimeWarp(int proposedSetTimeWarpSpeed, ServerPlayer player) {
-        if (player == null) {
-            return;
-        }
         long timePassPerSec = Mth.clamp(proposedSetTimeWarpSpeed, 0, 5000000);
         timePassPerTick = Calcs.TimePerTickToTimePerMilliTick(timePassPerSec);
         server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.settimewarp",

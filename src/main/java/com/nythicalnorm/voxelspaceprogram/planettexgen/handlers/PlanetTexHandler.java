@@ -4,9 +4,12 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.network.ClientboundPlanetTexturePacket;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.GradientSupplier;
+import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeTexGenTask;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -25,39 +28,30 @@ public class PlanetTexHandler {
 
     private static File modDir;
     private static File planettexDir;
+    private static ExecutorService texExecuter;
 
     HashMap<String, CompletableFuture<byte[]>> planetTexturesBytes;
 
-    public void loadOrCreateTex(MinecraftServer server, PlanetsProvider planets) {
+    public void loadOrCreatePlanetTex(MinecraftServer server, PlanetsProvider planets) {
         Path modSubFolder = server.getWorldPath(LevelResource.ROOT).resolve(modSaveDirPath);
-        modDir = new File(modSubFolder.toUri());
+        modDir = getOrCreateDir(modSubFolder);
 
-        if (!modDir.exists()) {
-            boolean wasCreated = modDir.mkdir();
-            if (!wasCreated) {
-                VoxelSpaceProgram.logError("Mod Directory Creation Failed.");
-                return;
-            }
-        }
         Path planetDir = modSubFolder.resolve(planetTexDirPath);
-        planettexDir = new File(planetDir.toUri());
+        planettexDir = getOrCreateDir(planetDir);
 
-        if (!planettexDir.exists()) {
-            boolean wasCreated = planettexDir.mkdir();
-            if (!wasCreated) {
-                VoxelSpaceProgram.logError("Planet Directory Creation Failed.");
-                return;
-            }
+        if (modSubFolder == null || planettexDir == null) {
+            return;
         }
+
         RandomSource randomSource = RandomSource.create(server.getLevel(Level.OVERWORLD).getSeed());
         planetTexturesBytes = new HashMap<>();
-        ExecutorService texExecutorService = Executors.newSingleThreadExecutor();
+        texExecuter = Executors.newSingleThreadExecutor();
 
         server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.planetgen_start"), true);
 
         for (String planetaryName : planets.allPlanetsAddresses.keySet()) {
             CompletableFuture<byte[]> planetImgData = CompletableFuture.supplyAsync(
-                    new WholePlanetTexGenTask(planetDir, planetaryName, randomSource.nextLong(), GradientSupplier.textureForPlanets.get(planetaryName)), texExecutorService);
+                    new WholePlanetTexGenTask(planetDir, planetaryName, randomSource.nextLong(), GradientSupplier.textureForPlanets.get(planetaryName)), texExecuter);
             planetTexturesBytes.put(planetaryName, planetImgData);
 
             planetImgData.thenRun(() -> {
@@ -65,6 +59,11 @@ public class PlanetTexHandler {
                         planetaryName), true);
             });
         }
+    }
+
+    public void getOrCreateBiomeTex(ServerLevel level) {
+        CompletableFuture.supplyAsync(
+                new BiomeTexGenTask(level, new BlockPos(0, 0, 0), 0, planettexDir.toPath()), texExecuter);
     }
 
     public void sendAllTexToPlayer(UUID uuid) {
@@ -78,5 +77,18 @@ public class PlanetTexHandler {
 
     private void sendToPlayer(ServerPlayer player, String planetName, byte[] texture) {
         PacketHandler.sendToPlayer(new ClientboundPlanetTexturePacket(planetName, texture), player);
+    }
+
+    private File getOrCreateDir (Path folderPath) {
+        File folderDir = new File(folderPath.toUri());
+
+        if (!folderDir.exists()) {
+            boolean wasCreated = folderDir.mkdir();
+            if (!wasCreated) {
+                VoxelSpaceProgram.logError(folderDir.getPath() + " Directory Creation Failed.");
+                return null;
+            }
+        }
+        return folderDir;
     }
 }

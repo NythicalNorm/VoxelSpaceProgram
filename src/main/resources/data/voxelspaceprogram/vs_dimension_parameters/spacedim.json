@@ -1,0 +1,17 @@
+[
+  {
+    "dimensionId": "minecraft:dimension:voxelspaceprogram:spacedim",
+    "maxYPos": 0,
+    "seaLevel": 0,
+    "gravity": [0, 0, 0],
+    "priority": 1
+  },
+
+  {
+    "dimensionId": "minecraft:dimension:minecraft:overworld",
+    "maxYPos": 30062,
+    "seaLevel": 62,
+    "gravity": [0, -10, 0],
+    "priority": 1
+  }
+]

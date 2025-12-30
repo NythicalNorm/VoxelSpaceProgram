@@ -5,7 +5,9 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -19,7 +21,7 @@ public class PlanetTexManager {
         this.planetResourceLocations = new HashMap<>();
     }
 
-    public void incomingTexture(String planetName, byte[] tex) {
+    public void incomingPlanetTexture(String planetName, byte[] tex) {
         VoxelSpaceProgram.log(planetName + " texture received, Size: " + tex.length);
         ByteBuffer texBytebuffer = ByteBuffer.allocateDirect(tex.length);
         texBytebuffer.put(tex);
@@ -45,5 +47,13 @@ public class PlanetTexManager {
         } else {
             return Optional.empty();
         }
+    }
+
+    public void incomingBiomeTexture(ResourceKey<Level> dimensionID, int textureID, short textureSize, byte[] biomeTexture) {
+        if (dimensionID != Minecraft.getInstance().level.dimension()) {
+            return;
+        }
+
+
     }
 }

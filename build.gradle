@@ -114,49 +114,103 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    mavenCentral()
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //     dir 'libs'
-    // }
+    // CurseForge Maven Repositor
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven {
+        name = "create maven"
+        url = "https://maven.tterrag.com/"
+        content {
+            includeGroup("com.simibubi.create")
+            includeGroup("com.jozufozu.flywheel")
+            includeGroup("com.tterrag.registrate")
+        }
+    }
+
+    // Add KFF Maven repository
+    maven {
+        name = 'Kotlin for Forge'
+        url = 'https://thedarkcolour.github.io/KotlinForForge/'
+    }
+
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+
+    maven {
+        name = 'CurseForge'
+        url = 'https://cursemaven.com'
+    }
+
+    maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
+
+    maven {
+        name = 'MinecraftForge'
+        url = 'https://maven.minecraftforge.net/'
+    }
+
+    maven {
+        url "https://maven.squiddev.cc"
+        content {
+            includeGroup("cc.tweaked")
+            includeGroup ("org.squiddev")
+        }
+    }
     maven {
         // location of the maven that hosts JEI files since January 2023
+        // location of the maven for Vazkii's mods
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // location of the maven for Curios API
+        url = "https://maven.theillusivec4.top/"
+    }
+
+    maven {
+        name = "Valkyrien Skies Internal"
+        url = 'https://maven.valkyrienskies.org'
+    }
+
+    maven {
+        name = "Architectury"
+        url 'https://maven.architectury.dev/'
     }
 }
 
 dependencies {
-    // Specify the version of Minecraft to use.
-    // Any artifact can be supplied so long as it has a "userdev" classifier artifact and is a compatible patcher artifact.
-    // The "userdev" classifier will be requested and setup by ForgeGradle.
-    // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
-    // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // Apply Mixin AP
+    //implementation fg.deobf("curse.maven:architectury-api-419699:4663010")
+
+    implementation         ("org.valkyrienskies.core:api:${vs_core_version}")
+    implementation         ("org.valkyrienskies.core:internal:${vs_core_version}")
+    implementation         ("org.valkyrienskies.core:util:${vs_core_version}")
+    implementation         fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}") {transitive = false}
+
+    implementation(fg.deobf("dev.architectury:architectury-forge:9.1.12"))
+    // Drive by Wire - With deobfuscation for development environment
+    //runtimeOnly fg.deobf("curse.maven:drive-by-wire-1192722:6224008")
+    // Add your CurseForge mods here using the template above:
+    // runtimeOnly fg.deobf("curse.maven:MOD_SLUG-PROJECT_ID:FILE_ID")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
+    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
+    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
+    implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-    // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    // at runtime, use the full JEI jar for Forge
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0' // Use the latest stable version
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0' // Use the latest stable version
+    runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_version}")
+    runtimeOnly fg.deobf("org.valkyrienskies.kelvin:kelvin-forge:${minecraft_version}-${kelvin_version}")
+    implementation(fg.deobf("maven.modrinth:create-clockwork:1.20.1-forge-0.5.4.4"))
 }
 
 test {
@@ -205,8 +259,8 @@ tasks.named('jar', Jar).configure {
 
 mixin {
     // MixinGradle Settings
-    add sourceSets.main, 'mixins.voxelspaceprogram.refmap.json'
-    config 'mixins.voxelspaceprogram.json'
+    add sourceSets.main, 'voxelspaceprogram.refmap.json'
+    config 'voxelspaceprogram.mixins.json'
 
     //debug.verbose = true
     //debug.export = true
@@ -217,15 +271,15 @@ mixin {
 //     dependsOn 'reobfJar'
 // }
 
-jar {
-    sourceSets {
-        main {
-            java {
-                exclude 'com/nythicalnorm/voxelspaceprogram/planettexgen/MapGenTestDisplay.java'
-            }
-        }
-    }
-}
+//jar {
+//    sourceSets {
+//        main {
+//            java {
+//                exclude 'com/nythicalnorm/voxelspaceprogram/planettexgen/MapGenTestDisplay.java'
+//            }
+//        }
+//    }
+//}
 
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {

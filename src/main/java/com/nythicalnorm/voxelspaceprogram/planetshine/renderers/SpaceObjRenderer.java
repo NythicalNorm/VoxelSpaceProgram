@@ -22,7 +22,7 @@ import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class SpaceObjRenderer {
-    private static final float InWorldPlanetsDistance = 64f;
+    private static final float InWorldPlanetsDistance = 384f;
     private static SpaceRenderable[] renderPlanets;
 
     public static void PopulateRenderPlanets(PlanetsProvider planets) {
