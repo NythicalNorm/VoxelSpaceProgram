@@ -54,9 +54,11 @@ public class PlanetShine {
         //SpaceObjRenderer.PopulateRenderPlanets();
     }
 
-    public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack,
-    Matrix4f projectionMatrix, float partialTick, Camera camera, VertexBuffer sky_Buffer, CelestialStateSupplier celestialStateSupplier)
+    public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack, float partialTick, Camera camera, VertexBuffer sky_Buffer, CelestialStateSupplier celestialStateSupplier)
     {
+        double fov = mc.gameRenderer.getFov(camera, partialTick, true);
+        Matrix4f projectionMatrix = mc.gameRenderer.getProjectionMatrix(fov);
+
         css = celestialStateSupplier;
         if (isFirstTime) {
             setupShaders();
