@@ -9,7 +9,9 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class VehicleAssemblerScreen extends AbstractContainerScreen<VehicleAssemblerMenu> {
     private static final ResourceLocation TEXTURE = NythicalSpaceProgram.rl(
-            "textures/gui/cryogenic_air_separator.png");
+            "textures/gui/vehicle_assembler.png");
+    private static final int texWidth = 256;
+    private static final int texHeight = 192;
 
     @Override
     protected void init() {
@@ -24,10 +26,10 @@ public class VehicleAssemblerScreen extends AbstractContainerScreen<VehicleAssem
 
     @Override
     protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
-        int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
+        int x = (width - texWidth) / 2;
+        int y = (height - texHeight) / 2;
 
-        pGuiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        pGuiGraphics.blit(TEXTURE, x, y, 0, 0, texWidth, texHeight);
     }
 
     @Override

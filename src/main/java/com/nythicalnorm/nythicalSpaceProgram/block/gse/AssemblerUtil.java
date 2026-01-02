@@ -134,4 +134,25 @@ public class AssemblerUtil {
         }
         return -1;
     }
+
+    public static double getTotalMass(BlockState[][][] alreadySeearchedblockPos) {
+//        MassDatapackResolver resolver = MassDatapackResolver.INSTANCE;
+//        double totalMass = 0;
+//
+//        if (resolver == null) {
+//            return totalMass;
+//        }
+//        for (int y = 0; y < alreadySeearchedblockPos.length; y++) {
+//            for (int x = 0; x < alreadySeearchedblockPos[y].length; x++) {
+//                for (int z = 0; z < alreadySeearchedblockPos[y][x].length; z++) {
+//                    Double mass = resolver.getBlockStateMass(alreadySeearchedblockPos[x][y][z]);
+//                    if (mass != null) {
+//                        totalMass += mass;
+//                    }
+//                }
+//            }
+//        }
+//        return totalMass;
+        return 0;
+    }
 }
