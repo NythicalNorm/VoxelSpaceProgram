@@ -36,7 +36,7 @@ public class PlatformAssembly extends Block {
         posOptional.ifPresent(blockPos -> {
             BlockEntity blockEntity = pLevel.getBlockEntity(blockPos);
             if (blockEntity instanceof VehicleAssemblerEntity vehicleAssembler) {
-                vehicleAssembler.recalculateBoundingBox();
+                vehicleAssembler.setRecalculateBox();
             }
         });
     }

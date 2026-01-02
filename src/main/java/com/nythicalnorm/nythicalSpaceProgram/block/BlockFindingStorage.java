@@ -1,5 +1,6 @@
 package com.nythicalnorm.nythicalSpaceProgram.block;
 
+import com.nythicalnorm.nythicalSpaceProgram.block.gse.entity.VehicleAssemblerEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -10,8 +11,6 @@ import java.util.Optional;
 
 public class BlockFindingStorage {
     private static final List<BlockEntityLoc> assemblerBlockLocation = new ArrayList<>();
-    private static int MaxDistanceToSearch = 128;
-
 
     private static class BlockEntityLoc {
         private final BlockPos pos;
@@ -34,6 +33,7 @@ public class BlockFindingStorage {
 
     public static Optional<BlockPos> findAssemblerBlockInRange(BlockPos pos, Level pLevel) {
         Optional<BlockPos> assemblerBlockPos = Optional.empty();
+        int MaxDistanceToSearch = VehicleAssemblerEntity.MaxPlatformSize;
 
         for (BlockEntityLoc loc : assemblerBlockLocation) {
             if (loc.dimensionKey == pLevel.dimension()) {

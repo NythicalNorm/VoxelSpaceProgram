@@ -1,7 +1,7 @@
 package com.nythicalnorm.nythicalSpaceProgram.block.gse;
 
 import com.nythicalnorm.nythicalSpaceProgram.block.gse.entity.VehicleAssemblerEntity;
-import com.nythicalnorm.nythicalSpaceProgram.block.manufacturing.entity.CryogenicAirSeparatorEntity;
+import com.nythicalnorm.nythicalSpaceProgram.block.manufacturing.entity.NSPBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
@@ -38,6 +40,15 @@ public class VehicleAssembler extends BaseEntityBlock {
         }
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        if (level.isClientSide) {
+            return null;
+        }
+        return createTickerHelper(pBlockEntityType, NSPBlockEntities.VEHICLE_ASSEMBLER_BE.get(),
+                (pLevel, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel, pPos, pState1));
     }
 
     @Override
