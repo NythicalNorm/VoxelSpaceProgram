@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
+import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
+import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -16,6 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Optional;
@@ -26,7 +29,8 @@ public class LevelRendererMixin {
     @Shadow
     private VertexBuffer skyBuffer;
 
-    boolean doesMobEffectBlockSky(Camera pCamera) {
+    @Shadow
+    private boolean doesMobEffectBlockSky(Camera pCamera) {
         return false;
     }
 
@@ -52,5 +56,17 @@ public class LevelRendererMixin {
         }
         //long diff = Util.getNanos() - beforeTimes;
         //VoxelSpaceProgram.log("PlanetShine Time: " + diff);
+    }
+
+    @ModifyVariable(method = "renderClouds", at = @At("LOAD"), ordinal = 0)
+    private double changeCloudSpeed(double value) {
+        Optional<CelestialStateSupplier> css = VoxelSpaceProgram.getCelestialStateSupplier();
+        if (!css.isEmpty()) {
+            if (css.get().doRender()) {
+                return Calcs.TimePerMilliTickToTick(ClientTimeHandler.getClientSideSolarSystemTime()) * 0.03F;
+            }
+        }
+
+        return value;
     }
 }

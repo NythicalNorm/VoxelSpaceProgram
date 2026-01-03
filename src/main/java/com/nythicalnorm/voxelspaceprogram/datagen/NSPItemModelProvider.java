@@ -1,4 +1,5 @@
 package com.nythicalnorm.voxelspaceprogram.datagen;
+
 import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.data.PackOutput;
@@ -38,7 +39,7 @@ public class NSPItemModelProvider extends ItemModelProvider {
                 ResourceLocation.parse("item/handheld")).texture("layer0",
                 VoxelSpaceProgram.rl( "item/" + item.getId().getPath()));
 
-//        ModelFile.ExistingModelFile val = getExistingFile(VoxelSpaceProgram.rl( "item/" + item.getId().getPath() + "_3d"));
+//        ModelFile.ExistingModelFile val = getExistingFile(NythicalSpaceProgram.rl( "item/" + item.getId().getPath() + "_3d"));
 //
 //        withExistingParent(item.getId().getPath(), ResourceLocation.parse("item/handheld"))
 //                .customLoader(SeparateTransformsModelBuilder::begin)

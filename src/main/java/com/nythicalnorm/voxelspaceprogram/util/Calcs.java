@@ -110,12 +110,16 @@ public class Calcs {
         return new Quaterniond(quaternionf.x, quaternionf.y, quaternionf.z, quaternionf.w);
     }
 
-    public static long TimePerSecToTimePerTick(long timePassPerSec) {
+    public static long TimePerTickToTimePerMilliTick(long timePassPerSec) {
         return timePassPerSec * 1000;
     }
 
-    public static long TimePerSecToTimePerTick(double timePassPerSec) {
+    public static long TimePerTickToTimePerMilliTick(double timePassPerSec) {
         return (long) (timePassPerSec * 1000);
+    }
+
+    public static double TimePerMilliTickToTick(double timePassPerTick) {
+        return (double) timePassPerTick / 1000d;
     }
 
     public static double timeLongToDouble(long diff) {

@@ -8,8 +8,7 @@
   "item.voxelspaceprogram.magnetized_iron_ingot": "Magnetized Iron Ingot",
   "item.voxelspaceprogram.liquid_oxygen_fluid_bucket": "Liquid Oxygen Bucket",
 
-  "creativetab.Main_NSP": "Nythical Space Program",
-
+  "creativetab.Main_VSP": "Voxel Space Program",
   "block.voxelspaceprogram.oxygen_propellant_tank": "Oxygen Propellant Tank",
   "block.voxelspaceprogram.lunar_regolith": "Lunar Regolith",
   "block.voxelspaceprogram.cryogenic_air_separator": "Cryogenic Air Separator",
@@ -28,13 +27,14 @@
   "voxelspaceprogram.state.settimewarp": "Setting Time Warp to: %1$sx",
   "voxelspaceprogram.state.planetgen_start": "Starting Planet texture generation...",
   "voxelspaceprogram.state.planetgen_end": "planet %1$s's texture generation complete",
-  "key.category.voxelspaceprogram.main": "Nythical Space Program",
+
+  "key.category.voxelspaceprogram.main": "Voxel Space Program",
   "key.voxelspaceprogram.increase_time_warp": "Increase Time Warp Speed",
   "key.voxelspaceprogram.decrease_time_warp": "Decrease Time Warp Speed",
   "key.voxelspaceprogram.open_solar_system_map": "Open Solar System Map",
   "key.voxelspaceprogram.use_player_jetpack_key": "Use your Spacesuit's jetpack",
 
-  "key.category.voxelspaceprogram.spacecraft_control": "NSP Spacecraft Controls",
+  "key.category.voxelspaceprogram.spacecraft_control": "VSP Spacecraft Controls",
   "key.voxelspaceprogram.increase_throttle":  "Increase Engine Throttle",
   "key.voxelspaceprogram.decrease_throttle":  "Decrease Engine Throttle",
 

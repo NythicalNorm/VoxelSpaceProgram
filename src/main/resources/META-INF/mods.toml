@@ -45,19 +45,19 @@ authors="${mod_authors}" #optional
 description ='''${mod_description}'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 
-[[dependencies.voxelspaceprogram]]
-    modId="fusion"
-    mandatory=true
-    versionRange="[1.2.2,)"
-    ordering="AFTER"
-    side="CLIENT"
-
-[[dependencies.voxelspaceprogram]]
-modId="valkyrienskies"
-mandatory=true
-versionRange="[2.4.3,)"
-ordering="AFTER"
-side="BOTH"
+#[[dependencies.voxelspaceprogram]]
+#    modId="fusion"
+#    mandatory=true
+#    versionRange="[1.2.2,)"
+#    ordering="AFTER"
+#    side="CLIENT"
+#
+#[[dependencies.voxelspaceprogram]]
+#    modId="valkyrienskies"
+#    mandatory=true
+#    versionRange="[2.4.3,)"
+#    ordering="AFTER"
+#    side="BOTH"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't

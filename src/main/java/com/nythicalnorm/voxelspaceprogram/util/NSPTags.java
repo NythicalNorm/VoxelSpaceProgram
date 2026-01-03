@@ -12,12 +12,12 @@ public class NSPTags {
         public static  final TagKey<Block> MAGNETIC_METALS = tag("magnetic_boots_metals");
 
         private static TagKey<Block> tag(String name) {
-            return BlockTags.create(VoxelSpaceProgram.rl( name));
+            return BlockTags.create(VoxelSpaceProgram.rl(name));
         }
     }
     public static class Items {
         private static TagKey<Item> tag(String name) {
-            return ItemTags.create(VoxelSpaceProgram.rl( name));
+            return ItemTags.create(VoxelSpaceProgram.rl(name));
         }
     }
 }

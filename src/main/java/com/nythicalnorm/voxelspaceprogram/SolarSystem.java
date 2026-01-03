@@ -70,7 +70,7 @@ public class SolarSystem {
             return;
         }
         long timePassPerSec = Mth.clamp(proposedSetTimeWarpSpeed, 0, 5000000);
-        timePassPerTick = Calcs.TimePerSecToTimePerTick(timePassPerSec);
+        timePassPerTick = Calcs.TimePerTickToTimePerMilliTick(timePassPerSec);
         server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.settimewarp",
                 proposedSetTimeWarpSpeed), true);
         PacketHandler.sendToAllClients(new ClientboundTimeWarpUpdate(true, proposedSetTimeWarpSpeed));

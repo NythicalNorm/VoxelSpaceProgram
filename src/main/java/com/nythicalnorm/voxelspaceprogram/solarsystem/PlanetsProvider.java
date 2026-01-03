@@ -28,14 +28,14 @@ public class PlanetsProvider {
 
     public PlanetaryBody NILA =  new PlanetaryBody(new OrbitalElements(
             382599226,0.091470106618193394721,6.476694128611285E-02,
-            5.4073390958703955178,2.162973108375887854, Calcs.TimePerSecToTimePerTick(2.7140591915324141503)),
+            5.4073390958703955178,2.162973108375887854, Calcs.TimePerTickToTimePerMilliTick(2.7140591915324141503)),
             //2358720),
             new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 0.005f),
             new HashMap<>(),1737400, 7.34767309E22,  0f, 0, 2358720);
 
     public PlanetaryBody BUMI = new PlanetaryBody(new OrbitalElements(
             149653496273.0d,4.657951002584728917e-6,1.704239718110438E-02,
-            5.1970176873649567284,2.8619013937171278172,Calcs.TimePerSecToTimePerTick(6.2504793475201942954)),
+            5.1970176873649567284,2.8619013937171278172,Calcs.TimePerTickToTimePerMilliTick(6.2504793475201942954)),
              // 31557600),
              new PlanetAtmosphere(true, 0x5ba3e6, 0x0077ff,
                      100000, 0.25f,1.0f, 0.5f),

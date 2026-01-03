@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.sound;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

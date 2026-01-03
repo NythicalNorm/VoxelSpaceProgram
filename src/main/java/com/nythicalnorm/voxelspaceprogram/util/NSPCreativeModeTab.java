@@ -15,9 +15,9 @@ import net.minecraftforge.registries.RegistryObject;
 public class NSPCreativeModeTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, VoxelSpaceProgram.MODID);
 
-    public static final RegistryObject<CreativeModeTab> Main_Mod_Tab = CREATIVE_MODE_TABS.register("nythical_space_tab",
+    public static final RegistryObject<CreativeModeTab> Main_Mod_Tab = CREATIVE_MODE_TABS.register("voxel_space_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(NSPItems.SPACESUIT_HELMET.get()))
-                    .title(Component.translatable("creativetab.Main_NSP"))
+                    .title(Component.translatable("creativetab.Main_VSP"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(NSPItems.HANDHELD_PROPELLER.get());
                         output.accept(NSPItems.MAGNET_BOOTS.get());

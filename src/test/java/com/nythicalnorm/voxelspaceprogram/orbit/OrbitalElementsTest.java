@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 class OrbitalElementsTest {
     OrbitalElements elements = new OrbitalElements(
             149653496273.0d,4.657951002584728917e-6,1.704239718110438E-02,
-            5.1970176873649567284,2.8619013937171278172, Calcs.TimePerSecToTimePerTick(6.2504793475201942954));
+            5.1970176873649567284,2.8619013937171278172, Calcs.TimePerTickToTimePerMilliTick(6.2504793475201942954));
 
 
     OrbitalElements elementsNila = new OrbitalElements(
             382599226,0.091470106618193394721,6.476694128611285E-02,
-            5.4073390958703955178,2.162973108375887854,Calcs.TimePerSecToTimePerTick(2.7140591915324141503));
+            5.4073390958703955178,2.162973108375887854,Calcs.TimePerTickToTimePerMilliTick(2.7140591915324141503));
     double sunMass = 1.989E30;
 
 

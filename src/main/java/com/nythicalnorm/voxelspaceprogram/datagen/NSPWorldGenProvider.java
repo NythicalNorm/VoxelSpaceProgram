@@ -16,7 +16,6 @@ public class NSPWorldGenProvider extends DatapackBuiltinEntriesProvider {
             .add(Registries.DIMENSION_TYPE, SpaceDimension::bootstrapType)
             .add(Registries.LEVEL_STEM, SpaceDimension::bootstrapStem);
 
-
     public NSPWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(VoxelSpaceProgram.MODID));
     }

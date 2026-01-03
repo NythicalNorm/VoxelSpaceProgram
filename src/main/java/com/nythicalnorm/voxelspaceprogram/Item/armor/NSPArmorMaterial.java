@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.Item.armor;
 
 import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;

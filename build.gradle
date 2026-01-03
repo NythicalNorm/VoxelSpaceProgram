@@ -261,7 +261,7 @@ jar {
     sourceSets {
         main {
             java {
-                exclude 'com/nythicalnorm/nythicalSpaceProgram/planettexgen/MapGenTestDisplay.java'
+                exclude 'com/nythicalnorm/voxelspaceprogram/planettexgen/MapGenTestDisplay.java'
             }
         }
     }
