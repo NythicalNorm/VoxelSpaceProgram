@@ -20,9 +20,6 @@
   "block.voxelspaceprogram.vehicle_assembly_scaffold": "Vehicle Assembly Scaffold",
   "block.voxelspaceprogram.vehicle_assembler": "Vehicle Assembler",
 
-  "voxelspaceprogram.vehicle_assembler.create_assembly_area": "Prepare Vehicle Assembly Area",
-
-
   "fluid_type.voxelspaceprogram.liquid_oxygen_fluid": "Liquid Oxygen",
   "sounds.voxelspaceprogram.propeller_start": "The Handheld Propeller clatters on.",
 
@@ -51,5 +48,11 @@
   "voxelspaceprogram.commands.planet_invalid": "Invalid Planet at: ",
 
   "voxelspaceprogram.screen.time": "Year %1$s, Day %2$s, %3$s:%4$s",
-  "voxelspaceprogram.screen.orbital_speed": "%1$s b/s"
+  "voxelspaceprogram.screen.orbital_speed": "%1$s b/s",
+
+  "voxelspaceprogram.vehicle_assembler.create_assembly_area": "Prepare Vehicle Assembly Area",
+  "assembler_warnings.voxelspaceprogram.platform_not_square": "The Vehicle Assembly Platform blocks are not placed in a perfect square formation.",
+  "assembler_warnings.voxelspaceprogram.scaffold_uneven": "The heights of the Scaffold Blocks are uneven. Make sure that they are of equal height.",
+  "assembler_warnings.voxelspaceprogram.scaffold_missing": "Vehicle Assembly Scaffold Blocks at the four corners of the Platform indicating height are required to prepare assembly area.",
+  "assembler_warnings.voxelspaceprogram.platform_not_all_air": "The Vehicle Assembly Area must be cleared of all blocks before preparing the area for Assembling."
 }

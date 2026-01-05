@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.network.assembler.AssemblerButtonPress;
+import com.nythicalnorm.voxelspaceprogram.network.assembler.ClientboundAssemblerProblems;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -49,6 +49,12 @@ public class PacketHandler {
                 .consumerMainThread(ClientboundPlanetTexturePacket::handle)
                 .add();
 
+        INSTANCE.messageBuilder(ClientboundAssemblerProblems.class, ++id)
+                .encoder(ClientboundAssemblerProblems::encode)
+                .decoder(ClientboundAssemblerProblems::new)
+                .consumerMainThread(ClientboundAssemblerProblems::handle)
+                .add();
+
         INSTANCE.messageBuilder(ServerboundSpacecraftMove.class, ++id)
                 .encoder(ServerboundSpacecraftMove::encode)
                 .decoder(ServerboundSpacecraftMove::new)
@@ -59,12 +65,6 @@ public class PacketHandler {
                 .encoder(ServerboundTimeWarpChange::encode)
                 .decoder(ServerboundTimeWarpChange::new)
                 .consumerMainThread(ServerboundTimeWarpChange::handle)
-                .add();
-
-        INSTANCE.messageBuilder(AssemblerButtonPress.class, ++id)
-                .encoder(AssemblerButtonPress::encode)
-                .decoder(AssemblerButtonPress::new)
-                .consumerMainThread(AssemblerButtonPress::handle)
                 .add();
     }
 

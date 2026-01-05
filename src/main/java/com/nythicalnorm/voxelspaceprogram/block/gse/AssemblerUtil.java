@@ -2,6 +2,8 @@ package com.nythicalnorm.voxelspaceprogram.block.gse;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
+import com.nythicalnorm.voxelspaceprogram.block.gse.warnings.ProblemsMgr;
+import com.nythicalnorm.voxelspaceprogram.block.gse.warnings.ProblemsStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -27,7 +29,7 @@ public class AssemblerUtil {
     }
 
 
-    public static BoundingBox calculateBoundingBox(Block platformBlock, Block scaffoldBlock, BlockPos startingPos, int maxDistance, Level level) {
+    public static BoundingBox calculateBoundingBox(Block platformBlock, Block scaffoldBlock, BlockPos startingPos, int maxDistance, Level level, ProblemsMgr problemsMgr) {
         int yHeight = startingPos.getY();
 
         Stack<int[]> fillStack = new Stack<>();
@@ -100,9 +102,10 @@ public class AssemblerUtil {
 //        VoxelSpaceProgram.log("Zsidd: " + zDiff);
 
         if (xDiff == zDiff && (xDiff*zDiff == listOfTraversedPoints.size())) {
-            VoxelSpaceProgram.log("Square");
+            problemsMgr.setProblem(ProblemsStorage.Prepare_Not_Square, false);
         } else {
-            VoxelSpaceProgram.log("No Square");
+            problemsMgr.setProblem(ProblemsStorage.Prepare_Not_Square, true);
+            return null;
         }
 
         int[] scaffoldHeights = new int[4];
@@ -114,16 +117,24 @@ public class AssemblerUtil {
         scaffoldHeights[3] = getScaffoldHeight(MinXFound, MaxZFound, yHeight + 1, scaffoldBlock, level);
 
         if (scaffoldHeights[0] == scaffoldHeights[1] && scaffoldHeights[2] == scaffoldHeights[3] && scaffoldHeights[1] == scaffoldHeights[2]) {
-            if (scaffoldHeights[0] >= 1) {
+            problemsMgr.setProblem(ProblemsStorage.Scaffold_Uneven, false);
+            if (scaffoldHeights[0] >= (yHeight + 1)) {
+                problemsMgr.setProblem(ProblemsStorage.Scaffold_Missing, false);
                 foundHeight = scaffoldHeights[0];
+            } else {
+                problemsMgr.setProblem(ProblemsStorage.Scaffold_Missing, true);
+                return null;
             }
+        } else {
+            problemsMgr.setProblem(ProblemsStorage.Scaffold_Uneven, true);
+            return null;
         }
         VoxelSpaceProgram.log("height" + foundHeight);
 
         return new BoundingBox(MinXFound + 1, yHeight + 1, MinZFound + 1, MaxXFound - 1, foundHeight - 1, MaxZFound - 1);
     }
 
-    private static int getScaffoldHeight(int x, int z, int yStartPoint, Block scaffoldBlock,Level pLevel) {
+    private static int getScaffoldHeight(int x, int z, int yStartPoint, Block scaffoldBlock, Level pLevel) {
         for (int i = 0; i < VehicleAssemblerEntity.MaxPlatformHeight; i++) {
             BlockPos candidatePos = new BlockPos(x, yStartPoint + i, z);
             BlockState candidateBlockState = pLevel.getBlockState(candidatePos);

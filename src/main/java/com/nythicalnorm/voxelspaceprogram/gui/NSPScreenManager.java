@@ -1,8 +1,10 @@
 package com.nythicalnorm.voxelspaceprogram.gui;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.block.gse.screen.VehicleAssemblerMenu;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.MapSolarSystemScreen;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.PlayerSpacecraftScreen;
+import com.nythicalnorm.voxelspaceprogram.network.assembler.ClientboundAssemblerProblems;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -59,5 +61,11 @@ public class NSPScreenManager {
         minecraftOptions.setCameraType(CameraType.FIRST_PERSON);
         openSpacecraftScreen = null;
         VoxelSpaceProgram.getCelestialStateSupplier().get().setControllingBody(null);
+    }
+
+    public void handleMenuPacket(ClientboundAssemblerProblems clientboundAssemblerProblems) {
+        if (Minecraft.getInstance().player.containerMenu instanceof VehicleAssemblerMenu vehicleAssemblerMenu) {
+            vehicleAssemblerMenu.setProblems(clientboundAssemblerProblems.getProblemComponents());
+        }
     }
 }
