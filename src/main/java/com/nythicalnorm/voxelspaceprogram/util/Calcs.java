@@ -9,11 +9,11 @@ import java.lang.Math;
 
 public class Calcs {
     public static Vector3d planetDimPosToNormalizedVector(Vec3 pos, double planetRadius, Quaternionf planetRot, boolean isNormalized) {
-        double cellSize = Math.PI*planetRadius*0.5d;
+        double cellSize = getSquareCellSize(planetRadius);
         double halfCellSize = cellSize*0.5d;
 
-        int xCell = (int)Math.floor((pos.x + halfCellSize) / cellSize);
-        int zCell = (int)Math.floor((pos.z + halfCellSize) / cellSize);
+        int xCell = getCellIndex(cellSize, pos.x);
+        int zCell = getCellIndex(cellSize, pos.z);
 
         xCell = Mth.clamp(xCell,-1, 2);
 
@@ -46,6 +46,14 @@ public class Calcs {
 
         quadSpherePos.rotate(new Quaterniond(planetRot.x, planetRot.y, planetRot.z, planetRot.w));
         return quadSpherePos;
+    }
+
+    public static double getSquareCellSize(double planetRadius) {
+        return Math.PI*planetRadius*0.5d;
+    }
+
+    public static int getCellIndex(double cellSize, double posAxis) {
+        return (int)Math.floor((posAxis + (cellSize/2)) / cellSize);
     }
 
     public static Vector3d getQuadPlanettoSquarePos(double sidesUpIter, double sidesRightIter, double MaxPerSide, int squareSide, double radius) {

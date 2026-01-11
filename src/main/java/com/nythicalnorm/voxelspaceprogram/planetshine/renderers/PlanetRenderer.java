@@ -78,7 +78,7 @@ public class PlanetRenderer {
 
         QuadSphereModelGenerator.getSphereBuffer().bind();
 
-        Optional<ResourceLocation> planetTex = VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetTexManager().getTextureForPlanet(planet.getName());
+        Optional<ResourceLocation> planetTex = VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetTexManager().getTextureForPlanet(planet.getId());
         planetTex.ifPresentOrElse(tex -> {
             RenderSystem.setShaderTexture(0, tex);
         }, () -> {

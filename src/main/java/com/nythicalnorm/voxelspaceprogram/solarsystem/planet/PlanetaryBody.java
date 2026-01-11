@@ -4,6 +4,8 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
@@ -19,11 +21,13 @@ public class PlanetaryBody extends Orbit {
     private final float RotationPeriod;
     private final PlanetAtmosphere atmoshpericEffects;
 
+    private final ResourceKey<Level> dimension;
     private double SOI;
 
-    public PlanetaryBody (@Nullable OrbitalElements orbitalElements, PlanetAtmosphere effects, HashMap<String, Orbit>  childBodies,
+    public PlanetaryBody (@Nullable OrbitalElements orbitalElements, @Nullable ResourceKey<Level> dimension, PlanetAtmosphere effects, HashMap<String, Orbit>  childBodies,
                           double radius, double mass, float inclinationAngle, float startingRot, float rotationPeriod) {
         this.orbitalElements = orbitalElements;
+        this.dimension = dimension;
         this.radius = radius;
         this.RotationPeriod = Calcs.timeDoubleToLong(rotationPeriod);
         this.atmoshpericEffects = effects;
@@ -89,8 +93,8 @@ public class PlanetaryBody extends Orbit {
         }
     }
 
-    public String getName() {
-        return id;
+    public ResourceKey<Level> getDimension() {
+        return dimension;
     }
 
     public double getRadius(){

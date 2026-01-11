@@ -6,7 +6,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.biome.Biome;
 
 import java.awt.image.BufferedImage;
@@ -14,34 +14,43 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class BiomeTexGenTask extends TexGenTask {
-    public static final int textureResolution = 512;
+    public static final int textureResolution = 256;
     public static final int textureSizeJumpExponent = 32;
-    private final ServerLevel level;
-    private final BlockPos centerChunkPos;
-    private final int size;
-    private final Path planetTexDir;
 
-    public BiomeTexGenTask(ServerLevel level, BlockPos centerChunkPos, int size, Path planetTexDir) {
-        this.level = level;
-        this.centerChunkPos = centerChunkPos;
-        this.size = size;
-        this.planetTexDir = planetTexDir;
+    private final ServerPlayer player;
+    private final int texSizeIndex;
+    private final int xIndex;
+    private final int zIndex;
+    private final int texturePixelSize;
+    private final File biomeTexLoc;
+
+    public BiomeTexGenTask(ServerPlayer player, int texSize, int xIndex, int zIndex, int texturePixelSize, File saveFilePath) {
+        this.player = player;
+        this.texSizeIndex = texSize;
+        this.xIndex = xIndex;
+        this.zIndex = zIndex;
+        this.texturePixelSize = texturePixelSize;
+        this.biomeTexLoc = saveFilePath;
     }
-
 
     public BufferedImage generateBiomeTex() {
         BufferedImage genTexture = new BufferedImage(textureResolution, textureResolution, BufferedImage.TYPE_INT_RGB);
         long beforeTimes = Util.getNanos();
+        //int cellSizeWithResolution = texturePixelSize * textureResolution;
+
+        double minPosX = xIndex*texturePixelSize - ((double) texturePixelSize /2);
+        double minPosZ = zIndex*texturePixelSize - ((double) texturePixelSize /2);
 
         for (int x = 0; x < textureResolution; x++) {
             for (int z = 0; z < textureResolution; z++) {
-                BlockPos pos = getBlockPosForImage(x, z, centerChunkPos, size);
-                Holder<Biome> biomeAtPos = level.getUncachedNoiseBiome(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getY()), QuartPos.fromBlock(pos.getZ()));
+
+
+                BlockPos pos = getBlockPosForImage(x, z, minPosX, minPosZ, texturePixelSize);
+                Holder<Biome> biomeAtPos = player.level().getUncachedNoiseBiome(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getY()), QuartPos.fromBlock(pos.getZ()));
                 int BiomeColor = BiomeColorHolder.getColorForBiome(biomeAtPos.unwrapKey());
-                genTexture.setRGB(x,z, BiomeColor);
+                genTexture.setRGB(x, z, BiomeColor);
             }
         }
 
@@ -50,7 +59,13 @@ public class BiomeTexGenTask extends TexGenTask {
         return genTexture;
     }
 
-    private static BlockPos getBlockPosForImage(int x, int z, BlockPos centerChunkPos, int size) {
+    private BlockPos getBlockPosForImage(int x, int z, double minPosX, double minPosZ, int texturePixelSize) {
+        double xDist = minPosX + (((float)x / textureResolution) * texturePixelSize);
+        double zDist = minPosZ + (((float)z / textureResolution) * texturePixelSize);
+        return new BlockPos((int) Math.floor(xDist), 128,(int)  Math.floor(zDist));
+    }
+
+    private static BlockPos getBlockPosForImages(int x, int z, BlockPos centerChunkPos, int size) {
         int Xdist = (x - textureResolution/2) * (int) (Math.pow(textureSizeJumpExponent, size));
         int Zdist = (z - textureResolution/2) * (int) (Math.pow(textureSizeJumpExponent, size));
 
@@ -59,13 +74,10 @@ public class BiomeTexGenTask extends TexGenTask {
 
     @Override
     public byte[] get() {
-        Path planetTexPath = planetTexDir.resolve("bumi_0_1" + ".png");
-        File planetTexFileLocation = new File(planetTexPath.toUri());
-
-        if (!planetTexFileLocation.exists()) {
+        if (!biomeTexLoc.exists()) {
             BufferedImage planetMap = generateBiomeTex();
 
-            try (FileOutputStream fileWriter = new FileOutputStream(planetTexFileLocation)) {
+            try (FileOutputStream fileWriter = new FileOutputStream(biomeTexLoc)) {
                 byte[] imageBytes = convertBufferedImageToPngBytes(planetMap);
                 fileWriter.write(imageBytes);
                 return imageBytes;
@@ -74,7 +86,7 @@ public class BiomeTexGenTask extends TexGenTask {
             }
         } else {
             try {
-                return Files.readAllBytes(planetTexPath);
+                return Files.readAllBytes(biomeTexLoc.toPath());
             } catch (IOException e) {
                 VoxelSpaceProgram.logError("Can't load " + " planet's Textures");
             }

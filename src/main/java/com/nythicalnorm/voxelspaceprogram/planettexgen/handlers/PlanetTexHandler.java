@@ -6,14 +6,15 @@ import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.GradientSupplier;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeTexGenTask;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
-import net.minecraft.core.BlockPos;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.phys.Vec3;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -61,9 +62,32 @@ public class PlanetTexHandler {
         }
     }
 
-    public void getOrCreateBiomeTex(ServerLevel level) {
+    public static ExecutorService getTexExecuter() {
+        return texExecuter;
+    }
+
+
+    public static void sendBiomeTexToPlayer(ServerPlayer player, PlanetaryBody playerOnPlanet) {
+        Vec3 plrPos = player.position();
+        int texSize = 3;
+
+        double cellSize = Calcs.getSquareCellSize(playerOnPlanet.getRadius());
+        int sizeMultiplier = (int) Math.pow(32, texSize);
+        int texturePixelSize = (int) Math.ceil(cellSize / sizeMultiplier);
+
+        int xIndex = Calcs.getCellIndex(texturePixelSize, plrPos.x);
+        int zIndex = Calcs.getCellIndex(texturePixelSize, plrPos.z);
+        File biomeTexLocation = getFilePath(playerOnPlanet.getId(), planettexDir.toPath(), texSize, xIndex, zIndex);
+
         CompletableFuture.supplyAsync(
-                new BiomeTexGenTask(level, new BlockPos(0, 0, 0), 0, planettexDir.toPath()), texExecuter);
+                new BiomeTexGenTask(player, texSize,  xIndex, zIndex, texturePixelSize, biomeTexLocation), texExecuter);
+    }
+
+    private static File getFilePath(String planetName, Path rootDir, int texSize, int xIndex, int zIndex) {
+
+        String fileName = planetName + "_" + texSize + "_" + xIndex + "_" + zIndex;
+        Path biomeTexPath = rootDir.resolve(fileName + ".png");
+        return new File(biomeTexPath.toUri());
     }
 
     public void sendAllTexToPlayer(UUID uuid) {

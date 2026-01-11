@@ -52,9 +52,9 @@ public class CelestialStateSupplier {
             playerOrbit.setParent(null);
         }
 
-        String planetName = planetProvider.getDimensionPlanet(Minecraft.getInstance().level.dimension());
-        if (planetProvider.getAllPlanetNames().contains(planetName)) {
-            currentPlanetOn = planetProvider.getPlanet(planetName);
+        PlanetaryBody planet = planetProvider.getDimensionPlanet(Minecraft.getInstance().level.dimension());
+        if (planet != null) {
+            currentPlanetOn = planet;
             playerOrbit.updatePlayerPosRot(Minecraft.getInstance().player, currentPlanetOn);
         } else {
             currentPlanetOn = null;

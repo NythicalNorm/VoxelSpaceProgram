@@ -7,6 +7,7 @@ import com.nythicalnorm.voxelspaceprogram.commands.NSPTeleportCommand;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelData;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelDataProvider;
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -76,8 +77,8 @@ public class ForgeServerEvents {
             if (VoxelSpaceProgram.getSolarSystem().isPresent()) {
                 SolarSystem solarSystem = VoxelSpaceProgram.getSolarSystem().get();
                 if (solarSystem.getPlanetsProvider().isDimensionPlanet(event.getObject().dimension())) {
-                    String planetName = solarSystem.getPlanetsProvider().getDimensionPlanet(event.getObject().dimension());
-                    PlanetLevelDataProvider planetDataprovider = new PlanetLevelDataProvider(new PlanetLevelData(planetName));
+                    PlanetaryBody planet = solarSystem.getPlanetsProvider().getDimensionPlanet(event.getObject().dimension());
+                    PlanetLevelDataProvider planetDataprovider = new PlanetLevelDataProvider(new PlanetLevelData(planet.getId()));
                     event.addCapability(ResourceLocation.fromNamespaceAndPath(VoxelSpaceProgram.MODID, "planetleveldata"), planetDataprovider);
                 }
             }

@@ -55,13 +55,16 @@ public class SolarSystem {
         currentTime = currentTime + timePassPerTick;
         planetsProvider.UpdatePlanets(currentTime);
 
+
+
         PacketHandler.sendToAllClients(new ClientboundSolarSystemTimeUpdate(currentTime, timePassPerTick));
+
     }
 
     public void serverStarted() {
         this.planetTexHandler = new PlanetTexHandler();
         server.execute(() -> planetTexHandler.loadOrCreatePlanetTex(server, this.planetsProvider));
-        server.execute(() -> planetTexHandler.getOrCreateBiomeTex(server.overworld()));
+        //server.execute(() -> planetTexHandler.getOrCreateBiomeTex(server.overworld()));
     }
 
     public long getCurrentTime() {
@@ -92,6 +95,8 @@ public class SolarSystem {
         if (planetTexHandler != null) {
             planetTexHandler.sendAllTexToPlayer(entity.getUUID());
         }
+
+        server.execute(() -> planetTexHandler.sendBiomeTexToPlayer((ServerPlayer) entity, planetsProvider.getDimensionPlanet(entity.level().dimension())));
     }
 
     // Called when the player changes SOIs or joins on orbit artificially like the teleport command

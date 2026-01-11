@@ -8,6 +8,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelDataProv
 import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -19,25 +20,28 @@ import java.util.*;
 public class PlanetsProvider {
     //public HashMap<String, PlanetaryBody> planetaryBodies = new HashMap<>();
     public HashMap<String, Stack<String>> allPlanetsAddresses = new HashMap<>();
-    private static final HashMap<ResourceKey<Level>, String> planetDimensions = new HashMap<>(){{put(Level.OVERWORLD, "bumi");}};
+    private static final Map<ResourceKey<Level>, PlanetaryBody> planetDimensions = new Object2ObjectOpenHashMap<>();
 
     public PlanetsProvider(boolean isClientSide) {
         SURIYAN.setChildAddresses(allPlanetsAddresses);
         SURIYAN.initCalcs();
+
+        //reeaally temporary but need to put this here right now
+        planetDimensions.put(BUMI.getDimension(), BUMI);
     }
 
     public PlanetaryBody NILA =  new PlanetaryBody(new OrbitalElements(
             382599226,0.091470106618193394721,6.476694128611285E-02,
             5.4073390958703955178,2.162973108375887854, Calcs.TimePerTickToTimePerMilliTick(2.7140591915324141503)),
             //2358720),
-            new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 0.005f),
+            null, new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 0.005f),
             new HashMap<>(),1737400, 7.34767309E22,  0f, 0, 2358720);
 
     public PlanetaryBody BUMI = new PlanetaryBody(new OrbitalElements(
             149653496273.0d,4.657951002584728917e-6,1.704239718110438E-02,
             5.1970176873649567284,2.8619013937171278172,Calcs.TimePerTickToTimePerMilliTick(6.2504793475201942954)),
              // 31557600),
-             new PlanetAtmosphere(true, 0x5ba3e6, 0x0077ff,
+            Level.OVERWORLD, new PlanetAtmosphere(true, 0x5ba3e6, 0x0077ff,
                      100000, 0.25f,1.0f, 0.5f),
                     new HashMap<>() {{put("nila", NILA);}},6371000, 5.97219E24, 0.408407f , 0, 86400);
 
@@ -128,7 +132,7 @@ public class PlanetsProvider {
         return planetDimensions.containsKey(dim);
     }
 
-    public String getDimensionPlanet(ResourceKey<Level> dim) {
+    public PlanetaryBody getDimensionPlanet(ResourceKey<Level> dim) {
         return planetDimensions.get(dim);
     }
 
@@ -144,7 +148,7 @@ public class PlanetsProvider {
             Level currentLevel = VoxelSpaceProgram.getSolarSystem().get().getServer().getLevel(level);
             if (currentLevel != null) {
                 if (currentLevel.dimensionType() == dim) {
-                    return VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getPlanet((planetDimensions.get(level)));
+                    return planetDimensions.get(level);
                 }
             }
         }

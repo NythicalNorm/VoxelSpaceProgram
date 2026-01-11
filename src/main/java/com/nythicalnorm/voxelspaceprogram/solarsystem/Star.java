@@ -10,7 +10,7 @@ import java.util.*;
 public class Star extends PlanetaryBody {
 
     public Star(PlanetAtmosphere effects, @Nullable HashMap<String, Orbit> childBody, double radius, double mass) {
-        super(null, effects, childBody, radius, mass, 0f, 0, 0);
+        super(null, null, effects, childBody, radius, mass, 0f, 0, 0);
     }
 
     public void simulatePlanets(long currentTime) {
