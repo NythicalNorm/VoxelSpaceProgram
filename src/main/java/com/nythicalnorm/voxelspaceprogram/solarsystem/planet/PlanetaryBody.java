@@ -1,9 +1,10 @@
 
 package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.PlanetTexture;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -11,26 +12,30 @@ import org.joml.*;
 
 import java.lang.Math;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
 
 public class PlanetaryBody extends Orbit {
-    private final double radius;
-    private final double mass;
-    private final AxisAngle4f NorthPoleDir;
-    private final float RotationPeriod;
-    private final PlanetAtmosphere atmoshpericEffects;
+    protected double radius = 1000;
+    protected double mass = 10E24;
+    protected AxisAngle4f NorthPoleDir = new AxisAngle4f();
+    protected float RotationPeriod = 0f;
+    protected PlanetAtmosphere atmosphericEffects = new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 1.0f);
+    protected @Nullable ResourceKey<Level> dimension = null;
 
-    private final ResourceKey<Level> dimension;
+    // calculated on load:
+    private PlanetTexture planetTexture;
     private double SOI;
 
-    public PlanetaryBody (@Nullable OrbitalElements orbitalElements, @Nullable ResourceKey<Level> dimension, PlanetAtmosphere effects, HashMap<String, Orbit>  childBodies,
+    public PlanetaryBody() {
+    }
+
+    public PlanetaryBody (String name, @Nullable OrbitalElements orbitalElements, @Nullable ResourceKey<Level> dimension, PlanetAtmosphere effects, HashMap<OrbitId, Orbit>  childBodies,
                           double radius, double mass, float inclinationAngle, float startingRot, float rotationPeriod) {
+        initStaticName(name);
         this.orbitalElements = orbitalElements;
         this.dimension = dimension;
         this.radius = radius;
         this.RotationPeriod = Calcs.timeDoubleToLong(rotationPeriod);
-        this.atmoshpericEffects = effects;
+        this.atmosphericEffects = effects;
         this.childElements = childBodies;
         this.mass = mass;
         this.isStableOrbit = true;
@@ -40,6 +45,18 @@ public class PlanetaryBody extends Orbit {
         absoluteOrbitalPos = new Vector3d(0d, 0d, 0d);
         relativeVelocity = new Vector3d(0d, 0d, 0d);
         rotation = new Quaternionf();
+        //planetTexture = new ServerPlanetTexture();
+    }
+
+    public void initStaticName(String pName) {
+        this.id = OrbitId.getIdFromString(pName);
+        this.name = pName.toLowerCase().trim();
+        this.displayName = Component.translatable(String.format("voxelspaceprogram.planets.%s", name));
+    }
+
+    @Override
+    public OrbitalBodyType<? extends Orbit> getType() {
+        return CelestialBodyTypes.PLANETARY_BODY;
     }
 
     private void simulate(long TimeElapsed, Vector3d parentPos) {
@@ -71,24 +88,12 @@ public class PlanetaryBody extends Orbit {
     public void UpdateSOIs() {
         if (childElements != null) {
             for (Orbit orbitBody : childElements.values()) {
-                if (orbitBody instanceof PlanetaryBody body) {
+                if (orbitBody instanceof PlanetaryBody body && body.orbitalElements != null) {
                     double soi = Math.pow(body.mass/this.mass, 0.4d);
                     soi = soi * body.orbitalElements.SemiMajorAxis;
                     body.setSphereOfInfluence(soi);
                     body.UpdateSOIs();
                 }
-            }
-        }
-    }
-
-    public void setChildAddresses(HashMap<String, Stack<String>> allPlanetsAddresses, Stack<String> currentAddress, String name) {
-        currentAddress.push(name);
-        this.id = name;
-        allPlanetsAddresses.put(name, currentAddress);
-
-        for (Map.Entry<String, Orbit> orbitBody : childElements.entrySet()) {
-            if (orbitBody.getValue() instanceof PlanetaryBody plntBody) {
-                plntBody.setChildAddresses(allPlanetsAddresses, (Stack<String>) currentAddress.clone(), orbitBody.getKey());
             }
         }
     }
@@ -106,7 +111,7 @@ public class PlanetaryBody extends Orbit {
     }
 
     public PlanetAtmosphere getAtmosphere() {
-        return atmoshpericEffects;
+        return atmosphericEffects;
     }
 
     public AxisAngle4f getNorthPoleDir() {
@@ -127,10 +132,10 @@ public class PlanetaryBody extends Orbit {
     }
 
     public double getAtmosphereRadius() {
-        if (!this.atmoshpericEffects.hasAtmosphere()) {
+        if (!this.atmosphericEffects.hasAtmosphere()) {
             return 0;
         }
-        return this.atmoshpericEffects.getAtmosphereHeight() + this.radius;
+        return this.atmosphericEffects.getAtmosphereHeight() + this.radius;
     }
 
     public double getMass() {

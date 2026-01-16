@@ -20,9 +20,7 @@ public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
     private float sunAngle = 0f;
 
     public ClientPlayerSpacecraftBody(Player player) {
-        super();
-        this.player = player;
-        this.id = player.getStringUUID();
+        super(player);
     }
 
     public ClientPlayerSpacecraftBody(EntitySpacecraftBody playerData, Player player) {
@@ -83,7 +81,7 @@ public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
 
         if (currentContext.applyAcceleration(accelerationX, accelerationY, accelerationZ, angularAcceleration)) {
             SpacecraftControlState controlState = new SpacecraftControlState(throttle, SAS, RCS, inDockingMode, this.relativeOrbitalPos, this.relativeVelocity, this.rotation, this.angularVelocity);
-            PacketHandler.sendToServer(new ServerboundSpacecraftMove(this.getAddress() ,controlState));
+            PacketHandler.sendToServer(new ServerboundSpacecraftMove(this.id, controlState));
         }
     }
 

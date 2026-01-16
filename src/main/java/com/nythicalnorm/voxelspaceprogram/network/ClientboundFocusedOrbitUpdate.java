@@ -2,47 +2,33 @@ package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Stack;
 import java.util.function.Supplier;
 
 public class ClientboundFocusedOrbitUpdate {
-    private final int entityId;
-    private final Stack<String> oldAddress;
-    private final Stack<String> newAddress;
+    private final OrbitId spacecraftID;
+    private final OrbitId newParentID;
     private final OrbitalElements orbitalElements;
 
-    public ClientboundFocusedOrbitUpdate(Entity entity, Stack<String> oldAddress, Stack<String> newAddress, OrbitalElements elements) {
-        this.entityId = entity.getId();
-        this.oldAddress = oldAddress;
-        this.newAddress = newAddress;
+    public ClientboundFocusedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements elements) {
+        this.spacecraftID = spacecraftID;
+        this.newParentID = newParentID;
         this.orbitalElements = elements;
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeInt(entityId);
-        if (oldAddress != null) {
-            friendlyByteBuf.writeBoolean(true);
-            NetworkEncoders.writeStack(friendlyByteBuf, oldAddress);
-        } else {
-            friendlyByteBuf.writeBoolean(false);
-        }
-        NetworkEncoders.writeStack(friendlyByteBuf, newAddress);
+        spacecraftID.encodeToBuffer(friendlyByteBuf);
+        newParentID.encodeToBuffer(friendlyByteBuf);
         NetworkEncoders.writeOrbitalElements(friendlyByteBuf, orbitalElements);
     }
 
     public ClientboundFocusedOrbitUpdate(FriendlyByteBuf friendlyByteBuf) {
-        this.entityId = friendlyByteBuf.readInt();
-        if (friendlyByteBuf.readBoolean()) {
-            this.oldAddress = NetworkEncoders.readStack(friendlyByteBuf);
-        } else {
-            this.oldAddress = null;
-        }
-        this.newAddress = NetworkEncoders.readStack(friendlyByteBuf);
+        this.spacecraftID = new OrbitId(friendlyByteBuf);
+        this.newParentID = new OrbitId(friendlyByteBuf);
         this.orbitalElements = NetworkEncoders.readOrbitalElements(friendlyByteBuf);
     }
 
@@ -50,7 +36,7 @@ public class ClientboundFocusedOrbitUpdate {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
             VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
-                context.enqueueWork(() -> celestialStateSupplier.trackedOrbitUpdate(this.entityId, this.oldAddress, this.newAddress, this.orbitalElements));
+                context.enqueueWork(() -> celestialStateSupplier.trackedOrbitUpdate(this.spacecraftID, this.newParentID, this.orbitalElements));
             });
             context.setPacketHandled(true);
         }

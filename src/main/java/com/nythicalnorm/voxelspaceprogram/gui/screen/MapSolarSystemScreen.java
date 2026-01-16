@@ -151,7 +151,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
             currentFocusedBody = css.getPlayerOrbit();
         }
 
-        int totalFocusAmount = css.getPlanetsProvider().allPlanetsAddresses.size();
+        int totalFocusAmount = css.getPlanetsProvider().getAllPlanetaryBodies().size();
         if (currentFocusedBody instanceof EntitySpacecraftBody) {
             totalFocusAmount += 1;
         }
@@ -163,7 +163,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
         FocusableBodies[index] = currentFocusedBody;
         currentFocusedBodyIndex = index;
 
-        for (PlanetaryBody plnt : css.getPlanetsProvider().getAllPlanetOrbits()) {
+        for (PlanetaryBody plnt : css.getPlanetsProvider().getAllPlanetaryBodies().values()) {
             if (plnt != currentFocusedBody) {
                 index++;
                 FocusableBodies[index] = plnt;

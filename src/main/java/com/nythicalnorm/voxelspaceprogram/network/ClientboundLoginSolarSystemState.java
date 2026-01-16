@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
@@ -16,21 +17,26 @@ public class ClientboundLoginSolarSystemState {
     }
 
     public ClientboundLoginSolarSystemState(FriendlyByteBuf friendlyByteBuf) {
-        this.playerData = new EntitySpacecraftBody();
+        EntitySpacecraftBody playerDataIncoming = new EntitySpacecraftBody();
 
         if (friendlyByteBuf.readBoolean()) {
-            playerData.decode(friendlyByteBuf);
+            Orbit entityOrbit = NetworkEncoders.readOrbitalBody(friendlyByteBuf);
+            if (entityOrbit instanceof EntitySpacecraftBody spacecraftBody) {
+                playerDataIncoming = spacecraftBody;
+            }
         }
+
+        this.playerData = playerDataIncoming;
     }
 
-    public ClientboundLoginSolarSystemState(boolean noData) {
+    public ClientboundLoginSolarSystemState() {
         this.playerData = null;
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
         if (playerData != null) {
             friendlyByteBuf.writeBoolean(true);
-            playerData.encode(friendlyByteBuf);
+            NetworkEncoders.writeOrbitalBody(friendlyByteBuf, playerData);
         } else {
             friendlyByteBuf.writeBoolean(false);
         }

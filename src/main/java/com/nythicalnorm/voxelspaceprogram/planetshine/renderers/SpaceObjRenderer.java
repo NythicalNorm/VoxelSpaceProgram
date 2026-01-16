@@ -15,10 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.*;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class SpaceObjRenderer {
@@ -26,12 +23,13 @@ public class SpaceObjRenderer {
     private static SpaceRenderable[] renderPlanets;
 
     public static void PopulateRenderPlanets(PlanetsProvider planets) {
-        Set<String> planetList = planets.getAllPlanetNames();
+        List<PlanetaryBody> planetList = planets.getAllPlanetOrbitsList();
 
         renderPlanets = new SpaceRenderable[planetList.size()];
         int i = 0;
-        for (String elementVariable : planetList) {
-            renderPlanets[i] = new RenderablePlanet(planets.getPlanet(elementVariable));
+
+        for (PlanetaryBody planet : planetList) {
+            renderPlanets[i] = new RenderablePlanet(planet);
             i++;
         }
     }

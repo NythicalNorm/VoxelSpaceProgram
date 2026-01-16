@@ -6,6 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.GradientSupplier;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeTexGenTask;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.network.chat.Component;
@@ -20,7 +21,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.*;
 
 public class PlanetTexHandler {
@@ -28,19 +28,19 @@ public class PlanetTexHandler {
     private static final String planetTexDirPath = "planets";
 
     private static File modDir;
-    private static File planettexDir;
+    private static File planetDir;
     private static ExecutorService texExecuter;
 
-    HashMap<String, CompletableFuture<byte[]>> planetTexturesBytes;
+    HashMap<OrbitId, CompletableFuture<byte[]>> planetTexturesBytes;
 
     public void loadOrCreatePlanetTex(MinecraftServer server, PlanetsProvider planets) {
         Path modSubFolder = server.getWorldPath(LevelResource.ROOT).resolve(modSaveDirPath);
         modDir = getOrCreateDir(modSubFolder);
 
         Path planetDir = modSubFolder.resolve(planetTexDirPath);
-        planettexDir = getOrCreateDir(planetDir);
+        PlanetTexHandler.planetDir = getOrCreateDir(planetDir);
 
-        if (modSubFolder == null || planettexDir == null) {
+        if (modSubFolder == null || PlanetTexHandler.planetDir == null) {
             return;
         }
 
@@ -50,14 +50,14 @@ public class PlanetTexHandler {
 
         server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.planetgen_start"), true);
 
-        for (String planetaryName : planets.allPlanetsAddresses.keySet()) {
+        for (PlanetaryBody planetaryBody : planets.getAllPlanetaryBodies().values()) {
             CompletableFuture<byte[]> planetImgData = CompletableFuture.supplyAsync(
-                    new WholePlanetTexGenTask(planetDir, planetaryName, randomSource.nextLong(), GradientSupplier.textureForPlanets.get(planetaryName)), texExecuter);
-            planetTexturesBytes.put(planetaryName, planetImgData);
+                    new WholePlanetTexGenTask(planetDir, planetaryBody.getName(), randomSource.nextLong(), GradientSupplier.textureForPlanets.get(planetaryBody.getName())), texExecuter);
+            planetTexturesBytes.put(planetaryBody.getOrbitId(), planetImgData);
 
             planetImgData.thenRun(() -> {
                 server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.planetgen_end",
-                        planetaryName), true);
+                        planetaryBody.getName()), true);
             });
         }
     }
@@ -77,7 +77,7 @@ public class PlanetTexHandler {
 
         int xIndex = Calcs.getCellIndex(texturePixelSize, plrPos.x);
         int zIndex = Calcs.getCellIndex(texturePixelSize, plrPos.z);
-        File biomeTexLocation = getFilePath(playerOnPlanet.getId(), planettexDir.toPath(), texSize, xIndex, zIndex);
+        File biomeTexLocation = getFilePath(playerOnPlanet.getName(), planetDir.toPath(), texSize, xIndex, zIndex);
 
         CompletableFuture.supplyAsync(
                 new BiomeTexGenTask(player, texSize,  xIndex, zIndex, texturePixelSize, biomeTexLocation), texExecuter);
@@ -90,17 +90,14 @@ public class PlanetTexHandler {
         return new File(biomeTexPath.toUri());
     }
 
-    public void sendAllTexToPlayer(UUID uuid) {
-        for (Map.Entry<String, CompletableFuture<byte[]>> texfuture : planetTexturesBytes.entrySet()) {
-            texfuture.getValue().thenAccept(texBytes -> {
-                sendToPlayer(VoxelSpaceProgram.getSolarSystem().get().getServer().getPlayerList().getPlayer(uuid),
-                        texfuture.getKey(), texBytes);
-            });
+    public void sendAllTexToPlayer(ServerPlayer player) {
+        for (Map.Entry<OrbitId, CompletableFuture<byte[]>> texfuture : planetTexturesBytes.entrySet()) {
+            texfuture.getValue().thenAccept(texBytes -> sendToPlayer(player, texfuture.getKey(), texBytes));
         }
     }
 
-    private void sendToPlayer(ServerPlayer player, String planetName, byte[] texture) {
-        PacketHandler.sendToPlayer(new ClientboundPlanetTexturePacket(planetName, texture), player);
+    private void sendToPlayer(ServerPlayer player, OrbitId planetID, byte[] texture) {
+        PacketHandler.sendToPlayer(new ClientboundPlanetTexturePacket(planetID, texture), player);
     }
 
     private File getOrCreateDir (Path folderPath) {

@@ -1,31 +1,29 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 public class ClientboundPlanetTexturePacket {
-    private final String planetName;
+    private final OrbitId planetID;
     private final byte[] planetTexture;
 
-    public ClientboundPlanetTexturePacket(String planetname, byte[] planetTex) {
-        this.planetName = planetname;
+    public ClientboundPlanetTexturePacket(OrbitId planetId, byte[] planetTex) {
+        this.planetID = planetId;
         this.planetTexture = planetTex;
     }
 
     public ClientboundPlanetTexturePacket(FriendlyByteBuf friendlyByteBuf) {
-        int stringSize = friendlyByteBuf.readVarInt();
-        this.planetName = friendlyByteBuf.readCharSequence(stringSize, StandardCharsets.US_ASCII).toString();
+        this.planetID = new OrbitId(friendlyByteBuf);
         this.planetTexture = friendlyByteBuf.readByteArray();
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeVarInt(planetName.length());
-        friendlyByteBuf.writeCharSequence(planetName, StandardCharsets.US_ASCII);
+        planetID.encodeToBuffer(friendlyByteBuf);
         friendlyByteBuf.writeByteArray(this.planetTexture);
     }
 
@@ -33,8 +31,8 @@ public class ClientboundPlanetTexturePacket {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
 
-            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
-                context.enqueueWork(() -> celestialStateSupplier.getPlanetTexManager().incomingPlanetTexture(planetName, planetTexture));
+            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(css -> {
+                context.enqueueWork(() -> css.getPlanetTexManager().incomingPlanetTexture(css.getPlanetsProvider().getPlanet(this.planetID), planetTexture));
             });
         }
     }

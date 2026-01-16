@@ -1,9 +1,10 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
+import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
-import net.minecraft.network.FriendlyByteBuf;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -14,15 +15,20 @@ public class EntitySpacecraftBody extends Orbit {
     private static final float tolerance = 1e-8f;
 
     public EntitySpacecraftBody() {
-        this.absoluteOrbitalPos = new Vector3d();
-        this.relativeOrbitalPos = new Vector3d();
-        this.relativeVelocity = new Vector3d();
-        this.rotation = new Quaternionf();
         this.angularVelocity = new Vector3f();
         this.orbitalElements = new OrbitalElements(0f,0f, 0f, 0f, 0f, 0L);
     }
 
+    @Override
+    public OrbitalBodyType<? extends Orbit> getType() {
+        return CelestialBodyTypes.ENTITY_SPACECRAFT_BODY;
+    }
+
     public void simulatePropagate(long TimeElapsed, Vector3d parentPos, double mass) {
+        if (this.orbitalElements == null) {
+            return;
+        }
+
         if (!velocityChangedLastFrame) {
             Vector3d[] stateVectors = orbitalElements.ToCartesian(TimeElapsed);
             this.relativeOrbitalPos = stateVectors[0];
@@ -66,15 +72,4 @@ public class EntitySpacecraftBody extends Orbit {
         return null;
     }
 
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        super.encode(buffer);
-        buffer.writeVector3f(angularVelocity);
-    }
-
-    @Override
-    public void decode(FriendlyByteBuf buffer) {
-        super.decode(buffer);
-        angularVelocity = buffer.readVector3f();
-    }
 }

@@ -59,9 +59,7 @@ public class ForgeServerEvents {
     @SubscribeEvent
     public static void onPlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
         VoxelSpaceProgram.log("Hello");
-        VoxelSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
-            solarSystem.playerJoined(event.getEntity());
-        });
+        VoxelSpaceProgram.getSolarSystem().ifPresent(solarSystem -> solarSystem.playerJoined(event.getEntity()));
     }
 
     @SubscribeEvent
@@ -78,7 +76,7 @@ public class ForgeServerEvents {
                 SolarSystem solarSystem = VoxelSpaceProgram.getSolarSystem().get();
                 if (solarSystem.getPlanetsProvider().isDimensionPlanet(event.getObject().dimension())) {
                     PlanetaryBody planet = solarSystem.getPlanetsProvider().getDimensionPlanet(event.getObject().dimension());
-                    PlanetLevelDataProvider planetDataprovider = new PlanetLevelDataProvider(new PlanetLevelData(planet.getId()));
+                    PlanetLevelDataProvider planetDataprovider = new PlanetLevelDataProvider(new PlanetLevelData(planet.getOrbitId()));
                     event.addCapability(ResourceLocation.fromNamespaceAndPath(VoxelSpaceProgram.MODID, "planetleveldata"), planetDataprovider);
                 }
             }
@@ -87,8 +85,6 @@ public class ForgeServerEvents {
 
     @SubscribeEvent
     public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent event) {
-        VoxelSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
-            solarSystem.playerDimChanged(event.getEntity(), event.getTo());
-        });
+        VoxelSpaceProgram.getSolarSystem().ifPresent(solarSystem -> solarSystem.playerDimChanged(event.getEntity(), event.getTo()));
     }
 }

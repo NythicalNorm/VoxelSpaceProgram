@@ -8,6 +8,8 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.handlers.PlanetTexHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
@@ -23,21 +25,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
-import java.util.HashMap;
-import java.util.Stack;
-
 public class SolarSystem {
     public long currentTime; // time passed since start in 1000 times currentTick, in milliTicks if you will.
     public long timePassPerTick;
     //public static double tickTimeStamp;
     private final MinecraftServer server;
-    private final HashMap<String, ServerPlayerSpacecraftBody> allPlayerOrbitalAddresses;
     private final PlanetsProvider planetsProvider;
     private PlanetTexHandler planetTexHandler;
 
     public SolarSystem(MinecraftServer server, PlanetsProvider pPlanets) {
         timePassPerTick = 1000;
-        allPlayerOrbitalAddresses = new HashMap<>();
         this.server = server;
         this.planetsProvider = pPlanets;
         BiomeColorHolder.init();
@@ -54,11 +51,7 @@ public class SolarSystem {
     public void OnTick() {
         currentTime = currentTime + timePassPerTick;
         planetsProvider.UpdatePlanets(currentTime);
-
-
-
         PacketHandler.sendToAllClients(new ClientboundSolarSystemTimeUpdate(currentTime, timePassPerTick));
-
     }
 
     public void serverStarted() {
@@ -80,9 +73,10 @@ public class SolarSystem {
     }
 
     public void playerJoined(Player entity) {
+        OrbitId playerEntityID = new OrbitId(entity);
         // this is not working check before making a saving system
-        if (allPlayerOrbitalAddresses.containsKey(entity.getStringUUID())) {
-            EntitySpacecraftBody playerSpacecraftBody = allPlayerOrbitalAddresses.get(entity.getStringUUID());
+        if (planetsProvider.getAllSpacecraftBodies().containsKey(playerEntityID)) {
+            EntitySpacecraftBody playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(playerEntityID);
             PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody), (ServerPlayer) entity);
         }
         else {
@@ -90,54 +84,52 @@ public class SolarSystem {
                 ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
                 entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
             }
-            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(true), (ServerPlayer) entity);
+            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(), (ServerPlayer) entity);
         }
         if (planetTexHandler != null) {
-            planetTexHandler.sendAllTexToPlayer(entity.getUUID());
+            planetTexHandler.sendAllTexToPlayer((ServerPlayer) entity);
         }
 
-        server.execute(() -> planetTexHandler.sendBiomeTexToPlayer((ServerPlayer) entity, planetsProvider.getDimensionPlanet(entity.level().dimension())));
+        //server.execute(() -> planetTexHandler.sendBiomeTexToPlayer((ServerPlayer) entity, planetsProvider.getDimensionPlanet(entity.level().dimension())));
     }
 
     // Called when the player changes SOIs or joins on orbit artificially like the teleport command
-    public void playerJoinOrbit(String body, ServerPlayer player, OrbitalElements elements) {
-        Stack<String> newAddress = planetsProvider.getPlanetAddress(body);
-        String PlayerUUid = player.getStringUUID();
+    public void playerJoinOrbit(PlanetaryBody body, ServerPlayer player, OrbitalElements elements) {
+        OrbitId newPlanetID = body.getOrbitId();
+        OrbitId PlayerID = new OrbitId(player.getUUID());
         if (player.level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
             player.changeDimension(server.getLevel(SpaceDimension.SPACE_LEVEL_KEY), new DimensionTeleporter(new Vec3(0d, 128d, 0d)));
         }
 
-        if (allPlayerOrbitalAddresses.containsKey(PlayerUUid)) {
-            Orbit playerSpacecraftBody = allPlayerOrbitalAddresses.get(PlayerUUid);
+        if (planetsProvider.getAllSpacecraftBodies().containsKey(PlayerID)) {
+            Orbit playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(PlayerID);
             if (playerSpacecraftBody == null) {
                 return;
             }
-            Stack<String> oldAddress = playerSpacecraftBody.getAddress();
 
-            planetsProvider.playerChangeOrbitalSOIs(PlayerUUid, playerSpacecraftBody, newAddress, elements);
-
-            PacketHandler.sendToPlayer(new ClientboundFocusedOrbitUpdate(player, oldAddress, newAddress, elements), player);
+            planetsProvider.playerChangeOrbitalSOIs(playerSpacecraftBody, newPlanetID, elements);
+            PacketHandler.sendToPlayer(new ClientboundFocusedOrbitUpdate(PlayerID, newPlanetID, elements), player);
         }
         else  {
             Quaternionf playerRot = new Quaternionf();
             ServerPlayerSpacecraftBody newOrbitalData = new ServerPlayerSpacecraftBody(player, true, true, playerRot, elements);
-            planetsProvider.playerJoinedOrbital(PlayerUUid, newAddress, newOrbitalData);
-            allPlayerOrbitalAddresses.put(PlayerUUid, newOrbitalData);
-            PacketHandler.sendToPlayer(new ClientboundFocusedOrbitUpdate(player, null, newAddress, elements), player);
+            planetsProvider.playerJoinedOrbital(newPlanetID, newOrbitalData);
+            planetsProvider.getAllSpacecraftBodies().put(PlayerID, newOrbitalData);
+            PacketHandler.sendToPlayer(new ClientboundFocusedOrbitUpdate(PlayerID, newPlanetID, elements), player);
         }
     }
 
     public void playerCloned(ServerPlayer player) {
-        ServerPlayerSpacecraftBody serverPlayerSpacecraftBody = allPlayerOrbitalAddresses.get(player.getStringUUID());
-        if (serverPlayerSpacecraftBody != null) {
+        EntitySpacecraftBody spacecraftBody = planetsProvider.getAllSpacecraftBodies().get(new OrbitId(player));
+        if (spacecraftBody instanceof ServerPlayerSpacecraftBody serverPlayerSpacecraftBody) {
             serverPlayerSpacecraftBody.setPlayerEntity(player);
         }
 
         playerDimChanged(player, player.level().dimension());
     }
 
-    public void handleSpacecraftMove(ServerPlayer player, Stack<String> spacecraftBodyAddress, SpacecraftControlState state) {
-       Orbit spacecraft = planetsProvider.getOrbit(spacecraftBodyAddress);
+    public void handleSpacecraftMove(ServerPlayer player, OrbitId spacecraftBodyAddress, SpacecraftControlState state) {
+       Orbit spacecraft = planetsProvider.getSpacecraftOrbit(spacecraftBodyAddress);
        if (spacecraft == null) {
            return;
        }
@@ -149,15 +141,15 @@ public class SolarSystem {
 
     public void playerDimChanged(Player entity, ResourceKey<Level> toDimension) {
         if (toDimension != SpaceDimension.SPACE_LEVEL_KEY) {
-            ServerPlayerSpacecraftBody serverPlayerSpacecraftBody = allPlayerOrbitalAddresses.get(entity.getStringUUID());
+            EntitySpacecraftBody entitySpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(new OrbitId(entity));
 
-            if (serverPlayerSpacecraftBody != null) {
+            if (entitySpacecraftBody instanceof ServerPlayerSpacecraftBody serverPlayerSpacecraftBody) {
                 serverPlayerSpacecraftBody.removeYourself();
             }
         }
     }
 
-    public void removePlayerFromOrbit(String id) {
-        allPlayerOrbitalAddresses.remove(id);
+    public void removePlayerFromOrbit(OrbitId id) {
+        planetsProvider.getAllSpacecraftBodies().remove(id);
     }
 }

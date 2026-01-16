@@ -5,21 +5,21 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
 import net.minecraft.server.level.ServerPlayer;
 import org.joml.Quaternionf;
 
+import java.util.UUID;
+
 public class ServerPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
     private boolean isShipBound;
 
     public ServerPlayerSpacecraftBody(ServerPlayer playerEntity, boolean isStableOrbit, boolean isShipBound, Quaternionf playerRot, OrbitalElements elements) {
-        super();
-        this.player = playerEntity;
-        this.id = playerEntity.getStringUUID();
+        super(playerEntity);
         this.isStableOrbit = isStableOrbit;
         this.isShipBound = isShipBound;
         this.rotation = playerRot;
         this.orbitalElements = elements;
     }
 
-    public String getUUid() {
-        return player.getStringUUID();
+    public UUID getUUid() {
+        return player.getUUID();
     }
 
     @Override

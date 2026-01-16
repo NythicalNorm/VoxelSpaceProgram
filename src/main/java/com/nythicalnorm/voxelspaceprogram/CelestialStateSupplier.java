@@ -5,6 +5,7 @@ import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.ServerboundTimeWarpChange;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
 import com.nythicalnorm.voxelspaceprogram.planetshine.textures.PlanetTexManager;
@@ -13,16 +14,16 @@ import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.SpaceObjRenderer
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import net.minecraft.client.Minecraft;
+import org.joml.Quaternionf;
 
 import java.util.Optional;
-import java.util.Stack;
 
 //@OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier {
     private static final int[] timeWarpSettings = new int[]{1, 10, 100, 1000, 10000, 100000, 1000000};
     private short currentTimeWarpSetting = 0;
 
-    private ClientPlayerSpacecraftBody playerOrbit;
+    private final ClientPlayerSpacecraftBody playerOrbit;
     private PlanetaryBody currentPlanetOn;
     private ClientPlayerSpacecraftBody controllingBody;
 
@@ -91,15 +92,11 @@ public class CelestialStateSupplier {
         return this.currentTimeWarpSetting;
     }
 
-    public void trackedOrbitUpdate(int shipID, Stack<String> oldAddress, Stack<String> newAddress, OrbitalElements orbitalElements) {
-        if (Minecraft.getInstance().player.getId() == shipID) {
-            if (oldAddress == null) {
-                playerOrbit.setOrbitalElements(orbitalElements);
-                planetProvider.playerJoinedOrbital(Minecraft.getInstance().player.getStringUUID(), newAddress, playerOrbit);
-            }
-            else {
-                planetProvider.playerChangeOrbitalSOIs(Minecraft.getInstance().player.getStringUUID(), planetProvider.getOrbit(oldAddress), newAddress, orbitalElements);
-            }
+    public void trackedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {
+        if (this.playerOrbit.getOrbitId().equals(spacecraftID)) {
+            //temporary setting the rotation to default
+            this.playerOrbit.setRotation(new Quaternionf());
+            planetProvider.playerChangeOrbitalSOIs(this.playerOrbit, newParentID, orbitalElements);
         }
     }
 

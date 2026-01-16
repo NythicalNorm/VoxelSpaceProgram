@@ -78,12 +78,9 @@ public class PlanetRenderer {
 
         QuadSphereModelGenerator.getSphereBuffer().bind();
 
-        Optional<ResourceLocation> planetTex = VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetTexManager().getTextureForPlanet(planet.getId());
-        planetTex.ifPresentOrElse(tex -> {
-            RenderSystem.setShaderTexture(0, tex);
-        }, () -> {
-            RenderSystem.setShaderTexture(0, MissingTextureAtlasSprite.getLocation());
-        });
+        Optional<ResourceLocation> planetTex = VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetTexManager().getTextureForPlanet(planet.getOrbitId());
+        planetTex.ifPresentOrElse(tex -> RenderSystem.setShaderTexture(0, tex),
+                () -> RenderSystem.setShaderTexture(0, MissingTextureAtlasSprite.getLocation()));
 
         Vector3d absoluteDir = planet.getAbsolutePos().normalize();
         Vector3f lightDir = new Vector3f((float) absoluteDir.x,(float) absoluteDir.y,(float) absoluteDir.z);

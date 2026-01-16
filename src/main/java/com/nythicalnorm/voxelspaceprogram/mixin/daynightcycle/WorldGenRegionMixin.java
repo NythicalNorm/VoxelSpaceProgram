@@ -32,7 +32,7 @@ public class WorldGenRegionMixin {
             LazyOptional<PlanetLevelData> plntData = level.getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA);
             Optional<Long> currentTime = Optional.empty();
             if (plntData.resolve().isPresent() && VoxelSpaceProgram.getSolarSystem().isPresent()) {
-                plnt = VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getPlanet(plntData.resolve().get().getPlanetName());
+                plnt = VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getPlanet(plntData.resolve().get().getPlanetID());
                 currentTime = DayNightCycleHandler.getDayTime(pPos, plnt, VoxelSpaceProgram.getSolarSystem().get().getCurrentTime());
             }
             if (currentTime.isPresent()) {

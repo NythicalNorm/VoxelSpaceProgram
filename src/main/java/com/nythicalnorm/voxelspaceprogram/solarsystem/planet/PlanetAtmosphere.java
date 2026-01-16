@@ -1,13 +1,13 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
 
 public class PlanetAtmosphere {
-    private final boolean hasAtmosphere;
-    private final int overlayColor;
-    private final int atmoColor;
-    private final double atmosphereHeight;
-    private final float atmosphereAlpha;
-    private final float exposureNight;
-    private final float exposureDay;
+    protected final boolean hasAtmosphere;
+    protected final int overlayColor;
+    protected final int atmoColor;
+    protected final double atmosphereHeight;
+    protected final float atmosphereAlpha;
+    protected final float exposureNight;
+    protected final float exposureDay;
 
     public PlanetAtmosphere(boolean hasAtmosphere, int overlayColor, int atmoColor, double atmosphereHeight, float atmosphereAlpha, float exposureNight, float exposureDay) {
         this.hasAtmosphere = hasAtmosphere;

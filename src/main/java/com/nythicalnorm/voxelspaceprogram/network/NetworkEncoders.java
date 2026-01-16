@@ -1,32 +1,20 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
 import net.minecraft.network.FriendlyByteBuf;
 import org.joml.Vector3d;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Stack;
 
 public class NetworkEncoders {
-    public static void writeStack(FriendlyByteBuf friendlyByteBuf, Stack<String> planetAddressStack) {
-        friendlyByteBuf.writeVarInt(planetAddressStack.size());
-        for(String addressName : planetAddressStack){
-            friendlyByteBuf.writeVarInt(addressName.length());
-            friendlyByteBuf.writeCharSequence(addressName, StandardCharsets.US_ASCII);
-        }
+
+    public static void writeOrbitalBody(FriendlyByteBuf friendlyByteBuf, Orbit orbitalBody) {
+        orbitalBody.getType().encodeToBuffer(orbitalBody, friendlyByteBuf);
     }
 
-    public static Stack<String> readStack(FriendlyByteBuf friendlyByteBuf) {
-        Stack<String> planetAddressStack = new Stack<>();
-        int arraySize = friendlyByteBuf.readVarInt();
-
-        for(int i = 0; i < arraySize && arraySize < 16; i++){
-            int stringSize = friendlyByteBuf.readVarInt();
-            if(stringSize > 0 && stringSize < 128) {
-                planetAddressStack.push(friendlyByteBuf.readCharSequence(stringSize, StandardCharsets.US_ASCII).toString());
-            }
-        }
-        return planetAddressStack;
+    public static Orbit readOrbitalBody(FriendlyByteBuf friendlyByteBuf) {
+        int stringSize = friendlyByteBuf.readVarInt();
+        return CelestialBodyTypes.getType(friendlyByteBuf.readCharSequence(stringSize, StandardCharsets.US_ASCII).toString()).decodeFromBuffer(friendlyByteBuf);
     }
 
     public static void writeOrbitalElements(FriendlyByteBuf friendlyByteBuf,OrbitalElements orbitalElements) {
@@ -40,7 +28,7 @@ public class NetworkEncoders {
     }
 
     public static OrbitalElements readOrbitalElements(FriendlyByteBuf friendlyByteBuf) {
-        OrbitalElements orbitElements = new OrbitalElements(
+        return new OrbitalElements(
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readDouble(),
@@ -48,8 +36,6 @@ public class NetworkEncoders {
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readLong()
         );
-
-        return orbitElements;
     }
 
     public static void writeVector3d(FriendlyByteBuf buffer, Vector3d pVector3f) {

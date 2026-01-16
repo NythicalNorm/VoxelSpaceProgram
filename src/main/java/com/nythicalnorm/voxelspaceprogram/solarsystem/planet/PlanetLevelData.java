@@ -4,38 +4,37 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import net.minecraft.nbt.CompoundTag;
 
 public class PlanetLevelData {
-    private String planetName;
+    private OrbitId planetID;
 
-    public PlanetLevelData(String planetName) {
-        this.planetName = planetName;
+    public PlanetLevelData(OrbitId planetName) {
+        this.planetID = planetName;
     }
 
     public PlanetLevelData() {
-        this.planetName = "";
+        this.planetID = null;
     }
 
-    public String getPlanetName() {
-        return planetName;
+    public OrbitId getPlanetID() {
+        return planetID;
     }
 
     public PlanetaryBody getPlanetaryBody(PlanetsProvider planets) {
-        return planets.getPlanet(planetName);
+        return planets.getPlanet(planetID);
     }
 
     public double getAccelerationDueToGravity(PlanetsProvider planets) {
-        PlanetaryBody plnt = planets.getPlanet(this.planetName);
+        PlanetaryBody plnt = planets.getPlanet(this.planetID);
         double g = plnt.getAccelerationDueToGravity();
-        double adjustedg = g*0.1d*0.08d;
-        return adjustedg;
+        return g*0.1d*0.08d;
     }
 
     public CompoundTag saveNBT(CompoundTag nbt) {
-        nbt.putString("NSP.planetName", this.planetName);
+        planetID.encodeToNBT(nbt);
         return nbt;
     }
 
     public void loadNBT(CompoundTag nbt) {
-        this.planetName = nbt.getString("NSP.planetName");
+        this.planetID = new OrbitId(nbt);
     }
 //
 //    public void copyFrom(@NotNull PlanetLevelData oldStore) {

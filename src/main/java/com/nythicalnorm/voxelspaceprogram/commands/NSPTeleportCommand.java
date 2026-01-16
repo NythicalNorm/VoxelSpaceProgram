@@ -16,7 +16,7 @@ import java.util.Collection;
 
 public class NSPTeleportCommand {
     public NSPTeleportCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("nsp-tp").requires((stack) -> {
+        dispatcher.register(Commands.literal("vsp-tp").requires((stack) -> {
             return stack.hasPermission(2);
         })
             .then(Commands.argument("targets", EntityArgument.entities())
@@ -51,9 +51,9 @@ public class NSPTeleportCommand {
                         semiMajorAxis = (semiMajorAxisInput*1000d) - planet.getRadius();
                         //return 0;
                     }
-                    long startingAnamoly = VoxelSpaceProgram.getSolarSystem().get().getCurrentTime();
-                    OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, inclination, eccentricity, 0d, 0d, startingAnamoly);
-                    VoxelSpaceProgram.getSolarSystem().get().playerJoinOrbit(body, (ServerPlayer) entity, orbitalElement);
+                    long startingAnomaly = VoxelSpaceProgram.getSolarSystem().get().getCurrentTime();
+                    OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, inclination, eccentricity, 0d, 0d, startingAnomaly);
+                    VoxelSpaceProgram.getSolarSystem().get().playerJoinOrbit(planet, (ServerPlayer) entity, orbitalElement);
                 }
             }
             pSource.sendSuccess(() -> {
