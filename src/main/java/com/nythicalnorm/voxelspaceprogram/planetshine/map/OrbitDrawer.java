@@ -5,12 +5,12 @@ import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
@@ -25,7 +25,7 @@ public class OrbitDrawer {
 
         for (int i = 0; i < segments; i++) {
             float angleAround = (float) i/(segments);
-            float angleAroundNext = (float) (i+1f)/(segments);
+            float angleAroundNext = (i+1f)/(segments);
 
             angleAround = angleAround * Mth.TWO_PI;
             angleAroundNext = angleAroundNext * Mth.TWO_PI;
@@ -52,7 +52,7 @@ public class OrbitDrawer {
 
         for (int i = 0; i < segments; i++) {
             float angleAround = (float) i/(segments);
-            float angleAroundNext = (float) (i+1f)/(segments);
+            float angleAroundNext = (i+1f)/(segments);
 
             angleAround = (angleAround * Mth.PI) + Mth.HALF_PI;
             angleAroundNext = (angleAroundNext * Mth.PI) + Mth.HALF_PI;
@@ -85,11 +85,11 @@ public class OrbitDrawer {
         float distanceFromCenterToFoci =  isElliptical ? (float) Math.sqrt(a*a - b*b) : (float) -Math.sqrt(a*a + b*b);
 
         poseStack.pushPose();
-        Quaternionf orbitRotations = new Quaternionf();
-        orbitRotations.rotateY((float) -orbitalElements.LongitudeOfAscendingNode);
-        orbitRotations.rotateX((float) -orbitalElements.Inclination);
-        orbitRotations.rotateY((float) -orbitalElements.ArgumentOfPeriapsis);
-        poseStack.mulPose(orbitRotations);
+//        Quaternionf orbitRotations = new Quaternionf();
+//        orbitRotations.rotateY((float) -orbitalElements.LongitudeOfAscendingNode);
+//        orbitRotations.rotateX((float) -orbitalElements.Inclination);
+//        orbitRotations.rotateY((float) -orbitalElements.ArgumentOfPeriapsis);
+        poseStack.mulPose(Calcs.quaternionDtoF(orbitalElements.getOrbitRotation()));
 
         poseStack.translate(-distanceFromCenterToFoci, 0f, 0f);
         poseStack.scale((float) a,1f,(float) b);

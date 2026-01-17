@@ -10,6 +10,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 public class PlayerPhysicsSpace extends PhysicsContext{
+    private static final double SIGNIFIACANT_ACCELERATION = 1e-9;
 
     public PlayerPhysicsSpace(Entity playerEntity, EntitySpacecraftBody body) {
         super(playerEntity, body);
@@ -17,6 +18,10 @@ public class PlayerPhysicsSpace extends PhysicsContext{
 
     @Override
     public boolean applyAcceleration(double accelerationX, double accelerationY, double accelerationZ, Vector3f angularAcceleration) {
+        if (isInsignifanctForce(accelerationX) && isInsignifanctForce(accelerationY) && isInsignifanctForce(accelerationZ)) {
+            return false;
+        }
+
         Quaterniond rotationQuaternion = Calcs.quaternionFtoD(orbitBody.getRotation());
 
         double xRotated = accelerationX*Mth.sin(playerEntity.getYRot() * (Mth.PI / 180F));
@@ -29,5 +34,9 @@ public class PlayerPhysicsSpace extends PhysicsContext{
         totalAngularVelocity.mul(Minecraft.getInstance().getDeltaFrameTime());
         this.orbitBody.setVelocityForUpdate(totalVelocity, totalAngularVelocity);
         return true;
+    }
+
+    private boolean isInsignifanctForce(double acceleration) {
+        return Math.abs(acceleration) < SIGNIFIACANT_ACCELERATION;
     }
 }

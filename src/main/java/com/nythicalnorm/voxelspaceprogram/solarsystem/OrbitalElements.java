@@ -3,18 +3,22 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.util.Mth;
+import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
 public class OrbitalElements {
     public static final double UniversalGravitationalConstant = 6.6743E-11d;
     public double SemiMajorAxis;
     public double Eccentricity;
-    public double Inclination;
+    public long periapsisTime;
 
+    public double Inclination;
     public double ArgumentOfPeriapsis;
     public double LongitudeOfAscendingNode;
-    public long periapsisTime;
+
     public double MeanAngularMotion;
+
+    public Quaterniond orbitRotation;
 
     private double Mu;
     private static final double twoPI = 2 * Math.PI;
@@ -22,18 +26,21 @@ public class OrbitalElements {
     public OrbitalElements(double semimajoraxis, double inclination, double eccentricity,
                            double argumentOfperiapsis, double longitudeOfAscendingNode, long startinganamoly) {
         this.SemiMajorAxis = semimajoraxis;
-        this.Inclination = inclination;
         this.Eccentricity = eccentricity;
-        //this.MeanLongitude = meanlongitude;
+        this.periapsisTime = startinganamoly;
+
+        this.Inclination = inclination;
         this.ArgumentOfPeriapsis = argumentOfperiapsis;
         this.LongitudeOfAscendingNode = longitudeOfAscendingNode;
-        this.periapsisTime = startinganamoly;
+
+        setOrbitRotationFromElements(argumentOfperiapsis, inclination, longitudeOfAscendingNode);
+
         this.MeanAngularMotion = 0; //2*(2*Math.PI)/orbitalperiod; //temp fix *2 because orbits are faster than expected
     }
 
-    public OrbitalElements(Vector3d posOG, Vector3d velOG, long TimeElapsed, double parentMass) {
+    public OrbitalElements(Vector3d pos, Vector3d vel, long TimeElapsed, double parentMass) {
         Mu = UniversalGravitationalConstant * parentMass;
-        fromCartesian(posOG, velOG, TimeElapsed);
+        fromCartesian(pos, vel, TimeElapsed);
     }
 
     // Reference: https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time
@@ -42,11 +49,12 @@ public class OrbitalElements {
 
         double a = this.SemiMajorAxis;
         double e = this.Eccentricity;
+        boolean isElliptical = e < 1;
 
         //temp halting check
-        if (e == 1) {
-            e = 0.999999999999999;
-        }
+//        if (e == 1) {
+//            e = 0.999999999999999;
+//        }
 
         // Calculating Mean Anamoly, M = n(t - t0)
         long diff = timeElapsed - this.periapsisTime;
@@ -56,7 +64,7 @@ public class OrbitalElements {
         //Eccentric anomaly also this works for circular orbits I think
         double Anomaly = M;
 
-        if (e < 1 && e > 0) { // Eccentric Anomoly
+        if (isElliptical && e > 0) { // Eccentric Anomoly
             //newton-ralphson method Ei+1 = -E(i)/ E'(i)
             for (int iter = 0; iter < 100; iter++) {
                 double Eiplus1 = (Anomaly - e * Math.sin(Anomaly) - M) /  // E(i+1) = (E - e*sin(E))/(1-e*cos(E))
@@ -78,7 +86,6 @@ public class OrbitalElements {
                 Anomaly -= Hiplus1;
 
                 if (Math.abs(Hiplus1) < 1e-15 || Double.isNaN(Anomaly)) {
-                    //System.out.println("Iter: " + iter);
                     break;
                 }
             }
@@ -86,65 +93,76 @@ public class OrbitalElements {
             VoxelSpaceProgram.logError("we have an unhandled orbit on our hands");
         }
 
-        double semiMinorAxis = (e < 1) ? a * Math.sqrt(1 - (e*e)) : -a * Math.sqrt((e*e) - 1);
+        double semiMinorAxis = (isElliptical) ? a * Math.sqrt(1 - (e*e)) : -a * Math.sqrt((e*e) - 1);
 
-        double sinAnomaly =  (e < 1) ? Math.sin(Anomaly) : Math.sinh(Anomaly);
-        double cosAnomaly =  (e < 1) ?  org.joml.Math.cosFromSin(sinAnomaly, Anomaly) : Math.cosh(Anomaly);
-
+        double sinAnomaly =  (isElliptical) ? Math.sin(Anomaly) : Math.sinh(Anomaly);
+        double cosAnomaly =  (isElliptical) ?  org.joml.Math.cosFromSin(sinAnomaly, Anomaly) : Math.cosh(Anomaly);
 
         double P = a * (cosAnomaly - e);
         double Q = semiMinorAxis * sinAnomaly;
-        stateVectors[0] = perifocalToEquatorial(P, Q, this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
+        stateVectors[0] = perifocalToEquatorial(P, Q); //, this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
 
         // Velocity Calculation:
         // Determine the square root of the standard gravitational parameter divided by the semi-latus rectum.
         double sqrtSgpOverSlr = Math.sqrt(Mu / (a*(1-e*e)) );
 
-        //atan2 divides q/p to get the true anomoly but we are using a identity sin of arctan to get our results
-        //double prearctanDiv = (Q/P);
+        // atan2 divides q/p to get the true anomaly but we are using a identity sin of arctan to get our results
+        // double prearctanDiv = (Q/P);
         double prearctanDivSquareRoot = Math.sqrt(P*P+Q*Q);
 
-        //reference https://space.stackexchange.com/questions/54596/how-to-calculate-velocity-vector-in-perifocal-coordinates
+        // reference https://space.stackexchange.com/questions/54596/how-to-calculate-velocity-vector-in-perifocal-coordinates
         // sin of atan2 = y/(y^2+x^2)
         double vP = -sqrtSgpOverSlr*(Q/prearctanDivSquareRoot);
-        //cos of atan2 = x/(y^2+x^2)
+        // cos of atan2 = x/(y^2+x^2)
         double vQ = sqrtSgpOverSlr*(e+P/prearctanDivSquareRoot);
 
-        stateVectors[1] = perifocalToEquatorial(vP, vQ, this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
+        stateVectors[1] = perifocalToEquatorial(vP, vQ); //, this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
 
         return stateVectors;
     }
 
-    private Vector3d perifocalToEquatorial(double P, double Q, double w, double i, double W) {
-        // rotate by argument of periapsis
-        double sinw = Math.sin(w);
-        double cosw = org.joml.Math.cosFromSin(sinw, w);
-        double x = cosw * P - sinw * Q;
-        double y = sinw * P + cosw * Q;
+//    private Vector3d perifocalToEquatorial(double P, double Q, double w, double i, double W) {
+//        // rotate by argument of periapsis
+//        double sinw = Math.sin(w);
+//        double cosw = org.joml.Math.cosFromSin(sinw, w);
+//        double x = cosw * P - sinw * Q;
+//        double z = sinw * P + cosw * Q;
+//
+//        // rotate by inclination
+//        double sinI = Math.sin(i);
+//        double y = sinI * z;
+//
+//        z = org.joml.Math.cosFromSin(sinI, i) * z;
+//
+//        // rotate by longitude of ascending node
+//        double xtemp = x;
+//
+//        double sinW = Math.sin(W);
+//        double cosW = org.joml.Math.cosFromSin(sinW, W);
+//
+//        x = cosW * xtemp - sinW * z;
+//        z = sinW * xtemp + cosW * z;
+//
+//        return new Vector3d(x, y, z);
+//    }
 
-        // rotate by inclination
-        double sinI = Math.sin(i);
-        double z = sinI * y;
+    public Quaterniond getOrbitRotation() {
+        return orbitRotation;
+    }
 
-        y = org.joml.Math.cosFromSin(sinI, i) * y;
+    private void setOrbitRotationFromElements (double argumentOfPeriapsis, double inclination, double longitudeOfAscendingNode) {
+        this.orbitRotation = new Quaterniond().rotateY(-longitudeOfAscendingNode).rotateX(-inclination).rotateY(-argumentOfPeriapsis);
+        this.orbitRotation.normalize();
+    }
 
-        // rotate by longitude of ascending node
-        double xtemp = x;
-
-        double sinW = Math.sin(W);
-        double cosW = org.joml.Math.cosFromSin(sinW, W);
-
-        x = cosW * xtemp - sinW * y;
-        y = sinW * xtemp + cosW * y;
-
-        return new Vector3d(x,z,y);
+    private Vector3d perifocalToEquatorial(double P, double Q) {
+        Vector3d stateVec = new Vector3d(P, 0d, Q);
+        return orbitRotation.transform(stateVec);
     }
 
     // reference: https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
     // https://space.stackexchange.com/questions/65465/orbit-determination-from-position-and-velocity
-    public void fromCartesian(Vector3d posOG, Vector3d velOG, long TimeElapsed) {
-        Vector3d position = new Vector3d(posOG.x, posOG.z, posOG.y);
-        Vector3d velocity = new Vector3d(velOG.x, velOG.z, velOG.y);
+    public void fromCartesian(Vector3d position, Vector3d velocity, long TimeElapsed) {
         double VelMagnitude = velocity.length();
         double PosMagnitude = position.length();
 
@@ -152,54 +170,48 @@ public class OrbitalElements {
         Vector3d eccentricityVector = (new Vector3d(velocity).cross(momentumVectorH)).mul(1/Mu);
         eccentricityVector.sub(new Vector3d(position).normalize());
 
-        Vector3d pointingAscendingNode = new Vector3d(-momentumVectorH.y, momentumVectorH.x, 0); //n
+        Vector3d pointingAscendingNode = new Vector3d(momentumVectorH.z, 0, -momentumVectorH.x);
 
-        double trueAnomolyacosVar = eccentricityVector.dot(position)/(eccentricityVector.length()*PosMagnitude);
+        double trueAnomalyAcosVar = eccentricityVector.dot(position)/(eccentricityVector.length()*PosMagnitude);
 
-        double trueAnomoly = Math.acos(Mth.clamp(trueAnomolyacosVar, -1, 1));
+        double trueAnomoly = Math.acos(Mth.clamp(trueAnomalyAcosVar, -1, 1));
+        trueAnomoly = position.dot(velocity) < 0 ? twoPI - trueAnomoly : trueAnomoly;
 
-        if (position.dot(velocity) < 0) {
-            trueAnomoly = twoPI - trueAnomoly;
-        }
-
-        this.Inclination = Math.acos(momentumVectorH.z/momentumVectorH.length());
+        this.Inclination = Math.acos(Mth.clamp(-momentumVectorH.y/momentumVectorH.length(), -1, 1));
 
         this.Eccentricity = eccentricityVector.length();
 
-        this.LongitudeOfAscendingNode = Math.acos(pointingAscendingNode.x/pointingAscendingNode.length());
-        if (pointingAscendingNode.y < 0) {
-            this.LongitudeOfAscendingNode = twoPI - this.LongitudeOfAscendingNode;
-        }
+        this.LongitudeOfAscendingNode = Math.acos(Mth.clamp(pointingAscendingNode.x/pointingAscendingNode.length(), -1, 1));
+        this.LongitudeOfAscendingNode = pointingAscendingNode.z < 0 ? twoPI - LongitudeOfAscendingNode : LongitudeOfAscendingNode;
 
-        this.ArgumentOfPeriapsis = Math.acos(pointingAscendingNode.dot(eccentricityVector)/
-                (pointingAscendingNode.length()*eccentricityVector.length()));
+        this.ArgumentOfPeriapsis = Math.acos(Mth.clamp(pointingAscendingNode.dot(eccentricityVector)/
+                (pointingAscendingNode.length()*eccentricityVector.length()), -1, 1));
 
         //for equatorial orbits
-        if (Double.isNaN(this.LongitudeOfAscendingNode)) {
+        if (Double.isNaN(this.LongitudeOfAscendingNode) || Double.isNaN(this.ArgumentOfPeriapsis)) {
             this.LongitudeOfAscendingNode = 0;
-            this.ArgumentOfPeriapsis = Math.atan2(eccentricityVector.y, eccentricityVector.x);
+            this.ArgumentOfPeriapsis = Math.atan2(eccentricityVector.z, eccentricityVector.x);
         }
 
-        if (eccentricityVector.z < 0) {
-            this.ArgumentOfPeriapsis = twoPI - this.ArgumentOfPeriapsis;
-        }
+        this.ArgumentOfPeriapsis = eccentricityVector.y < 0 ? twoPI - ArgumentOfPeriapsis : ArgumentOfPeriapsis;
+
+        setOrbitRotationFromElements(this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
 
         // vis viva equation
-        this.SemiMajorAxis = 1/ ( (2/PosMagnitude) - (VelMagnitude*VelMagnitude)/Mu );
+        this.SemiMajorAxis = 1 / ((2 / PosMagnitude) - (VelMagnitude * VelMagnitude) / Mu);
 
         if (Eccentricity < 1) {
-            double E = 2*Math.atan2( Math.tan(trueAnomoly*0.5d), Math.sqrt((1+Eccentricity)/(1-Eccentricity)) );
+            double E = 2 * Math.atan2(Math.tan(trueAnomoly * 0.5d), Math.sqrt((1 + Eccentricity) / (1 - Eccentricity)));
 
-            this.MeanAngularMotion = Math.sqrt(Mu/(SemiMajorAxis * SemiMajorAxis * SemiMajorAxis));
-            double timeDiffTerm = (E - Eccentricity*Math.sin(E))/this.MeanAngularMotion;
+            this.MeanAngularMotion = Math.sqrt(Mu / (SemiMajorAxis * SemiMajorAxis * SemiMajorAxis));
+            double timeDiffTerm = (E - Eccentricity * Math.sin(E)) / this.MeanAngularMotion;
             this.periapsisTime = TimeElapsed - Calcs.timeDoubleToLong(timeDiffTerm);
         } else {
             double cosTrueAnomoly = Math.cos(trueAnomoly);
-            double H = invCosh((Eccentricity + cosTrueAnomoly) / (1+Eccentricity*cosTrueAnomoly) );
+            double H = invCosh((Eccentricity + cosTrueAnomoly) / (1 + Eccentricity * cosTrueAnomoly));
 
-            this.MeanAngularMotion = Math.sqrt(Mu/-(SemiMajorAxis * SemiMajorAxis * SemiMajorAxis));
-
-            double timeDiffTerm = (Eccentricity*Math.sinh(H) - H)/this.MeanAngularMotion;
+            this.MeanAngularMotion = Math.sqrt(Mu / -(SemiMajorAxis * SemiMajorAxis * SemiMajorAxis));
+            double timeDiffTerm = (Eccentricity * Math.sinh(H) - H) / this.MeanAngularMotion;
             this.periapsisTime = TimeElapsed - Calcs.timeDoubleToLong(timeDiffTerm);
         }
     }

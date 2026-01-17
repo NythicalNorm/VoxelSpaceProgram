@@ -129,7 +129,7 @@ class OrbitalElementsTest {
        long currentnanotime = System.nanoTime();
 
        for (int i = 0; i < 1000000; i++) {
-           long timeElapsed = i*100000;
+           long timeElapsed = i * 100000L;
            Vector3d[] stateVectors = elements.ToCartesian(timeElapsed);
            Vector3d pos = stateVectors[0];
            Vector3d vel = stateVectors[1];

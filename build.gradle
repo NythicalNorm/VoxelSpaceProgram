@@ -211,6 +211,9 @@ dependencies {
     runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_version}")
     runtimeOnly fg.deobf("org.valkyrienskies.kelvin:kelvin-forge:${minecraft_version}-${kelvin_version}")
     implementation(fg.deobf("maven.modrinth:create-clockwork:1.20.1-forge-0.5.4.4"))
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0' // Use the latest stable version
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0' // Use the latest stable version
 }
 
 test {
