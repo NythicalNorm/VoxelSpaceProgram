@@ -4,12 +4,13 @@ import com.nythicalnorm.voxelspaceprogram.dimensions.DimensionTeleporter;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.network.*;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeColorHolder;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.handlers.PlanetTexHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
@@ -58,6 +59,11 @@ public class SolarSystem {
         this.planetTexHandler = new PlanetTexHandler();
         server.execute(() -> planetTexHandler.loadOrCreatePlanetTex(server, this.planetsProvider));
         //server.execute(() -> planetTexHandler.getOrCreateBiomeTex(server.overworld()));
+
+        planetsProvider.getPlanetDimensions().forEach((levelResourceKey, planetaryBody) -> {
+            Level planetLevel = server.getLevel(levelResourceKey);
+            ((PlanetAccessor) planetLevel).setPlanetaryBody(planetaryBody);
+        });
     }
 
     public long getCurrentTime() {

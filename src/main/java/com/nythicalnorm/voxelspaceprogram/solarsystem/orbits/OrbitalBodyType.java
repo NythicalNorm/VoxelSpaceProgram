@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -23,6 +23,10 @@ public class OrbitalBodyType<T extends Orbit> {
 
     public T decodeFromBuffer(FriendlyByteBuf friendlyByteBuf) {
        return codec.decodeBuffer(supplier.getInstance(), friendlyByteBuf);
+    }
+
+    public Orbit getInstance() {
+        return supplier.getInstance();
     }
 
     @FunctionalInterface

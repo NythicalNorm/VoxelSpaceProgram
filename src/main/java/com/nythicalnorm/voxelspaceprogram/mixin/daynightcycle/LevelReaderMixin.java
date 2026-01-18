@@ -2,14 +2,12 @@ package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelData;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelDataProvider;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraftforge.common.util.LazyOptional;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,8 +39,8 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
                 }
             }
             else {
-                LazyOptional<PlanetLevelData> plntData =  level.getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA);
-               if (plntData.resolve().isPresent() && VoxelSpaceProgram.getSolarSystem().isPresent())
+                PlanetAccessor planetAccessor = (PlanetAccessor) level;
+               if (planetAccessor.isPlanet())
                {
                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
                }

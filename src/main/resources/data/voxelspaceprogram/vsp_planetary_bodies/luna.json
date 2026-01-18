@@ -1,0 +1,29 @@
+{
+  "name": "luna",
+  "type": "planet",
+  "radius": 1737400,
+  "mass": 7.34767309E22,
+
+  "north_pole_dir": {
+    "right_ascension": 0,
+    "declination": 0
+  },
+
+  "starting_rotation": 0,
+  "rotation_period": 2358720,
+
+  "orbital_elements": {
+    "semi_major_axis": 382599226,
+    "inclination": 0.091470106618193394721,
+    "eccentricity": 6.476694128611285E-02,
+    "argument_of_periapsis": 5.4073390958703955178,
+    "longitude_of_ascending_node": 2.162973108375887854,
+    "periapsis_time": 2.7140591915324141503
+  },
+
+  "atmospheric_data": {
+    "has_atmosphere": false,
+    "alpha_night": 1.0,
+    "alpha_day": 0.005
+  }
+}

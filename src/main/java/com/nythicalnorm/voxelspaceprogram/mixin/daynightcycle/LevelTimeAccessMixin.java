@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelTimeAccess;

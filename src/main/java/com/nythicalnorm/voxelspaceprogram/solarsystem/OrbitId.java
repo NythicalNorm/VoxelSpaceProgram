@@ -1,9 +1,8 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
+package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import org.valkyrienskies.core.api.ships.properties.ShipIdKt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;

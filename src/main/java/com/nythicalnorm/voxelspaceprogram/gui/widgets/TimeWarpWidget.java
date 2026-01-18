@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +28,7 @@ public class TimeWarpWidget extends AbstractWidget {
         pGuiGraphics.blit(TIME_WARP_TEXTURE, getX(), getY(),0,0,136,34);
 
         VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
-            Component timeComp = parseTime(ClientTimeHandler.solarSystemTimeInSec(), celestialStateSupplier.getPlanetsProvider().BUMI);
+            Component timeComp = parseTime(ClientTimeHandler.solarSystemTimeInSec(), celestialStateSupplier.getPlanetsProvider().getOverworldPlanet());
             pGuiGraphics.drawString(Minecraft.getInstance().font, timeComp,13, 6, 0x00ff2b, false);
 
             int timeWarpSettingAmount = celestialStateSupplier.getTimeWarpSetting() + 1;
@@ -42,6 +42,10 @@ public class TimeWarpWidget extends AbstractWidget {
     }
 
     private Component parseTime(Double currentTime, PlanetaryBody overworldPlanet) {
+        if (overworldPlanet == null) {
+            return Component.empty();
+        }
+
        double yearTime = (2*Math.PI)/overworldPlanet.getOrbitalElements().MeanAngularMotion;
        //this is not sidereal rotation period the values need to be changed and this calculation also needs to be changed.
        double dayTime = overworldPlanet.getRotationPeriod();

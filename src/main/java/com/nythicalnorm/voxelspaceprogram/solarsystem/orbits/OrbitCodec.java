@@ -1,7 +1,8 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.nio.charset.StandardCharsets;

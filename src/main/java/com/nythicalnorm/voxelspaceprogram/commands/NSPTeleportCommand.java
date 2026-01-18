@@ -3,8 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -52,7 +52,7 @@ public class NSPTeleportCommand {
                         //return 0;
                     }
                     long startingAnomaly = VoxelSpaceProgram.getSolarSystem().get().getCurrentTime();
-                    OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, inclination, eccentricity, 0d, 0d, startingAnomaly);
+                    OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, eccentricity, startingAnomaly, inclination, 0d, 0d);
                     VoxelSpaceProgram.getSolarSystem().get().playerJoinOrbit(planet, (ServerPlayer) entity, orbitalElement);
                 }
             }

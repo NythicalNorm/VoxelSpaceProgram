@@ -1,6 +1,6 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import org.joml.AxisAngle4f;
@@ -29,37 +29,37 @@ public class PlanetaryBodyCodec extends OrbitCodec<PlanetaryBody> {
         }
     }
 
-    private void writePlanetAtmosphere(FriendlyByteBuf byteBuf, PlanetAtmosphere atmosphere) {
-        byteBuf.writeBoolean(atmosphere.hasAtmosphere);
-        byteBuf.writeInt(atmosphere.overlayColor);
-        byteBuf.writeInt(atmosphere.atmoColor);
-        byteBuf.writeDouble(atmosphere.atmosphereHeight);
-        byteBuf.writeFloat(atmosphere.atmosphereAlpha);
-        byteBuf.writeFloat(atmosphere.exposureNight);
-        byteBuf.writeFloat(atmosphere.exposureDay);
-    }
-
     @Override
     public PlanetaryBody decodeBuffer(PlanetaryBody planetBody, FriendlyByteBuf byteBuf) {
-        PlanetaryBody planetaryBody = super.decodeBuffer(planetBody, byteBuf);
-        planetaryBody.radius = byteBuf.readDouble();
-        planetaryBody.mass = byteBuf.readDouble();
+        super.decodeBuffer(planetBody, byteBuf);
+        planetBody.radius = byteBuf.readDouble();
+        planetBody.mass = byteBuf.readDouble();
 
-        planetaryBody.NorthPoleDir = new AxisAngle4f(
+        planetBody.NorthPoleDir = new AxisAngle4f(
                 byteBuf.readFloat(),
                 byteBuf.readFloat(),
                 byteBuf.readFloat(),
                 byteBuf.readFloat()
         );
 
-        planetaryBody.RotationPeriod = byteBuf.readFloat();
-        planetaryBody.atmosphericEffects = readPlanetAtmosphere(byteBuf);
+        planetBody.RotationPeriod = byteBuf.readFloat();
+        planetBody.atmosphericEffects = readPlanetAtmosphere(byteBuf);
 
         if (byteBuf.readBoolean()) {
             planetBody.dimension = byteBuf.readResourceKey(Registries.DIMENSION);
         }
 
-        return planetaryBody;
+        return planetBody;
+    }
+
+    private void writePlanetAtmosphere(FriendlyByteBuf byteBuf, PlanetAtmosphere atmosphere) {
+        byteBuf.writeBoolean(atmosphere.hasAtmosphere);
+        byteBuf.writeInt(atmosphere.surfaceColor);
+        byteBuf.writeInt(atmosphere.atmoColor);
+        byteBuf.writeDouble(atmosphere.atmosphereHeight);
+        byteBuf.writeFloat(atmosphere.atmosphereAlpha);
+        byteBuf.writeFloat(atmosphere.alphaNight);
+        byteBuf.writeFloat(atmosphere.alphaDay);
     }
 
     private PlanetAtmosphere readPlanetAtmosphere(FriendlyByteBuf byteBuf) {

@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.PlanetRenderer;
 import org.jetbrains.annotations.Nullable;

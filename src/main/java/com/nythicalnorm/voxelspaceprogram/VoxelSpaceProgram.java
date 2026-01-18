@@ -9,6 +9,7 @@ import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.sound.ModSounds;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.storage.VSPDataManager;
 import com.nythicalnorm.voxelspaceprogram.util.ModItemProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,6 +58,10 @@ public class VoxelSpaceProgram
         //context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
+    public static Logger getLogger() {
+        return LOGGER;
+    }
+
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
@@ -78,7 +83,7 @@ public class VoxelSpaceProgram
     @SubscribeEvent
     public void onServerAboutToStart(ServerAboutToStartEvent event)
     {
-        PlanetsProvider planets = new PlanetsProvider(false);
+        PlanetsProvider planets = VSPDataManager.loadServerDataAndStartSolarSystem(event.getServer());
         solarSystem = new SolarSystem(event.getServer(), planets);
     }
 
@@ -103,8 +108,8 @@ public class VoxelSpaceProgram
     }
 
     public static void startClient(EntitySpacecraftBody playerData) {
-        PlanetsProvider planets = new PlanetsProvider(true);
-        celestialStateSupplier = new CelestialStateSupplier(playerData, planets);
+        //PlanetsProvider planets = new PlanetsProvider(true);
+        //celestialStateSupplier = new CelestialStateSupplier(playerData, planets);
     }
 
     public static Optional<SolarSystem> getSolarSystem() {

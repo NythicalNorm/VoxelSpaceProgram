@@ -1,15 +1,14 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelData;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelDataProvider;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -17,7 +16,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(Level.class)
-public class LevelMixin {
+public class LevelMixin implements PlanetAccessor {
+    @Unique
+    PlanetaryBody planetaryBody;
+
+    @Override
+    public boolean isPlanet() {
+        return planetaryBody != null;
+    }
+
+    @Override
+    public PlanetaryBody getPlanetaryBody() {
+        return planetaryBody;
+    }
+
+    @Override
+    public void setPlanetaryBody(PlanetaryBody planetaryBody) {
+        this.planetaryBody = planetaryBody;
+    }
+
     // Still makes no sense why mixining this function affects passive mob spawn as this seems to just
     // linearly increase difficulty and caps out at 3 days...???
     @Inject(method = "getCurrentDifficultyAt", at= @At(value = "HEAD"),cancellable = true)
@@ -25,12 +42,9 @@ public class LevelMixin {
         Level level = (Level) (Object)this;
 
         if (!level.isClientSide()) {
-            PlanetaryBody plnt = null;
-            LazyOptional<PlanetLevelData> plntData = level.getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA);
             Optional<Long> currentTime = Optional.empty();
-            if (plntData.resolve().isPresent() &&  VoxelSpaceProgram.getSolarSystem().isPresent()) {
-                plnt = VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getPlanet(plntData.resolve().get().getPlanetID());
-                currentTime = DayNightCycleHandler.getDayTime(pPos, plnt, VoxelSpaceProgram.getSolarSystem().get().getCurrentTime());
+            if (isPlanet()) {
+                currentTime = DayNightCycleHandler.getDayTime(pPos, getPlanetaryBody(), VoxelSpaceProgram.getSolarSystem().get().getCurrentTime());
             }
 
             if (currentTime.isPresent()) {
@@ -45,6 +59,5 @@ public class LevelMixin {
                 cir.setReturnValue(new DifficultyInstance(level.getDifficulty(), currentTime.get(), i, f));
             }
         }
-
     }
 }

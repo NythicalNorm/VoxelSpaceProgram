@@ -2,60 +2,60 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.util.Calcs;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.util.*;
 
 public class PlanetsProvider {
-    private static final Map<ResourceKey<Level>, PlanetaryBody> planetDimensions = new Object2ObjectOpenHashMap<>();
-    private final Map<OrbitId, PlanetaryBody> allPlanetaryBodies = new Object2ObjectOpenHashMap<>();
-    private final Map<OrbitId, EntitySpacecraftBody> allSpacecraftBodies = new Object2ObjectOpenHashMap<>();
-    //public Map<OrbitId, EntitySpacecraftBody> allSpacecraftBodies = new Object2ObjectOpenHashMap<>();
+    private final Map<ResourceKey<Level>, PlanetaryBody> planetDimensions;
+    private final Map<OrbitId, PlanetaryBody> allPlanetaryBodies;
+    private final Map<OrbitId, EntitySpacecraftBody> allSpacecraftBodies;
+    private final StarBody rootStar;
 
-    public PlanetaryBody NILA =  new PlanetaryBody("nila", new OrbitalElements(
-            382599226,0.091470106618193394721,6.476694128611285E-02,
-            5.4073390958703955178,2.162973108375887854, Calcs.TimePerTickToTimePerMilliTick(2.7140591915324141503)),
-            //2358720),
-            null, new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 0.005f),
-            new HashMap<>(),1737400, 7.34767309E22,  0f, 0, 2358720);
+//    public PlanetaryBody NILA =  new PlanetaryBody("nila", new OrbitalElements(
+//            382599226,0.091470106618193394721,6.476694128611285E-02,
+//            5.4073390958703955178,2.162973108375887854, Calcs.TimePerTickToTimePerMilliTick(2.7140591915324141503)),
+//            //2358720),
+//            null, new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 0.005f),
+//            new HashMap<>(),1737400, 7.34767309E22,  0f, 0, 2358720);
+//
+//    public PlanetaryBody BUMI = new PlanetaryBody("bumi", new OrbitalElements(
+//            149653496273.0d,4.657951002584728917e-6,1.704239718110438E-02,
+//            5.1970176873649567284,2.8619013937171278172,Calcs.TimePerTickToTimePerMilliTick(6.2504793475201942954)),
+//             // 31557600),
+//            Level.OVERWORLD, new PlanetAtmosphere(true, 0x5ba3e6, 0x0077ff,
+//                     100000, 0.25f,1.0f, 0.5f),
+//                    new HashMap<>() {{put(NILA.getOrbitId(), NILA);}},6371000, 5.97219E24, 0.408407f , 0, 86400);
+//
+//    public StarBody SURIYAN = new StarBody("suriyan", new PlanetAtmosphere(true, 0xffffa8, 0xFFE742, 250000000, 0.5f,1.0f, 1.0f),
+//            new HashMap<>() {{put(BUMI.getOrbitId(), BUMI);}},696340000, 1.989E30);
 
-    public PlanetaryBody BUMI = new PlanetaryBody("bumi", new OrbitalElements(
-            149653496273.0d,4.657951002584728917e-6,1.704239718110438E-02,
-            5.1970176873649567284,2.8619013937171278172,Calcs.TimePerTickToTimePerMilliTick(6.2504793475201942954)),
-             // 31557600),
-            Level.OVERWORLD, new PlanetAtmosphere(true, 0x5ba3e6, 0x0077ff,
-                     100000, 0.25f,1.0f, 0.5f),
-                    new HashMap<>() {{put(NILA.getOrbitId(), NILA);}},6371000, 5.97219E24, 0.408407f , 0, 86400);
-
-    public Star SURIYAN = new Star("suriyan", new PlanetAtmosphere(true, 0xffffa8, 0xFFE742, 250000000, 0.5f,1.0f, 1.0f),
-            new HashMap<>() {{put(BUMI.getOrbitId(), BUMI);}},696340000, 1.989E30);
-
-
-    public PlanetsProvider(boolean isClientSide) {
-        //reeaally temporary but need to put this here right now, going to write a json parser for this next
-        allPlanetaryBodies.put(NILA.getOrbitId(), NILA);
-        allPlanetaryBodies.put(BUMI.getOrbitId(), BUMI);
-        allPlanetaryBodies.put(SURIYAN.getOrbitId(), SURIYAN);
-        planetDimensions.put(BUMI.getDimension(), BUMI);
-
-        SURIYAN.initCalcs();
+    public PlanetsProvider(Map<OrbitId, PlanetaryBody> pAllPlanetaryBodies, Map<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, PlanetaryBody> pPlanetDimensions, StarBody rootStar) {
+        this.allPlanetaryBodies = pAllPlanetaryBodies;
+        this.allSpacecraftBodies = pAllSpacecraftBodies;
+        this.planetDimensions = pPlanetDimensions;
+        this.rootStar = rootStar;
+        rootStar.initCalcs();
     }
 
     public void UpdatePlanets(long currentTime) {
-        SURIYAN.simulatePlanets(currentTime);
+        rootStar.simulatePlanets(currentTime);
     }
 
     public Map<OrbitId, EntitySpacecraftBody> getAllSpacecraftBodies() {
         return allSpacecraftBodies;
+    }
+
+    public Map<ResourceKey<Level>, PlanetaryBody> getPlanetDimensions() {
+        return planetDimensions;
     }
 
     public @Nullable PlanetaryBody getPlanet(String key) {
@@ -122,6 +122,14 @@ public class PlanetsProvider {
         return planetDimensions.containsKey(dim);
     }
 
+    public PlanetaryBody getOverworldPlanet() {
+        return planetDimensions.get(Level.OVERWORLD);
+    }
+
+    public StarBody getRootStar() {
+        return rootStar;
+    }
+
     public PlanetaryBody getDimensionPlanet(ResourceKey<Level> dim) {
         return planetDimensions.get(dim);
     }
@@ -143,17 +151,5 @@ public class PlanetsProvider {
             }
         }
         return null;
-    }
-
-    public Optional<PlanetaryBody> getDimPlanet(Level level) {
-        LazyOptional<PlanetLevelData> planetLevelData = level.getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA);
-
-        if (planetLevelData.isPresent()) {
-            Optional<PlanetLevelData> optionalPlanetData = planetLevelData.resolve();
-            if (optionalPlanetData.isPresent()) {
-                return Optional.of(getPlanet(optionalPlanetData.get().getPlanetID()));
-            }
-        }
-        return Optional.empty();
     }
 }

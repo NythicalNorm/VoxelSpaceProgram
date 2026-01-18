@@ -1,7 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.util;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -41,18 +42,16 @@ public class DayNightCycleHandler {
             return Optional.empty();
         }
 
-        Optional<PlanetaryBody> planet =  VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getDimPlanet(level);
-        if (planet.isPresent()) {
-            PlanetaryBody plnt = planet.get();
-            Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), true);
-            Vector3d planetAbsolutePos = plnt.getAbsolutePos().add(blockPosOnPlanet);
+        PlanetaryBody planet =  ((PlanetAccessor)level).getPlanetaryBody();
+        if (planet != null) {
+            Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), planet.getRadius(), planet.getRotation(), true);
+            Vector3d planetAbsolutePos = planet.getAbsolutePos().add(blockPosOnPlanet);
             return Optional.of(getSunAngle(blockPosOnPlanet, planetAbsolutePos));
         }
         else {
             return Optional.empty();
         }
     }
-
 
     public static Optional<Boolean> isDay(BlockPos pos, Level level) {
         Optional<Integer> DarkenAmount = getDarknessLightLevel(pos,level);

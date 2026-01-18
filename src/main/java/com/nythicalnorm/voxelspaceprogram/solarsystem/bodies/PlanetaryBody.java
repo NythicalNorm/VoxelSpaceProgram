@@ -1,11 +1,15 @@
 
-package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.PlanetTexture;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
@@ -14,6 +18,7 @@ import java.lang.Math;
 import java.util.HashMap;
 
 public class PlanetaryBody extends Orbit {
+    protected String name;
     protected double radius = 1000;
     protected double mass = 10E24;
     protected AxisAngle4f NorthPoleDir = new AxisAngle4f();
@@ -52,6 +57,25 @@ public class PlanetaryBody extends Orbit {
         this.id = OrbitId.getIdFromString(pName);
         this.name = pName.toLowerCase().trim();
         this.displayName = Component.translatable(String.format("voxelspaceprogram.planets.%s", name));
+    }
+
+    public void setNorthPoleDir(float rightAscension, float declination, float startingRotation) {
+        rightAscension = (float) Math.toRadians(rightAscension);
+        declination = (float) Math.toRadians(declination);
+
+        Vector3f normalizedNorthPoleDir = new Vector3f();
+        normalizedNorthPoleDir.x = Mth.sin(declination) * Mth.cos(rightAscension);
+        normalizedNorthPoleDir.y = Mth.cos(declination);
+        normalizedNorthPoleDir.z = Mth.sin(declination) * Mth.sin(rightAscension);
+        this.NorthPoleDir = new AxisAngle4f(startingRotation, normalizedNorthPoleDir);
+    }
+
+    public void setDimension(@Nullable ResourceKey<Level> dimensionLevelKey) {
+        this.dimension = dimensionLevelKey;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -121,6 +145,10 @@ public class PlanetaryBody extends Orbit {
     public double getAccelerationDueToGravity() {
         double val = OrbitalElements.UniversalGravitationalConstant*this.mass;
         return val/(radius*radius);
+    }
+
+    public double getEntityAccelerationDueToGravity() {
+        return getAccelerationDueToGravity() * 0.1d * 0.08d;
     }
 
     public double getSphereOfInfluence() {

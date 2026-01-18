@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitCodec;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class EntityBodySpacecraftCodec extends OrbitCodec<EntitySpacecraftBody> {

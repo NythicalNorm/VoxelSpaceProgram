@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.MapSolarSystemScreen;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes.*;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.AtmosphereRenderer;
@@ -56,7 +56,7 @@ public class MapRenderer {
     }
 
     public static void updateMapRenderables(CelestialStateSupplier css, Orbit currentFocusedBody) {
-        PlanetaryBody rootStar = css.getPlanetsProvider().SURIYAN;
+        PlanetaryBody rootStar = css.getPlanetsProvider().getRootStar();
         iconsList = new ArrayList<>();
         MapRelativeState starMapState = MapRelativeState.AbsolutePos;
         if (rootStar.hasChild(currentFocusedBody)) {
@@ -74,7 +74,7 @@ public class MapRenderer {
             iconsList.add(homePlanetPlayerDisplay);
         }
 
-        renderTree = traverseAndPopulateList(css.getPlanetsProvider().SURIYAN, currentFocusedBody, starRenderInMap);
+        renderTree = traverseAndPopulateList(css.getPlanetsProvider().getRootStar(), currentFocusedBody, starRenderInMap);
     }
 
     private static MapRenderable traverseAndPopulateList(Orbit parentBody, Orbit currentFocusedBody, MapRenderable parentRenderableInMap) {

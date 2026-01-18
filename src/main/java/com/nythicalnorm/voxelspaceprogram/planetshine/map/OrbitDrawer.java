@@ -2,8 +2,8 @@ package com.nythicalnorm.voxelspaceprogram.planetshine.map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.renderer.GameRenderer;

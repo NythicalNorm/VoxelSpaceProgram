@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import net.minecraft.server.level.ServerPlayer;
 import org.joml.Quaternionf;
 

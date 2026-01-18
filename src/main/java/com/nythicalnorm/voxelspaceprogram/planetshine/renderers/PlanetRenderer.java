@@ -5,9 +5,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetAtmosphere;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Star;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
 import com.nythicalnorm.voxelspaceprogram.planetshine.generators.QuadSphereModelGenerator;
 import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.ModShaders;
@@ -63,7 +63,7 @@ public class PlanetRenderer {
         if (currentPlanetAtmosphere.isPresent()) {
                 //AtmosphereRenderer.render(obj,atmosphere, poseStack, projectionMatrix, partialTick);
             PlanetAtmosphere bodyAtmos = planet.getAtmosphere();
-            float renderOpacity = (currentAlbedo * (bodyAtmos.getExposureNight() - bodyAtmos.getExposureDay())) + bodyAtmos.getExposureDay();
+            float renderOpacity = (currentAlbedo * (bodyAtmos.getAlphaNight() - bodyAtmos.getAlphaDay())) + bodyAtmos.getAlphaDay();
             RenderSystem.setShaderColor(1.0f,1.0f,1.0f, renderOpacity);
             Vec3 skyColor = PlanetShine.getLatestSkyColor();
             AtmoFilterColorUniform.set((float) skyColor.x,(float) skyColor.y,(float) skyColor.z, 1.0f);
@@ -90,7 +90,7 @@ public class PlanetRenderer {
         sunDirUniform.set(lightDir);
         ShaderInstance shad = planetShader.get();
 
-        if (planet instanceof Star) { // || obj.getBody() == css.getDimPlanet()) {
+        if (planet instanceof StarBody) { // || obj.getBody() == css.getDimPlanet()) {
             shad = GameRenderer.getPositionTexShader();
         }
 

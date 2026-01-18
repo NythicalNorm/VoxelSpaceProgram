@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
@@ -23,11 +23,11 @@ public class OrbitalElements {
     private double Mu;
     private static final double twoPI = 2 * Math.PI;
 
-    public OrbitalElements(double semimajoraxis, double inclination, double eccentricity,
-                           double argumentOfperiapsis, double longitudeOfAscendingNode, long startinganamoly) {
+    public OrbitalElements(double semimajoraxis, double eccentricity,  long periapsisTime,
+                           double inclination, double argumentOfperiapsis, double longitudeOfAscendingNode) {
         this.SemiMajorAxis = semimajoraxis;
         this.Eccentricity = eccentricity;
-        this.periapsisTime = startinganamoly;
+        this.periapsisTime = periapsisTime;
 
         this.Inclination = inclination;
         this.ArgumentOfPeriapsis = argumentOfperiapsis;

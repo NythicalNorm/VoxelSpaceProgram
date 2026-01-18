@@ -1,22 +1,22 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.planet;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
 public class PlanetAtmosphere {
     protected final boolean hasAtmosphere;
-    protected final int overlayColor;
+    protected final int surfaceColor;
     protected final int atmoColor;
     protected final double atmosphereHeight;
     protected final float atmosphereAlpha;
-    protected final float exposureNight;
-    protected final float exposureDay;
+    protected final float alphaNight;
+    protected final float alphaDay;
 
-    public PlanetAtmosphere(boolean hasAtmosphere, int overlayColor, int atmoColor, double atmosphereHeight, float atmosphereAlpha, float exposureNight, float exposureDay) {
+    public PlanetAtmosphere(boolean hasAtmosphere, int surfaceColor, int atmoColor, double atmosphereHeight, float atmosphereAlpha, float alphaNight, float alphaDay) {
         this.hasAtmosphere = hasAtmosphere;
-        this.overlayColor = overlayColor;
+        this.surfaceColor = surfaceColor;
         this.atmoColor = atmoColor;
         this.atmosphereHeight = atmosphereHeight;
         this.atmosphereAlpha = atmosphereAlpha;
-        this.exposureNight = exposureNight;
-        this.exposureDay = exposureDay;
+        this.alphaNight = alphaNight;
+        this.alphaDay = alphaDay;
     }
 
     public boolean hasAtmosphere() {
@@ -25,7 +25,7 @@ public class PlanetAtmosphere {
 
     public float[] getOverlayColor(float alpha)
     {
-        return getRGBAFloats(overlayColor, alpha);
+        return getRGBAFloats(surfaceColor, alpha);
     }
 
     public float[] getAtmoColor() {
@@ -36,12 +36,12 @@ public class PlanetAtmosphere {
         return atmosphereHeight;
     }
 
-    public float getExposureNight() {
-        return exposureNight;
+    public float getAlphaNight() {
+        return alphaNight;
     }
 
-    public float getExposureDay() {
-        return exposureDay;
+    public float getAlphaDay() {
+        return alphaDay;
     }
 
     public float getAtmosphereAlpha() {

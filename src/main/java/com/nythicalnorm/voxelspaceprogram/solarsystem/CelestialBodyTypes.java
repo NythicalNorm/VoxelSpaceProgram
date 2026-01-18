@@ -1,7 +1,11 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBodyCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBodyCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBodyCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityBodySpacecraftCodec;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -13,6 +17,8 @@ public class CelestialBodyTypes {
 
     public static final OrbitalBodyType<PlanetaryBody> PLANETARY_BODY = registerOrbitalBody(new OrbitalBodyType<>("planet", new PlanetaryBodyCodec(), PlanetaryBody::new));
 
+    public static final OrbitalBodyType<StarBody> STAR_BODY = registerOrbitalBody(new OrbitalBodyType<>("star", new StarBodyCodec(), StarBody::new));
+
     public static final OrbitalBodyType<EntitySpacecraftBody> ENTITY_SPACECRAFT_BODY = registerOrbitalBody(new OrbitalBodyType<>("entity_spacecraft", new EntityBodySpacecraftCodec(), EntitySpacecraftBody::new));
 
     public static <T extends Orbit> OrbitalBodyType<T> registerOrbitalBody(OrbitalBodyType<T> orbitalBodyType) {
@@ -22,10 +28,7 @@ public class CelestialBodyTypes {
 
     public static OrbitalBodyType <? extends Orbit> getType(String name) {
         OrbitalBodyType<? extends Orbit> orbitalBodyType = AllCelestialBodyTypes.get(name);
-        if (orbitalBodyType != null) {
-            return orbitalBodyType;
-        }
-        throw new IllegalStateException(name + " Orbital body type is unknown, can't decode data");
+        return orbitalBodyType;
     }
 
     public static String getOrbitalBodyTypeName(Orbit orbitalBody) {

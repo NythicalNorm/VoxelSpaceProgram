@@ -1,9 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderers;
 
 import com.mojang.blaze3d.vertex.*;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Star;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetAtmosphere;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes.SpaceRenderable;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes.RenderablePlanet;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
@@ -70,7 +70,7 @@ public class SpaceObjRenderer {
             plnt.render(atmosphere, poseStack, projectionMatrix, currentAlbedo);
             //rendering only the sun's atmosphere for now
             if (plnt instanceof RenderablePlanet renPlanet) {
-                if (renPlanet.getBody() instanceof Star) {
+                if (renPlanet.getBody() instanceof StarBody) {
                     AtmosphereRenderer.render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmosphere(), poseStack, projectionMatrix);
                 }
             }

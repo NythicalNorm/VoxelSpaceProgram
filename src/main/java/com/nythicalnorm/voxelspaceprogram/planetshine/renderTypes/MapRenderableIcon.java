@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
 import com.nythicalnorm.voxelspaceprogram.util.RenderingCommon;
 import net.minecraft.resources.ResourceLocation;

@@ -1,0 +1,39 @@
+{
+  "name": "earth",
+  "type": "planet",
+  "radius": 6371000,
+  "mass": 5.97219E24,
+
+  "north_pole_dir": {
+    "right_ascension": 0,
+    "declination": 23.44
+  },
+
+  "starting_rotation": 0,
+  "rotation_period": 86400,
+  "dimension_id": "minecraft:overworld",
+
+  "child_planets": [
+    "luna"
+  ],
+
+  "orbital_elements": {
+    "semi_major_axis": 149653496273.0,
+    "eccentricity": 1.704239718110438E-02,
+    "periapsis_time": 6.2504793475201942954,
+
+    "inclination": 4.657951002584728917e-6,
+    "argument_of_periapsis": 5.1970176873649567284,
+    "longitude_of_ascending_node": 2.8619013937171278172
+  },
+
+  "atmospheric_data": {
+    "has_atmosphere": true,
+    "surface_color": "5ba3e6",
+    "atmosphere_color": "0077ff",
+    "atmosphere_height": 100000,
+    "atmosphere_alpha": 0.25,
+    "alpha_night": 1.0,
+    "alpha_day": 0.5
+  }
+}

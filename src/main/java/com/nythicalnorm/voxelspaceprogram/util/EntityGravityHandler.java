@@ -4,8 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelData;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetLevelDataProvider;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -13,7 +12,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,16 +27,17 @@ public class EntityGravityHandler {
     public static void onFallDamage(LivingFallEvent event) {
         float fallDistance = event.getDistance();
         Level level = event.getEntity().level();
+        PlanetAccessor planetAccessor = (PlanetAccessor) level;
 
-        level.getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA).ifPresent(planetLevelData -> {
-            double planetAcceleration = planetLevelData.getAccelerationDueToGravity(VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider());
+        if (planetAccessor.isPlanet()){
+            double planetAcceleration = planetAccessor.getPlanetaryBody().getEntityAccelerationDueToGravity();
 
             if (planetAcceleration <= 0){
                 event.setCanceled(true);
             }
             double multfactor = ForgeMod.ENTITY_GRAVITY.get().getDefaultValue() / planetAcceleration;
             event.setDistance(fallDistance/(float) multfactor);
-        });
+        }
 
         if (level.dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
             event.setDistance(0);
@@ -50,14 +49,14 @@ public class EntityGravityHandler {
         Entity entity = event.getEntity();
         if (entity instanceof LivingEntity) {
             AttributeMap entityAttributes = ((LivingEntity)entity).getAttributes();
-            LazyOptional<PlanetLevelData> plntData = event.getLevel().getCapability(PlanetLevelDataProvider.PLANET_LEVEL_DATA);
+            PlanetAccessor planetAccessor = (PlanetAccessor) event.getLevel();
 
             //Optional<Double> levelGravity = PlanetDimensions.getAccelerationDueToGravityAt(entity.level());
             double tempGravity = 0;
-            boolean applyGravityModifier = (plntData.resolve().isPresent() && VoxelSpaceProgram.getSolarSystem().isPresent());
+            boolean applyGravityModifier = planetAccessor.isPlanet();
 
             if (applyGravityModifier) {
-                tempGravity = plntData.resolve().get().getAccelerationDueToGravity(VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider());
+                tempGravity = planetAccessor.getPlanetaryBody().getEntityAccelerationDueToGravity();
             }
 
             AttributeModifier gravityModifier = new AttributeModifier(gravityUUID, "VoxelSpaceProgram.PlanetGravity",

@@ -1,6 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import net.minecraft.network.FriendlyByteBuf;
 import org.joml.Vector3d;
 
@@ -17,24 +19,24 @@ public class NetworkEncoders {
         return CelestialBodyTypes.getType(friendlyByteBuf.readCharSequence(stringSize, StandardCharsets.US_ASCII).toString()).decodeFromBuffer(friendlyByteBuf);
     }
 
-    public static void writeOrbitalElements(FriendlyByteBuf friendlyByteBuf,OrbitalElements orbitalElements) {
+    public static void writeOrbitalElements(FriendlyByteBuf friendlyByteBuf, OrbitalElements orbitalElements) {
         friendlyByteBuf.writeDouble(orbitalElements.SemiMajorAxis);
-        friendlyByteBuf.writeDouble(orbitalElements.Inclination);
         friendlyByteBuf.writeDouble(orbitalElements.Eccentricity);
+        friendlyByteBuf.writeLong(orbitalElements.periapsisTime);
 
+        friendlyByteBuf.writeDouble(orbitalElements.Inclination);
         friendlyByteBuf.writeDouble(orbitalElements.ArgumentOfPeriapsis);
         friendlyByteBuf.writeDouble(orbitalElements.LongitudeOfAscendingNode);
-        friendlyByteBuf.writeLong(orbitalElements.periapsisTime);
     }
 
     public static OrbitalElements readOrbitalElements(FriendlyByteBuf friendlyByteBuf) {
         return new OrbitalElements(
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readDouble(),
+                friendlyByteBuf.readLong(),
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readDouble(),
-                friendlyByteBuf.readDouble(),
-                friendlyByteBuf.readLong()
+                friendlyByteBuf.readDouble()
         );
     }
 

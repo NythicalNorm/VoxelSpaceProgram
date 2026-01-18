@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;

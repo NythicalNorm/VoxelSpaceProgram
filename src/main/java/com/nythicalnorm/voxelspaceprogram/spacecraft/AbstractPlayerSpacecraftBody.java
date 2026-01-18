@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PlayerPhysicsPlanet;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PlayerPhysicsSpace;

@@ -1,24 +1,24 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Orbit {
     protected OrbitId id;
-    protected String name;
     protected Component displayName = Component.empty();
     protected Vector3d relativeOrbitalPos = new Vector3d();
     protected Vector3d absoluteOrbitalPos = new Vector3d();
     protected Vector3d relativeVelocity = new Vector3d();
     protected Quaternionf rotation = new Quaternionf();
     protected @Nullable OrbitalElements orbitalElements;
-    protected HashMap<OrbitId, Orbit> childElements;
+    protected Map<OrbitId, Orbit> childElements = new Object2ObjectOpenHashMap<>();
     protected @Nullable Orbit parent; // Nullable only in the case of the sun
     protected boolean isStableOrbit = false;
 
@@ -28,10 +28,6 @@ public abstract class Orbit {
 
     public void setDisplayName(Component displayName) {
         this.displayName = displayName;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public OrbitId getOrbitId() {

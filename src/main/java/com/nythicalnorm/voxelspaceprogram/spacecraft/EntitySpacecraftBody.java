@@ -1,9 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyType;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
@@ -16,7 +16,7 @@ public class EntitySpacecraftBody extends Orbit {
 
     public EntitySpacecraftBody() {
         this.angularVelocity = new Vector3f();
-        this.orbitalElements = new OrbitalElements(0f,0f, 0f, 0f, 0f, 0L);
+        this.orbitalElements = new OrbitalElements(0d,0d, 0L, 0d, 0d, 0d);
     }
 
     @Override

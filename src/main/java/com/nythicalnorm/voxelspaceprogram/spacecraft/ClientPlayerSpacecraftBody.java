@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.spacecraft;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.ServerboundSpacecraftMove;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.util.Mth;
