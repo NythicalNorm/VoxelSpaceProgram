@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,7 +32,7 @@ public class ServerboundSpacecraftMove {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_SERVER ) {
             NetworkEvent.Context context = contextSupplier.get();
-            VoxelSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
+            SolarSystem.getInstance().ifPresent(solarSystem -> {
                 context.enqueueWork(() -> solarSystem.handleSpacecraftMove(context.getSender(), spacecraftBodyID, spacecraftControlState));
             });
             context.setPacketHandled(true);

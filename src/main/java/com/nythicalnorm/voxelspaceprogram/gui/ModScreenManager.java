@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.gui;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.MapSolarSystemScreen;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.PlayerSpacecraftScreen;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
@@ -58,6 +58,6 @@ public class ModScreenManager {
         minecraftOptions.hideGui = false;
         minecraftOptions.setCameraType(CameraType.FIRST_PERSON);
         openSpacecraftScreen = null;
-        VoxelSpaceProgram.getCelestialStateSupplier().get().setControllingBody(null);
+        CelestialStateSupplier.getInstance().get().setControllingBody(null);
     }
 }

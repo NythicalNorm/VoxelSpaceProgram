@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
@@ -43,8 +43,8 @@ public class LevelMixin implements PlanetAccessor {
 
         if (!level.isClientSide()) {
             Optional<Long> currentTime = Optional.empty();
-            if (isPlanet()) {
-                currentTime = DayNightCycleHandler.getDayTime(pPos, getPlanetaryBody(), VoxelSpaceProgram.getSolarSystem().get().getCurrentTime());
+            if (isPlanet() && SolarSystem.getInstance().isPresent()) {
+                currentTime = DayNightCycleHandler.getDayTime(pPos, getPlanetaryBody(), SolarSystem.getInstance().get().getCurrentTime());
             }
 
             if (currentTime.isPresent()) {

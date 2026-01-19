@@ -1,7 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.map;
 
 import com.mojang.blaze3d.vertex.*;
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.MapSolarSystemScreen;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
@@ -81,7 +80,7 @@ public class MapRenderer {
         Collection<Orbit> OrbitChildren = parentBody.getChildren();
 
         if (homePlanetPlayerDisplay != null) {
-            if (parentBody.equals(VoxelSpaceProgram.getCelestialStateSupplier().get().getCurrentPlanet().get())) {
+            if (parentBody.equals(CelestialStateSupplier.getInstance().get().getCurrentPlanet().get())) {
                 parentRenderableInMap.addChildRenderable(homePlanetPlayerDisplay);
             }
         }

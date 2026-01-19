@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
@@ -39,10 +40,10 @@ public class NavballWidget extends AbstractWidget {
         int xPos = getX() - 47;
         int yPos = getY() - 86;
 
-        VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> renderNavBall(celestialStateSupplier, pGuiGraphics));
+        CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> renderNavBall(celestialStateSupplier, pGuiGraphics));
 
         pGuiGraphics.blit(NAVBALL_GUI_TEXTURE, xPos, yPos,0,0,94,86);
-        PlayerSpacecraftScreen spacecraftScreen = VoxelSpaceProgram.getCelestialStateSupplier().get().getScreenManager().getSpacecraftScreen();
+        PlayerSpacecraftScreen spacecraftScreen = CelestialStateSupplier.getInstance().get().getScreenManager().getSpacecraftScreen();
 
         if (spacecraftScreen != null) {
             renderThrottleBar(pGuiGraphics, xPos, yPos, spacecraftScreen);
@@ -99,8 +100,8 @@ public class NavballWidget extends AbstractWidget {
     }
 
     private void renderRelativeVelocity(GuiGraphics pGuiGraphics, int xPos, int yPos) {
-        if (VoxelSpaceProgram.getCelestialStateSupplier().get().weInSpaceDim()) {
-            int speed = (int) VoxelSpaceProgram.getCelestialStateSupplier().get().getPlayerOrbit().getRelativeVelocity().length();
+        if (CelestialStateSupplier.getInstance().get().weInSpaceDim()) {
+            int speed = (int) CelestialStateSupplier.getInstance().get().getPlayerOrbit().getRelativeVelocity().length();
             Component orbitalSpeedComp = Component.translatable("voxelspaceprogram.screen.orbital_speed", speed);
             pGuiGraphics.drawString(Minecraft.getInstance().font, orbitalSpeedComp,xPos + 22, yPos + 5, 0x00ff2b, false);
         }
@@ -121,7 +122,7 @@ public class NavballWidget extends AbstractWidget {
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
 
     }
 }

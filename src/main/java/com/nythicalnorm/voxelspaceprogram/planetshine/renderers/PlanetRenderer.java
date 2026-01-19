@@ -4,6 +4,7 @@ import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
@@ -78,7 +79,7 @@ public class PlanetRenderer {
 
         QuadSphereModelGenerator.getSphereBuffer().bind();
 
-        Optional<ResourceLocation> planetTex = VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetTexManager().getTextureForPlanet(planet.getOrbitId());
+        Optional<ResourceLocation> planetTex = CelestialStateSupplier.getInstance().get().getPlanetTexManager().getTextureForPlanet(planet.getOrbitId());
         planetTex.ifPresentOrElse(tex -> RenderSystem.setShaderTexture(0, tex),
                 () -> RenderSystem.setShaderTexture(0, MissingTextureAtlasSprite.getLocation()));
 

@@ -5,14 +5,12 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.nio.charset.StandardCharsets;
-
 public abstract class OrbitCodec<T extends Orbit> {
     public void encodeBuffer(T orbit, FriendlyByteBuf byteBuf) {
         String typeName = CelestialBodyTypes.getOrbitalBodyTypeName(orbit);
-        byteBuf.writeVarInt(typeName.length());
-        byteBuf.writeCharSequence(typeName, StandardCharsets.US_ASCII);
+        NetworkEncoders.writeASCII(byteBuf, typeName);
         orbit.id.encodeToBuffer(byteBuf);
+        byteBuf.writeComponent(orbit.displayName);
         NetworkEncoders.writeVector3d(byteBuf, orbit.getRelativePos());
         NetworkEncoders.writeVector3d(byteBuf, orbit.getAbsolutePos());
         NetworkEncoders.writeVector3d(byteBuf, orbit.getRelativeVelocity());
@@ -36,6 +34,7 @@ public abstract class OrbitCodec<T extends Orbit> {
 
     public T decodeBuffer (T orbit, FriendlyByteBuf byteBuf) {
         orbit.id = new OrbitId(byteBuf);
+        orbit.setDisplayName(byteBuf.readComponent());
         orbit.relativeOrbitalPos = NetworkEncoders.readVector3d(byteBuf);
         orbit.absoluteOrbitalPos = NetworkEncoders.readVector3d(byteBuf);
         orbit.relativeVelocity = NetworkEncoders.readVector3d(byteBuf);

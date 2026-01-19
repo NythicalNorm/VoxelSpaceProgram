@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.gui.screen;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.util.KeyBindings;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -48,13 +48,13 @@ public class MouseLookScreen extends Screen implements GuiEventListener {
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if (KeyBindings.INC_TIME_WARP_KEY.matches(pKeyCode, pScanCode)) {
-            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent((celestialStateSupplier ->
+            CelestialStateSupplier.getInstance().ifPresent((celestialStateSupplier ->
                     celestialStateSupplier.TryChangeTimeWarp(true)));
             return true;
         }
 
         else if (KeyBindings.DEC_TIME_WARP_KEY.matches(pKeyCode, pScanCode)) {
-            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent((celestialStateSupplier ->
+            CelestialStateSupplier.getInstance().ifPresent((celestialStateSupplier ->
                     celestialStateSupplier.TryChangeTimeWarp(false)));
             return true;
         }

@@ -8,12 +8,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
+import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -42,13 +44,13 @@ public class PlanetArgument implements ArgumentType<String> {
         String parsedBody = null;
         if (reader.canRead()) {
             String planetName = reader.readString();
-            if (VoxelSpaceProgram.getCelestialStateSupplier().isPresent()) {
-                if (!planetName.isEmpty() && VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetsProvider().getPlanet(planetName) != null) {
+            if (CelestialStateSupplier.getInstance().isPresent()) {
+                if (!planetName.isEmpty() && CelestialStateSupplier.getInstance().get().getPlanetsProvider().getPlanet(planetName) != null) {
                     parsedBody = planetName;
                 }
             }
-            else if (VoxelSpaceProgram.getSolarSystem().isPresent()) {
-                if (!planetName.isEmpty() && VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getPlanet(planetName) != null) {
+            else if (SolarSystem.getInstance().isPresent()) {
+                if (!planetName.isEmpty() && SolarSystem.getInstance().get().getPlanetsProvider().getPlanet(planetName) != null) {
                     parsedBody = planetName;
                 }
             }
@@ -63,7 +65,7 @@ public class PlanetArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        Iterable<String> planets = VoxelSpaceProgram.getCelestialStateSupplier().get().getPlanetsProvider().getAllPlanetNames();
+        Iterable<String> planets = CelestialStateSupplier.getInstance().get().getPlanetsProvider().getAllPlanetNames();
         return context.getSource() instanceof SharedSuggestionProvider ? SharedSuggestionProvider.suggest(planets, builder) : Suggestions.empty();
     }
 
@@ -76,7 +78,7 @@ public class PlanetArgument implements ArgumentType<String> {
             pBuffer.writeUtf(pTemplate.planet);
         }
 
-        public PlanetArgument.Info.Template deserializeFromNetwork(FriendlyByteBuf pBuffer) {
+        public PlanetArgument.Info.@NotNull Template deserializeFromNetwork(FriendlyByteBuf pBuffer) {
             String plnt = pBuffer.readUtf();
             return new PlanetArgument.Info.Template(plnt);
         }
@@ -86,7 +88,7 @@ public class PlanetArgument implements ArgumentType<String> {
             pJson.addProperty("voxelspaceprogram_planet", pTemplate.planet);
         }
 
-        public PlanetArgument.Info.Template unpack(PlanetArgument pArgument) {
+        public PlanetArgument.Info.@NotNull Template unpack(PlanetArgument pArgument) {
             return new PlanetArgument.Info.Template(pArgument.planet);
         }
 
@@ -97,12 +99,11 @@ public class PlanetArgument implements ArgumentType<String> {
                 this.planet = pSun;
             }
 
-            public PlanetArgument instantiate(CommandBuildContext pContext) {
-
+            public @NotNull PlanetArgument instantiate(@NotNull CommandBuildContext pContext) {
                 return PlanetArgument.planetArgument(this.planet);
             }
 
-            public ArgumentTypeInfo<PlanetArgument, ?> type() {
+            public @NotNull ArgumentTypeInfo<PlanetArgument, ?> type() {
                 return Info.this;
             }
         }

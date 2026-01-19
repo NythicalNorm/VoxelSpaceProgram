@@ -1,5 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.gui.screen.PlayerSpacecraftScreen;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +27,7 @@ public class LeftPanelWidget extends AbstractWidget {
 
         pGuiGraphics.blit(LEFTPANEL_GUI_TEXTURE, x, y,0,0,66,35);
 
-        PlayerSpacecraftScreen spacecraftScreen = VoxelSpaceProgram.getCelestialStateSupplier().get().getScreenManager().getSpacecraftScreen();
+        PlayerSpacecraftScreen spacecraftScreen = CelestialStateSupplier.getInstance().get().getScreenManager().getSpacecraftScreen();
 
         if (spacecraftScreen != null) {
            if (spacecraftScreen.isDockingMode()) {

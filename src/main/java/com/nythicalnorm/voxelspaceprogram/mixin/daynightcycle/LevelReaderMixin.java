@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.core.BlockPos;
@@ -34,22 +34,23 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
 
         if (this instanceof Level level) {
             if (level.isClientSide) {
-                if (VoxelSpaceProgram.getCelestialStateSupplier().isPresent()) {
-                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(Optional.of(VoxelSpaceProgram.getCelestialStateSupplier().get().getPlayerOrbit().getSunAngle()), level);
+                if (CelestialStateSupplier.getInstance().isPresent()) {
+                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(Optional.of(CelestialStateSupplier.getInstance().get().getPlayerOrbit().getSunAngle()), level);
                 }
             }
             else {
                 PlanetAccessor planetAccessor = (PlanetAccessor) level;
-               if (planetAccessor.isPlanet())
-               {
+                if (planetAccessor.isPlanet()) {
                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
-               }
+                }
             }
         }
-        else if (this instanceof WorldGenRegion) {
-        }
-        else {
-            VoxelSpaceProgram.log("Where");
+        else if (this instanceof WorldGenRegion worldGenRegion) {
+            Level level = worldGenRegion.getLevel();
+            PlanetAccessor planetAccessor = (PlanetAccessor) level;
+            if (planetAccessor.isPlanet()) {
+                darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
+            }
         }
         if (darkLevelFromPlanet.isPresent()) {
             DarkenAmount = darkLevelFromPlanet.get();

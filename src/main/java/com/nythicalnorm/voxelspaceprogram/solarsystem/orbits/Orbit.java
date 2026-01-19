@@ -1,7 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -18,7 +17,7 @@ public abstract class Orbit {
     protected Vector3d relativeVelocity = new Vector3d();
     protected Quaternionf rotation = new Quaternionf();
     protected @Nullable OrbitalElements orbitalElements;
-    protected Map<OrbitId, Orbit> childElements = new Object2ObjectOpenHashMap<>();
+    protected Map<OrbitId, Orbit> childElements;
     protected @Nullable Orbit parent; // Nullable only in the case of the sun
     protected boolean isStableOrbit = false;
 
@@ -89,9 +88,7 @@ public abstract class Orbit {
 
     public Collection<Orbit> getChildren() {
         if (childElements != null) {
-            if (!childElements.isEmpty()) {
-                return childElements.values();
-            }
+            return childElements.values();
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
+import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitCodec;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -7,6 +8,7 @@ public class StarBodyCodec extends OrbitCodec<StarBody> {
     @Override
     public void encodeBuffer(StarBody sunBody, FriendlyByteBuf byteBuf) {
         super.encodeBuffer(sunBody, byteBuf);
+        NetworkEncoders.writeASCII(byteBuf, sunBody.name);
         byteBuf.writeDouble(sunBody.getRadius());
         byteBuf.writeDouble(sunBody.getMass());
         writePlanetAtmosphere(byteBuf, sunBody.getAtmosphere());
@@ -15,6 +17,7 @@ public class StarBodyCodec extends OrbitCodec<StarBody> {
     @Override
     public StarBody decodeBuffer(StarBody sunBody, FriendlyByteBuf byteBuf) {
         super.decodeBuffer(sunBody, byteBuf);
+        sunBody.name = NetworkEncoders.readASCII(byteBuf);
         sunBody.radius = byteBuf.readDouble();
         sunBody.mass = byteBuf.readDouble();
         sunBody.atmosphericEffects = readPlanetAtmosphere(byteBuf);

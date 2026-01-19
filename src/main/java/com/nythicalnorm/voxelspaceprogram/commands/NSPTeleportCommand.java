@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import net.minecraft.commands.CommandSourceStack;
@@ -41,20 +41,19 @@ public class NSPTeleportCommand {
 
     private int TeleportToOrbit(CommandSourceStack pSource, Collection<? extends Entity> pTargets, String body,
                                 double semiMajorAxisInput, double eccentricity, double inclination) {
-        PlanetaryBody planet = VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getPlanet(body);
-
         for(Entity entity : pTargets) {
             if (entity instanceof ServerPlayer) {
-                if (VoxelSpaceProgram.getSolarSystem().isPresent()) {
+                SolarSystem.getInstance().ifPresent(solarSystem -> {
+                    PlanetaryBody planet = solarSystem.getPlanetsProvider().getPlanet(body);
                     double semiMajorAxis = (semiMajorAxisInput*1000d) + planet.getRadius();
                     if (semiMajorAxisInput < 0) {
                         semiMajorAxis = (semiMajorAxisInput*1000d) - planet.getRadius();
                         //return 0;
                     }
-                    long startingAnomaly = VoxelSpaceProgram.getSolarSystem().get().getCurrentTime();
+                    long startingAnomaly = solarSystem.getCurrentTime();
                     OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, eccentricity, startingAnomaly, inclination, 0d, 0d);
-                    VoxelSpaceProgram.getSolarSystem().get().playerJoinOrbit(planet, (ServerPlayer) entity, orbitalElement);
-                }
+                    solarSystem.playerJoinOrbit(planet, (ServerPlayer) entity, orbitalElement);
+                });
             }
             pSource.sendSuccess(() -> {
                 return Component.translatable("voxelspaceprogram.commands.dimTeleport");

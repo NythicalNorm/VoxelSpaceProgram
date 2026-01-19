@@ -2,7 +2,6 @@ package com.nythicalnorm.voxelspaceprogram.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.AltitudeWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.LeftPanelWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.NavballWidget;
@@ -32,7 +31,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
 
     public MapSolarSystemScreen(boolean PisSpacecraftScreenOpen) {
         super(Component.empty());
-        VoxelSpaceProgram.getCelestialStateSupplier().ifPresent (celestialStateSupplier -> {
+        CelestialStateSupplier.getInstance().ifPresent (celestialStateSupplier -> {
             css = celestialStateSupplier;
             celestialStateSupplier.getScreenManager().setMapScreenOpen(true);
         });

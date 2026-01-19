@@ -16,11 +16,9 @@ public class OrbitalElements {
     public double ArgumentOfPeriapsis;
     public double LongitudeOfAscendingNode;
 
-    public double MeanAngularMotion;
-
     public Quaterniond orbitRotation;
-
     private double Mu;
+    public double MeanAngularMotion;
     private static final double twoPI = 2 * Math.PI;
 
     public OrbitalElements(double semimajoraxis, double eccentricity,  long periapsisTime,
@@ -34,8 +32,12 @@ public class OrbitalElements {
         this.LongitudeOfAscendingNode = longitudeOfAscendingNode;
 
         setOrbitRotationFromElements(argumentOfperiapsis, inclination, longitudeOfAscendingNode);
+    }
 
-        this.MeanAngularMotion = 0; //2*(2*Math.PI)/orbitalperiod; //temp fix *2 because orbits are faster than expected
+    public OrbitalElements(double semimajoraxis, double eccentricity,  long periapsisTime,
+                           double inclination, double argumentOfperiapsis, double longitudeOfAscendingNode, double parentBodyMass) {
+        this(semimajoraxis, eccentricity, periapsisTime, inclination, argumentOfperiapsis, longitudeOfAscendingNode);
+        setOrbitalPeriod(parentBodyMass);
     }
 
     public OrbitalElements(Vector3d pos, Vector3d vel, long TimeElapsed, double parentMass) {
@@ -50,11 +52,6 @@ public class OrbitalElements {
         double a = this.SemiMajorAxis;
         double e = this.Eccentricity;
         boolean isElliptical = e < 1;
-
-        //temp halting check
-//        if (e == 1) {
-//            e = 0.999999999999999;
-//        }
 
         // Calculating Mean Anamoly, M = n(t - t0)
         long diff = timeElapsed - this.periapsisTime;
@@ -151,7 +148,7 @@ public class OrbitalElements {
     }
 
     private void setOrbitRotationFromElements (double argumentOfPeriapsis, double inclination, double longitudeOfAscendingNode) {
-        this.orbitRotation = new Quaterniond().rotateY(-longitudeOfAscendingNode).rotateX(-inclination).rotateY(-argumentOfPeriapsis);
+        this.orbitRotation = new Quaterniond().rotateY(longitudeOfAscendingNode).rotateX(inclination).rotateY(argumentOfPeriapsis);
         this.orbitRotation.normalize();
     }
 
@@ -195,7 +192,7 @@ public class OrbitalElements {
 
         this.ArgumentOfPeriapsis = eccentricityVector.y < 0 ? twoPI - ArgumentOfPeriapsis : ArgumentOfPeriapsis;
 
-        setOrbitRotationFromElements(this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
+        setOrbitRotationFromElements(-this.ArgumentOfPeriapsis, -this.Inclination, -this.LongitudeOfAscendingNode);
 
         // vis viva equation
         this.SemiMajorAxis = 1 / ((2 / PosMagnitude) - (VelMagnitude * VelMagnitude) / Mu);

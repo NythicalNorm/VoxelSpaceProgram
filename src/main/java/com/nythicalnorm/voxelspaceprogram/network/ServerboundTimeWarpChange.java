@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -25,9 +25,8 @@ public class ServerboundTimeWarpChange {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_SERVER ) {
             NetworkEvent.Context context = contextSupplier.get();
-            VoxelSpaceProgram.getSolarSystem().ifPresent(solarSystem -> {
-                context.enqueueWork(() -> solarSystem.ChangeTimeWarp(ProposedSetTimeWarpSpeed, contextSupplier.get().getSender()));
-            });
+            SolarSystem.getInstance().ifPresent(solarSystem ->
+                    context.enqueueWork(() -> solarSystem.ChangeTimeWarp(ProposedSetTimeWarpSpeed, contextSupplier.get().getSender())));
             context.setPacketHandled(true);
         }
     }

@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
@@ -31,7 +31,7 @@ public class ClientboundPlanetTexturePacket {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
 
-            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(css -> {
+            CelestialStateSupplier.getInstance().ifPresent(css -> {
                 context.enqueueWork(() -> css.getPlanetTexManager().incomingPlanetTexture(css.getPlanetsProvider().getPlanet(this.planetID), planetTexture));
             });
         }

@@ -1,7 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
+import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
@@ -9,11 +11,12 @@ import java.util.*;
 
 public class StarBody extends PlanetaryBody {
     public StarBody() {
-
+        super();
     }
 
-    public StarBody(String name, PlanetAtmosphere effects, @Nullable HashMap<OrbitId, Orbit> childBody, double radius, double mass) {
-        super(name, null, null, effects, childBody, radius, mass, 0f, 0, 0);
+    @Override
+    public OrbitalBodyType<? extends Orbit> getType() {
+        return CelestialBodyTypes.STAR_BODY;
     }
 
     public void simulatePlanets(long currentTime) {

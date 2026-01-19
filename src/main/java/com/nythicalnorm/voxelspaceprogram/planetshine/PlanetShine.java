@@ -93,7 +93,7 @@ public class PlanetShine {
         }
 
         poseStack.pushPose();
-        //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), VoxelSpaceProgram.getCelestialStateSupplier().getCurrentPlanetWithinSOI());
+        //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), CelestialStateSupplier.getInstance().getCurrentPlanetWithinSOI());
         poseStack.mulPose(css.getPlayerOrbit().getRotation());
 
         SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, css, camera, projectionMatrix, partialTick);

@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelTimeAccess;
@@ -25,23 +25,18 @@ public interface LevelTimeAccessMixin extends LevelReader {
     @Overwrite
     default float getTimeOfDay(float pPartialTick) {
         if (this.isClientSide()) {
-            if (VoxelSpaceProgram.getCelestialStateSupplier().isPresent()) {
-                if (VoxelSpaceProgram.getCelestialStateSupplier().get().isOnPlanet()) {
-                    return VoxelSpaceProgram.getCelestialStateSupplier().get().getPlayerOrbit().getSunAngle();
+            if (CelestialStateSupplier.getInstance().isPresent()) {
+                if (CelestialStateSupplier.getInstance().get().isOnPlanet()) {
+                    return CelestialStateSupplier.getInstance().get().getPlayerOrbit().getSunAngle();
                 }
             }
         }
         else {
-            if (VoxelSpaceProgram.getSolarSystem().isPresent()){
-                PlanetaryBody planet = VoxelSpaceProgram.getSolarSystem().get().getPlanetsProvider().getDimensionPlanet(dimensionType());
-                //there might be some issue
-                if (planet != null) {
-                    return DayNightCycleHandler.getSunAngleAtSpawn(planet);
-                }
+            PlanetAccessor planetAccessor = (PlanetAccessor) this;
+            if (planetAccessor.isPlanet()) {
+                return DayNightCycleHandler.getSunAngleAtSpawn(planetAccessor.getPlanetaryBody());
             }
-
         }
-
         return this.dimensionType().timeOfDay(this.dayTime());
     }
 }

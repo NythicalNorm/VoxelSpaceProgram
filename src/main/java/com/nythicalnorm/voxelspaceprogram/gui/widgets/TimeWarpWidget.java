@@ -1,8 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
+import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -27,8 +28,8 @@ public class TimeWarpWidget extends AbstractWidget {
     protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         pGuiGraphics.blit(TIME_WARP_TEXTURE, getX(), getY(),0,0,136,34);
 
-        VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
-            Component timeComp = parseTime(ClientTimeHandler.solarSystemTimeInSec(), celestialStateSupplier.getPlanetsProvider().getOverworldPlanet());
+        CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> {
+            Component timeComp = parseTime(celestialStateSupplier.getCurrentTimeInSec(), celestialStateSupplier.getPlanetsProvider().getOverworldPlanet());
             pGuiGraphics.drawString(Minecraft.getInstance().font, timeComp,13, 6, 0x00ff2b, false);
 
             int timeWarpSettingAmount = celestialStateSupplier.getTimeWarpSetting() + 1;
@@ -47,8 +48,8 @@ public class TimeWarpWidget extends AbstractWidget {
         }
 
        double yearTime = (2*Math.PI)/overworldPlanet.getOrbitalElements().MeanAngularMotion;
-       //this is not sidereal rotation period the values need to be changed and this calculation also needs to be changed.
-       double dayTime = overworldPlanet.getRotationPeriod();
+       // this is not sidereal rotation period the values need to be changed and this calculation also needs to be changed.
+       double dayTime = Calcs.timeLongToDouble(overworldPlanet.getRotationPeriod());
        double hourTime = dayTime/24;
        double minuteTime = hourTime/60;
 

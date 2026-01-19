@@ -4,7 +4,6 @@ import com.nythicalnorm.voxelspaceprogram.dimensions.DimensionTeleporter;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.network.*;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeColorHolder;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.handlers.PlanetTexHandler;
@@ -15,6 +14,7 @@ import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
+import com.nythicalnorm.voxelspaceprogram.util.Stage;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -26,31 +26,39 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
-public class SolarSystem {
-    public long currentTime; // time passed since start in 1000 times currentTick, in milliTicks if you will.
-    public long timePassPerTick;
-    //public static double tickTimeStamp;
+import java.util.List;
+import java.util.Optional;
+
+public class SolarSystem extends Stage {
+    private static SolarSystem instance;
     private final MinecraftServer server;
-    private final PlanetsProvider planetsProvider;
     private PlanetTexHandler planetTexHandler;
 
     public SolarSystem(MinecraftServer server, PlanetsProvider pPlanets) {
+        super(pPlanets);
+        instance = this;
         timePassPerTick = 1000;
         this.server = server;
-        this.planetsProvider = pPlanets;
         BiomeColorHolder.init();
+    }
+
+    public static Optional<SolarSystem> getInstance() {
+        if (instance != null) {
+            return Optional.of(instance);
+        }
+        return Optional.empty();
+    }
+
+    public static void close() {
+        instance = null;
     }
 
     public MinecraftServer getServer() {
         return server;
     }
 
-    public PlanetsProvider getPlanetsProvider() {
-        return planetsProvider;
-    }
-
     public void OnTick() {
-        currentTime = currentTime + timePassPerTick;
+        setCurrentTime(currentTime + timePassPerTick);
         planetsProvider.UpdatePlanets(currentTime);
         PacketHandler.sendToAllClients(new ClientboundSolarSystemTimeUpdate(currentTime, timePassPerTick));
     }
@@ -59,15 +67,6 @@ public class SolarSystem {
         this.planetTexHandler = new PlanetTexHandler();
         server.execute(() -> planetTexHandler.loadOrCreatePlanetTex(server, this.planetsProvider));
         //server.execute(() -> planetTexHandler.getOrCreateBiomeTex(server.overworld()));
-
-        planetsProvider.getPlanetDimensions().forEach((levelResourceKey, planetaryBody) -> {
-            Level planetLevel = server.getLevel(levelResourceKey);
-            ((PlanetAccessor) planetLevel).setPlanetaryBody(planetaryBody);
-        });
-    }
-
-    public long getCurrentTime() {
-        return currentTime;
     }
 
     public void ChangeTimeWarp(int proposedSetTimeWarpSpeed, ServerPlayer player) {
@@ -80,17 +79,19 @@ public class SolarSystem {
 
     public void playerJoined(Player entity) {
         OrbitId playerEntityID = new OrbitId(entity);
+        List<PlanetaryBody> allPlanetaryBodies = planetsProvider.getAllPlanetaryBodies().values().stream().toList();
+
         // this is not working check before making a saving system
         if (planetsProvider.getAllSpacecraftBodies().containsKey(playerEntityID)) {
             EntitySpacecraftBody playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(playerEntityID);
-            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody), (ServerPlayer) entity);
+            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies), (ServerPlayer) entity);
         }
         else {
             if (entity.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
                 ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
                 entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
             }
-            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(), (ServerPlayer) entity);
+            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(allPlanetaryBodies), (ServerPlayer) entity);
         }
         if (planetTexHandler != null) {
             planetTexHandler.sendAllTexToPlayer((ServerPlayer) entity);
@@ -153,9 +154,5 @@ public class SolarSystem {
                 serverPlayerSpacecraftBody.removeYourself();
             }
         }
-    }
-
-    public void removePlayerFromOrbit(OrbitId id) {
-        planetsProvider.getAllSpacecraftBodies().remove(id);
     }
 }

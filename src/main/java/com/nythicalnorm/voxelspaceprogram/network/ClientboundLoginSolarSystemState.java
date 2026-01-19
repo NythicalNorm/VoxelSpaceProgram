@@ -1,19 +1,30 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientSyncer;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ClientboundLoginSolarSystemState {
     private final EntitySpacecraftBody playerData;
+    private final List<PlanetaryBody> allPlanetaryBodies;
 
-    public ClientboundLoginSolarSystemState(EntitySpacecraftBody playerData) {
+    public ClientboundLoginSolarSystemState(EntitySpacecraftBody playerData, List<PlanetaryBody> allPlanetaryBodies) {
         this.playerData = playerData;
+        this.allPlanetaryBodies = allPlanetaryBodies;
+    }
+
+    public ClientboundLoginSolarSystemState(List<PlanetaryBody> allPlanetaryBodies) {
+        this.playerData = null;
+        this.allPlanetaryBodies = allPlanetaryBodies;
     }
 
     public ClientboundLoginSolarSystemState(FriendlyByteBuf friendlyByteBuf) {
@@ -25,12 +36,8 @@ public class ClientboundLoginSolarSystemState {
                 playerDataIncoming = spacecraftBody;
             }
         }
-
         this.playerData = playerDataIncoming;
-    }
-
-    public ClientboundLoginSolarSystemState() {
-        this.playerData = null;
+        allPlanetaryBodies = NetworkEncoders.readPlanetaryBodyList(friendlyByteBuf);
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
@@ -40,12 +47,13 @@ public class ClientboundLoginSolarSystemState {
         } else {
             friendlyByteBuf.writeBoolean(false);
         }
+        NetworkEncoders.writePlanetaryBodyList(friendlyByteBuf, allPlanetaryBodies);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> VoxelSpaceProgram.startClient(playerData));
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientSyncer.StartClientPacket(playerData, allPlanetaryBodies)));
             context.setPacketHandled(true);
         }
     }

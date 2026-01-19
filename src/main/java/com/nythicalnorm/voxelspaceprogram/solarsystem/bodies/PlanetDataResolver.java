@@ -89,7 +89,7 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
                     starting_rotation.getAsFloat());
         }
         JsonElement rotation_period = jsonObj.get("rotation_period");
-        body.RotationPeriod = rotation_period != null ? rotation_period.getAsFloat() : 0f;
+        body.RotationPeriod = rotation_period != null ? Calcs.timeDoubleToLong(rotation_period.getAsDouble()) : 0L;
 
         JsonElement dimensionID = jsonObj.get("dimension_id");
         if (dimensionID != null) {

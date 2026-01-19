@@ -1,5 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.util;
 
+import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
@@ -38,7 +39,7 @@ public class DayNightCycleHandler {
     }
 
     public static Optional<Float> getSunAngle(BlockPos pos, Level level) {
-        if (VoxelSpaceProgram.getSolarSystem().isEmpty()) {
+        if (SolarSystem.getInstance().isEmpty()) {
             return Optional.empty();
         }
 
@@ -124,7 +125,7 @@ public class DayNightCycleHandler {
 //        if (timeNormalized < 0) {
 //            timeNormalized = timeNormalized + 24000d;
 //        }
-        double extraTime = TimeElapsed/plnt.getRotationPeriod();
+        double extraTime = (double) TimeElapsed / plnt.getRotationPeriod();
         float normalTime = 6000f + (signedAngle*24000f) + (float) Math.floor(extraTime)*24000f;
         return Optional.of((long) normalTime);
     }

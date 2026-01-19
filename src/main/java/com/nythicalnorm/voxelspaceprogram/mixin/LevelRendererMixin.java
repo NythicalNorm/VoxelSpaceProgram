@@ -2,10 +2,8 @@ package com.nythicalnorm.voxelspaceprogram.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
-import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -39,7 +37,7 @@ public abstract class LevelRendererMixin {
         LevelRenderer levelRenderer = (LevelRenderer) (Object) this;
         Minecraft mc = Minecraft.getInstance();
         //long beforeTimes = Util.getNanos();
-        Optional<CelestialStateSupplier> css = VoxelSpaceProgram.getCelestialStateSupplier();
+        Optional<CelestialStateSupplier> css = CelestialStateSupplier.getInstance();
 
         if (mc.level == null || css.isEmpty()) {
             return;
@@ -60,10 +58,10 @@ public abstract class LevelRendererMixin {
 
     @ModifyVariable(method = "renderClouds", at = @At("LOAD"), ordinal = 0)
     private double changeCloudSpeed(double value) {
-        Optional<CelestialStateSupplier> css = VoxelSpaceProgram.getCelestialStateSupplier();
+        Optional<CelestialStateSupplier> css = CelestialStateSupplier.getInstance();
         if (!css.isEmpty()) {
             if (css.get().doRender()) {
-                return Calcs.TimePerMilliTickToTick(ClientTimeHandler.getClientSideSolarSystemTime()) * 0.03F;
+                return Calcs.TimePerMilliTickToTick(css.get().getCurrentTime()) * 0.03F;
             }
         }
 

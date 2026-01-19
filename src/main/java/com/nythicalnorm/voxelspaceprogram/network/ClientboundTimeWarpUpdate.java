@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -30,7 +30,7 @@ public class ClientboundTimeWarpUpdate {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
-            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
+            CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> {
                 context.enqueueWork(() -> celestialStateSupplier.timeWarpSetFromServer(this.successfullyChanged, this.setTimeWarpSpeed) );
             });
             context.setPacketHandled(true);

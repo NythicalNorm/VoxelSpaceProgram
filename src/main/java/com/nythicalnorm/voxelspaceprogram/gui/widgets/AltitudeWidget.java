@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class AltitudeWidget extends AbstractWidget {
         scrollingNumbers = new ScrollingNumber[AmountOfNumberDisplays];
 
         for (int i = 0; i < scrollingNumbers.length; i++) {
-            scrollingNumbers[i] = new ScrollingNumber(i*8);
+            scrollingNumbers[i] = new ScrollingNumber(i * 8);
         }
     }
 
@@ -38,13 +39,13 @@ public class AltitudeWidget extends AbstractWidget {
 
         pGuiGraphics.blit(Altitude_GUI_TEXTURE, x, y,0,0,92,28);
 
-        VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(css -> renderAltitudeNumbers(css, pGuiGraphics, x, y));
+        CelestialStateSupplier.getInstance().ifPresent(css -> renderAltitudeNumbers(css, pGuiGraphics, x, y));
 
         pGuiGraphics.blit(Altitude_GUI_TEXTURE, x + 10, y + 15,96,0,5,13);
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
 
     }
 
@@ -95,7 +96,7 @@ public class AltitudeWidget extends AbstractWidget {
         }
     }
 
-    private class ScrollingNumber {
+    private static class ScrollingNumber {
         private int currentSetNum;
         private final int xOffset;
         private float currentY;

@@ -5,11 +5,11 @@
   "mass": 5.97219E24,
 
   "north_pole_dir": {
-    "right_ascension": 0,
+    "right_ascension": 90,
     "declination": 23.44
   },
 
-  "starting_rotation": 0,
+  "starting_rotation": 3.59537825909,
   "rotation_period": 86400,
   "dimension_id": "minecraft:overworld",
 

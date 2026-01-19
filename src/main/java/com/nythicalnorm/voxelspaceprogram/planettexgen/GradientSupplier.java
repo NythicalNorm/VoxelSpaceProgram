@@ -39,5 +39,5 @@ public class GradientSupplier {
             }),
     });
 
-    public static final Map<String, PlanetGradient> textureForPlanets = Map.of("bumi", OVERWORLD_GRADIENT,"nila", NILA_GRADIENT, "suriyan", STAR_GRADIENT);
+    public static final Map<String, PlanetGradient> textureForPlanets = Map.of("earth", OVERWORLD_GRADIENT,"luna", NILA_GRADIENT, "sun", STAR_GRADIENT);
 }

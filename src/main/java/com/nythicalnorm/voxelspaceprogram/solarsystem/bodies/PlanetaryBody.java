@@ -7,6 +7,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
@@ -22,7 +23,7 @@ public class PlanetaryBody extends Orbit {
     protected double radius = 1000;
     protected double mass = 10E24;
     protected AxisAngle4f NorthPoleDir = new AxisAngle4f();
-    protected float RotationPeriod = 0f;
+    protected long RotationPeriod = 0L;
     protected PlanetAtmosphere atmosphericEffects = new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 1.0f);
     protected @Nullable ResourceKey<Level> dimension = null;
 
@@ -31,6 +32,7 @@ public class PlanetaryBody extends Orbit {
     private double SOI;
 
     public PlanetaryBody() {
+        childElements = new Object2ObjectOpenHashMap<>();
     }
 
     public PlanetaryBody (String name, @Nullable OrbitalElements orbitalElements, @Nullable ResourceKey<Level> dimension, PlanetAtmosphere effects, HashMap<OrbitId, Orbit>  childBodies,
@@ -92,8 +94,8 @@ public class PlanetaryBody extends Orbit {
             Vector3d newAbs = new Vector3d(parentPos);
             this.absoluteOrbitalPos = newAbs.add(relativeOrbitalPos);
 
-            float rotationAngle = NorthPoleDir.angle + (float)((2*Math.PI/RotationPeriod) * TimeElapsed);
-            this.rotation = new Quaternionf().rotationTo(NorthPoleDir.x,NorthPoleDir.y,NorthPoleDir.z, 0f, 1f, 0f);
+            float rotationAngle = NorthPoleDir.angle + (float)((2*Math.PI/RotationPeriod) * (TimeElapsed % RotationPeriod));
+            this.rotation.identity().rotationTo(NorthPoleDir.x,NorthPoleDir.y,NorthPoleDir.z, 0f, 1f, 0f);
             Quaternionf rotated = new Quaternionf(new AxisAngle4f(rotationAngle, 0f, 1f, 0f));
             this.rotation.mul(rotated);
         }
@@ -122,7 +124,7 @@ public class PlanetaryBody extends Orbit {
         }
     }
 
-    public ResourceKey<Level> getDimension() {
+    public @Nullable ResourceKey<Level> getDimension() {
         return dimension;
     }
 
@@ -130,7 +132,7 @@ public class PlanetaryBody extends Orbit {
         return radius;
     }
 
-    public float getRotationPeriod() {
+    public long getRotationPeriod() {
         return RotationPeriod;
     }
 

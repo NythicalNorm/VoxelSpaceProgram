@@ -1,6 +1,5 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
@@ -8,7 +7,6 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
@@ -115,13 +113,6 @@ public class PlanetsProvider {
         return allPlanetaryBodies.values().stream().toList();
     }
 
-    public boolean isDimensionPlanet(ResourceKey<Level> dim) {
-        if (dim == null) {
-            return false;
-        }
-        return planetDimensions.containsKey(dim);
-    }
-
     public PlanetaryBody getOverworldPlanet() {
         return planetDimensions.get(Level.OVERWORLD);
     }
@@ -136,20 +127,5 @@ public class PlanetsProvider {
 
     public boolean isDimensionSpace(ResourceKey<Level> dim) {
         return dim == SpaceDimension.SPACE_LEVEL_KEY;
-    }
-
-    public PlanetaryBody getDimensionPlanet(DimensionType dim) {
-        for (ResourceKey<Level> level : planetDimensions.keySet()) {
-            if (level == null || VoxelSpaceProgram.getSolarSystem().isEmpty()) {
-                continue;
-            }
-            Level currentLevel = VoxelSpaceProgram.getSolarSystem().get().getServer().getLevel(level);
-            if (currentLevel != null) {
-                if (currentLevel.dimensionType() == dim) {
-                    return planetDimensions.get(level);
-                }
-            }
-        }
-        return null;
     }
 }

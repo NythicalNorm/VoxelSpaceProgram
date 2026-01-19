@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -41,7 +41,7 @@ public class ClientboundBiomeTexturePacket {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
 
-            VoxelSpaceProgram.getCelestialStateSupplier().ifPresent(celestialStateSupplier -> {
+            CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> {
                 context.enqueueWork(() -> celestialStateSupplier.getPlanetTexManager().incomingBiomeTexture(dimensionID, textureID, textureSize, biomeTexture));
             });
         }
