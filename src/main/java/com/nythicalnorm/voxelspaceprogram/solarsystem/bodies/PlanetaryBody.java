@@ -1,4 +1,3 @@
-
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.PlanetTexture;
@@ -6,7 +5,6 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.lang.Math;
-import java.util.HashMap;
 
 public class PlanetaryBody extends Orbit {
     protected String name;
@@ -33,26 +30,6 @@ public class PlanetaryBody extends Orbit {
 
     public PlanetaryBody() {
         childElements = new Object2ObjectOpenHashMap<>();
-    }
-
-    public PlanetaryBody (String name, @Nullable OrbitalElements orbitalElements, @Nullable ResourceKey<Level> dimension, PlanetAtmosphere effects, HashMap<OrbitId, Orbit>  childBodies,
-                          double radius, double mass, float inclinationAngle, float startingRot, float rotationPeriod) {
-        initStaticName(name);
-        this.orbitalElements = orbitalElements;
-        this.dimension = dimension;
-        this.radius = radius;
-        this.RotationPeriod = Calcs.timeDoubleToLong(rotationPeriod);
-        this.atmosphericEffects = effects;
-        this.childElements = childBodies;
-        this.mass = mass;
-        this.isStableOrbit = true;
-        Vector3f normalizedNorthPoleDir = new Vector3f(0f, (float) Math.cos(inclinationAngle),(float) Math.sin(inclinationAngle));
-        this.NorthPoleDir = new AxisAngle4f(startingRot, normalizedNorthPoleDir);
-        relativeOrbitalPos = new Vector3d(0d, 0d, 0d);
-        absoluteOrbitalPos = new Vector3d(0d, 0d, 0d);
-        relativeVelocity = new Vector3d(0d, 0d, 0d);
-        rotation = new Quaternionf();
-        //planetTexture = new ServerPlanetTexture();
     }
 
     public void initStaticName(String pName) {

@@ -1,6 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
+import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class OrbitalBodyType<T extends Orbit> {
     private final String typeName;
@@ -25,6 +28,13 @@ public class OrbitalBodyType<T extends Orbit> {
        return codec.decodeBuffer(supplier.getInstance(), friendlyByteBuf);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public Orbit decodeFromBufferToClient(FriendlyByteBuf friendlyByteBuf) {
+        T orbit = (T) CelestialBodyTypes.BodyTypeClientExt.celestialBodyClientSuppliers.get(typeName).getInstance();
+        return codec.decodeBuffer(orbit, friendlyByteBuf);
+    }
+
+    // Server Side Instance (or common instance if both sides use the same class)
     public Orbit getInstance() {
         return supplier.getInstance();
     }

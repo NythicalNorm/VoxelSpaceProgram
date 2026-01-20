@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.network;
+package com.nythicalnorm.voxelspaceprogram.network.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;

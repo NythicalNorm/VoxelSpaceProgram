@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram;
 
 import com.nythicalnorm.voxelspaceprogram.gui.ModScreenManager;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
-import com.nythicalnorm.voxelspaceprogram.network.ServerboundTimeWarpChange;
+import com.nythicalnorm.voxelspaceprogram.network.time.ServerboundTimeWarpChange;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
@@ -13,15 +13,16 @@ import com.nythicalnorm.voxelspaceprogram.planetshine.textures.PlanetTexManager;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.SpaceObjRenderer;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.util.Stage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 
 import java.util.Optional;
 
-//@OnlyIn(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier extends Stage {
     private static CelestialStateSupplier instance;
     private static final int[] timeWarpSettings = new int[]{1, 10, 100, 1000, 10000, 100000, 1000000};
@@ -35,16 +36,21 @@ public class CelestialStateSupplier extends Stage {
     private final ModScreenManager screenManager;
     private final PlanetTexManager planetTexManager;
 
-    public CelestialStateSupplier(EntitySpacecraftBody playerDataFromServer, PlanetsProvider planetProvider) {
+    public CelestialStateSupplier(ClientPlayerSpacecraftBody playerDataFromServer, PlanetsProvider planetProvider) {
         super(planetProvider);
         instance = this;
         minecraft = Minecraft.getInstance();
-        playerOrbit = new ClientPlayerSpacecraftBody(playerDataFromServer, minecraft.player);
+        playerOrbit = playerDataFromServer;
+        playerOrbit.setPlayerEntity(minecraft.player);
         SpaceObjRenderer.PopulateRenderPlanets(planetProvider);
         this.screenManager = new ModScreenManager();
         this.planetTexManager = new PlanetTexManager();
         if (minecraft.level != null) {
             onClientLevelLoad(minecraft.level);
+        }
+
+        if (VoxelSpaceProgram.getAnyPlanetsProvider() == null) {
+            VoxelSpaceProgram.setPlanetsProvider(planetProvider);
         }
     }
 
@@ -55,7 +61,12 @@ public class CelestialStateSupplier extends Stage {
         return Optional.empty();
     }
 
+    public float getSunAngle() {
+        return playerOrbit.getSunAngle();
+    }
+
     public static void close() {
+        VoxelSpaceProgram.exitWorld();
         instance = null;
     }
 

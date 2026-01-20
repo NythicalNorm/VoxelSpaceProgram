@@ -1,7 +1,9 @@
-package com.nythicalnorm.voxelspaceprogram.network;
+package com.nythicalnorm.voxelspaceprogram.network.time;
 
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
+import com.nythicalnorm.voxelspaceprogram.network.ClientPacketHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -30,9 +32,9 @@ public class ClientboundTimeWarpUpdate {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
-            CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> {
-                context.enqueueWork(() -> celestialStateSupplier.timeWarpSetFromServer(this.successfullyChanged, this.setTimeWarpSpeed) );
-            });
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                    ClientPacketHandler.timeWarpSetFromServer(this.successfullyChanged, this.setTimeWarpSpeed)));
+
             context.setPacketHandled(true);
         }
     }

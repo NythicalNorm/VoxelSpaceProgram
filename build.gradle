@@ -187,6 +187,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //implementation fg.deobf("curse.maven:architectury-api-419699:4663010")
+    runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_version}")
 
     implementation         ("org.valkyrienskies.core:api:${vs_core_version}")
     implementation         ("org.valkyrienskies.core:internal:${vs_core_version}")
@@ -200,17 +201,16 @@ dependencies {
     // runtimeOnly fg.deobf("curse.maven:MOD_SLUG-PROJECT_ID:FILE_ID")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
-    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
-    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
-    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
-    implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
-    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+//    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
+//    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+//    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
+//    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
+//    implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
+//    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+//    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
-    runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_version}")
-    runtimeOnly fg.deobf("org.valkyrienskies.kelvin:kelvin-forge:${minecraft_version}-${kelvin_version}")
-    implementation(fg.deobf("maven.modrinth:create-clockwork:1.20.1-forge-0.5.4.4"))
+//    runtimeOnly fg.deobf("org.valkyrienskies.kelvin:kelvin-forge:${minecraft_version}-${kelvin_version}")
+//    implementation(fg.deobf("maven.modrinth:create-clockwork:1.20.1-forge-0.5.4.4"))
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0' // Use the latest stable version
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0' // Use the latest stable version
@@ -262,7 +262,7 @@ tasks.named('jar', Jar).configure {
 
 mixin {
     // MixinGradle Settings
-    add sourceSets.main, 'voxelspaceprogram.refmap.json'
+    add sourceSets.main, 'mixins.voxelspaceprogram.refmap.json'
     config 'voxelspaceprogram.mixins.json'
 
     //debug.verbose = true

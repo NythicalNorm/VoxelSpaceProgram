@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
-import com.nythicalnorm.voxelspaceprogram.network.ServerboundSpacecraftMove;
+import com.nythicalnorm.voxelspaceprogram.network.spacecraft.ServerboundSpacecraftMove;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
@@ -11,27 +11,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+@OnlyIn(Dist.CLIENT)
 public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
     private float sunAngle = 0f;
 
-    public ClientPlayerSpacecraftBody(Player player) {
-        super(player);
-    }
-
-    public ClientPlayerSpacecraftBody(EntitySpacecraftBody playerData, Player player) {
-        this(player);
-
-        absoluteOrbitalPos = playerData.getAbsolutePos();
-        relativeOrbitalPos = playerData.getRelativePos();
-        relativeVelocity = playerData.getRelativeVelocity();
-        rotation = playerData.getRotation();
-        orbitalElements = playerData.getOrbitalElements();
-        angularVelocity = playerData.getAngularVelocity();
+    public ClientPlayerSpacecraftBody() {
+        super();
     }
 
     public void updatePlayerPosRot(Player player, PlanetaryBody currentPlanetOn) {

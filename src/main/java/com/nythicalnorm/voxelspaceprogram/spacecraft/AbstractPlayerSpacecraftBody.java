@@ -1,7 +1,10 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PlayerPhysicsPlanet;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PlayerPhysicsSpace;
@@ -13,10 +16,13 @@ public abstract class AbstractPlayerSpacecraftBody extends EntitySpacecraftBody 
     protected static final double JetpackThrottleForce = 25d;
     protected Player player;
 
-    public AbstractPlayerSpacecraftBody(Player pPlayer) {
+    public AbstractPlayerSpacecraftBody() {
         super();
-        this.player = pPlayer;
-        this.id = new OrbitId(pPlayer);
+    }
+
+    @Override
+    public OrbitalBodyType<? extends Orbit> getType() {
+        return CelestialBodyTypes.PLAYER_SPACECRAFT_BODY;
     }
 
     @Override
@@ -32,6 +38,9 @@ public abstract class AbstractPlayerSpacecraftBody extends EntitySpacecraftBody 
 
     public void setPlayerEntity(Player playerNew) {
         this.player = playerNew;
+        if (this.id == null) {
+            this.id = new OrbitId(this.player);
+        }
     }
 
     public Player getPlayerEntity() {

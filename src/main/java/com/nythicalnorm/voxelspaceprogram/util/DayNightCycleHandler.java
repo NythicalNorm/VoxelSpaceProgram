@@ -24,9 +24,9 @@ public class DayNightCycleHandler {
     //serverside Only Starting from here to
     @SubscribeEvent
     public static void OnSleepingTimeCheckEvent(SleepingTimeCheckEvent event) {
-        Optional<Boolean> isday = isDay(event.getEntity().blockPosition(), event.getEntity().level());
-        if (isday.isPresent()){
-            if (isday.get()) {
+        Optional<Boolean> isDay = isDay(event.getEntity().blockPosition(), event.getEntity().level());
+        if (isDay.isPresent()){
+            if (isDay.get()) {
                 event.setResult(Event.Result.DENY);
             }
             else {
@@ -38,44 +38,47 @@ public class DayNightCycleHandler {
         }
     }
 
-    public static Optional<Float> getSunAngle(BlockPos pos, Level level) {
+    public static Float getSunAngle(BlockPos pos, Level level) {
         if (SolarSystem.getInstance().isEmpty()) {
-            return Optional.empty();
+            return null;
         }
 
         PlanetaryBody planet =  ((PlanetAccessor)level).getPlanetaryBody();
         if (planet != null) {
             Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), planet.getRadius(), planet.getRotation(), true);
             Vector3d planetAbsolutePos = planet.getAbsolutePos().add(blockPosOnPlanet);
-            return Optional.of(getSunAngle(blockPosOnPlanet, planetAbsolutePos));
+            return getSunAngle(blockPosOnPlanet, planetAbsolutePos);
         }
         else {
-            return Optional.empty();
+            return null;
         }
     }
 
     public static Optional<Boolean> isDay(BlockPos pos, Level level) {
-        Optional<Integer> DarkenAmount = getDarknessLightLevel(pos,level);
-        return DarkenAmount.map(integer -> !level.dimensionType().hasFixedTime() && integer < 4);
+        Integer DarkenAmount = getDarknessLightLevel(pos,level);
+        if (DarkenAmount == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(!level.dimensionType().hasFixedTime() && DarkenAmount < 4);
+        }
     }
 
-    public static Optional<Integer> getDarknessLightLevel(BlockPos pos, Level level) {
-        Optional<Float> sunAngle = getSunAngle(pos, level);
+    public static Integer getDarknessLightLevel(BlockPos pos, Level level) {
+        Float sunAngle = getSunAngle(pos, level);
         return getDarknessLightLevel(sunAngle, level);
     }
 
 
     // client side here
-    public static Optional<Integer> getDarknessLightLevel(Optional<Float> sunAngle, Level level) {
-        if (sunAngle.isEmpty()) {
-            return Optional.empty();
+    public static Integer getDarknessLightLevel(Float sunAngle, Level level) {
+        if (sunAngle == null) {
+            return null;
         }
 
         double rainLevel = 1.0D - (double) (level.getRainLevel(1.0F) * 5.0F) / 16.0D;
         double ThunderLevel = 1.0D - (double) (level.getThunderLevel(1.0F) * 5.0F) / 16.0D;
-        double adjustedDarkeness = 0.5D + 2.0D * Mth.clamp(Mth.cos(sunAngle.get() * ((float) Math.PI * 2F)), -0.25D, 0.25D);
-        int result =(int) ((1.0D - adjustedDarkeness * rainLevel * ThunderLevel) * 11.0D);
-        return Optional.of(result);
+        double adjustedDarkeness = 0.5D + 2.0D * Mth.clamp(Mth.cos(sunAngle * ((float) Math.PI * 2F)), -0.25D, 0.25D);
+        return (int) ((1.0D - adjustedDarkeness * rainLevel * ThunderLevel) * 11.0D);
     }
 
     //common static ones here

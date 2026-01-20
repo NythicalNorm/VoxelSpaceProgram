@@ -1,6 +1,14 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundFocusedOrbitUpdate;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSolarSystemState;
+import com.nythicalnorm.voxelspaceprogram.network.spacecraft.ServerboundSpacecraftMove;
+import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundBiomeTexturePacket;
+import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundPlanetTexturePacket;
+import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundSolarSystemTimeUpdate;
+import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundTimeWarpUpdate;
+import com.nythicalnorm.voxelspaceprogram.network.time.ServerboundTimeWarpChange;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkRegistry;

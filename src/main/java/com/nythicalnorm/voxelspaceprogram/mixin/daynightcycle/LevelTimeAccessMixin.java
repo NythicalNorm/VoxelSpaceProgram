@@ -1,11 +1,13 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
+import com.nythicalnorm.voxelspaceprogram.util.SidedCallsUtil;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelTimeAccess;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,13 +25,12 @@ public interface LevelTimeAccessMixin extends LevelReader {
      * changing a float output shouldn't cause problems, I will make sure my value is clamped to the original 0 - 1.
      */
     @Overwrite
-    default float getTimeOfDay(float pPartialTick) {
+    default float getTimeOfDay(float pPartialTick) throws Exception {
         if (this.isClientSide()) {
-            if (CelestialStateSupplier.getInstance().isPresent()) {
-                if (CelestialStateSupplier.getInstance().get().isOnPlanet()) {
-                    return CelestialStateSupplier.getInstance().get().getPlayerOrbit().getSunAngle();
-                }
-            }
+          Float result = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> SidedCallsUtil::getPlayerSunAngle).call();
+          if (result != null) {
+             return result;
+          }
         }
         else {
             PlanetAccessor planetAccessor = (PlanetAccessor) this;

@@ -22,6 +22,10 @@ public class NetworkEncoders {
         return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf);
     }
 
+    public static Orbit readOrbitalBodyClient(FriendlyByteBuf friendlyByteBuf) {
+        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBufferToClient(friendlyByteBuf);
+    }
+
     public static void writePlanetaryBodyList(FriendlyByteBuf friendlyByteBuf, List<PlanetaryBody> bodyList) {
         friendlyByteBuf.writeVarInt(bodyList.size());
 

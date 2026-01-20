@@ -1,8 +1,10 @@
-package com.nythicalnorm.voxelspaceprogram.network;
+package com.nythicalnorm.voxelspaceprogram.network.textures;
 
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
+import com.nythicalnorm.voxelspaceprogram.network.ClientPacketHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -30,10 +32,8 @@ public class ClientboundPlanetTexturePacket {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
-
-            CelestialStateSupplier.getInstance().ifPresent(css -> {
-                context.enqueueWork(() -> css.getPlanetTexManager().incomingPlanetTexture(css.getPlanetsProvider().getPlanet(this.planetID), planetTexture));
-            });
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                    ClientPacketHandler.incomingPlanetTexture(planetID, planetTexture)));
         }
     }
 }

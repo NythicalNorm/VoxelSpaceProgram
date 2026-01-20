@@ -32,7 +32,7 @@ public class PlanetaryBodyCodec extends OrbitCodec<PlanetaryBody> {
     }
 
     @Override
-    public PlanetaryBody decodeBuffer(PlanetaryBody planetBody, FriendlyByteBuf byteBuf) {
+    public <M extends PlanetaryBody> M decodeBuffer(M planetBody, FriendlyByteBuf byteBuf) {
         super.decodeBuffer(planetBody, byteBuf);
         planetBody.name = NetworkEncoders.readASCII(byteBuf);
         planetBody.radius = byteBuf.readDouble();

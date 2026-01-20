@@ -93,10 +93,10 @@ public class ForgeClientEvents {
         CelestialStateSupplier.getInstance().ifPresent(css -> {
             if (css.getPlayerOrbit() != null) {
                 css.getPlayerOrbit().setPlayerEntity(event.getNewPlayer());
-            }
 
-            if (event.getNewPlayer().level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
-                css.getPlayerOrbit().removeYourself();
+                if (event.getNewPlayer().level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
+                    css.getPlayerOrbit().removeYourself();
+                }
             }
         });
     }

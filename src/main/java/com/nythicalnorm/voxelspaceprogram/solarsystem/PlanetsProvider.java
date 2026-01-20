@@ -18,24 +18,6 @@ public class PlanetsProvider {
     private final Map<OrbitId, EntitySpacecraftBody> allSpacecraftBodies;
     private final StarBody rootStar;
 
-//    public PlanetaryBody NILA =  new PlanetaryBody("nila", new OrbitalElements(
-//            382599226,0.091470106618193394721,6.476694128611285E-02,
-//            5.4073390958703955178,2.162973108375887854, Calcs.TimePerTickToTimePerMilliTick(2.7140591915324141503)),
-//            //2358720),
-//            null, new PlanetAtmosphere(false, 0, 0, 0, 0.0f, 1.0f, 0.005f),
-//            new HashMap<>(),1737400, 7.34767309E22,  0f, 0, 2358720);
-//
-//    public PlanetaryBody BUMI = new PlanetaryBody("bumi", new OrbitalElements(
-//            149653496273.0d,4.657951002584728917e-6,1.704239718110438E-02,
-//            5.1970176873649567284,2.8619013937171278172,Calcs.TimePerTickToTimePerMilliTick(6.2504793475201942954)),
-//             // 31557600),
-//            Level.OVERWORLD, new PlanetAtmosphere(true, 0x5ba3e6, 0x0077ff,
-//                     100000, 0.25f,1.0f, 0.5f),
-//                    new HashMap<>() {{put(NILA.getOrbitId(), NILA);}},6371000, 5.97219E24, 0.408407f , 0, 86400);
-//
-//    public StarBody SURIYAN = new StarBody("suriyan", new PlanetAtmosphere(true, 0xffffa8, 0xFFE742, 250000000, 0.5f,1.0f, 1.0f),
-//            new HashMap<>() {{put(BUMI.getOrbitId(), BUMI);}},696340000, 1.989E30);
-
     public PlanetsProvider(Map<OrbitId, PlanetaryBody> pAllPlanetaryBodies, Map<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, PlanetaryBody> pPlanetDimensions, StarBody rootStar) {
         this.allPlanetaryBodies = pAllPlanetaryBodies;
         this.allSpacecraftBodies = pAllSpacecraftBodies;

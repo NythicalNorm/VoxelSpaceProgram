@@ -1,9 +1,12 @@
-package com.nythicalnorm.voxelspaceprogram.network;
+package com.nythicalnorm.voxelspaceprogram.network.orbitaldata;
 
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
+import com.nythicalnorm.voxelspaceprogram.network.ClientPacketHandler;
+import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -35,9 +38,8 @@ public class ClientboundFocusedOrbitUpdate {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
-            CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> {
-                context.enqueueWork(() -> celestialStateSupplier.trackedOrbitUpdate(this.spacecraftID, this.newParentID, this.orbitalElements));
-            });
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                    ClientPacketHandler.FocusedOrbitUpdate(this.spacecraftID, this.newParentID, this.orbitalElements)));
             context.setPacketHandled(true);
         }
     }

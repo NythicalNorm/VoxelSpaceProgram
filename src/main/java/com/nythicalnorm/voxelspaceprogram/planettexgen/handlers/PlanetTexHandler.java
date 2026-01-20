@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.planettexgen.handlers;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.network.ClientboundPlanetTexturePacket;
+import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundPlanetTexturePacket;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.GradientSupplier;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeTexGenTask;

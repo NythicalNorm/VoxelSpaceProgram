@@ -6,9 +6,13 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBodyCodec;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityBodySpacecraftCodec;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.PlayerSpacecraftCodec;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Map;
 
@@ -19,7 +23,7 @@ public class CelestialBodyTypes {
 
     public static final OrbitalBodyType<StarBody> STAR_BODY = registerOrbitalBody(new OrbitalBodyType<>("star", new StarBodyCodec(), StarBody::new));
 
-    public static final OrbitalBodyType<EntitySpacecraftBody> ENTITY_SPACECRAFT_BODY = registerOrbitalBody(new OrbitalBodyType<>("entity_spacecraft", new EntityBodySpacecraftCodec(), EntitySpacecraftBody::new));
+    public static final OrbitalBodyType<EntitySpacecraftBody> PLAYER_SPACECRAFT_BODY = registerOrbitalBody(new OrbitalBodyType<>("player_spacecraft", new PlayerSpacecraftCodec(), ServerPlayerSpacecraftBody::new));
 
     public static <T extends Orbit> OrbitalBodyType<T> registerOrbitalBody(OrbitalBodyType<T> orbitalBodyType) {
         AllCelestialBodyTypes.put(orbitalBodyType.getTypeName(), orbitalBodyType);
@@ -33,5 +37,12 @@ public class CelestialBodyTypes {
 
     public static String getOrbitalBodyTypeName(Orbit orbitalBody) {
         return orbitalBody.getType().getTypeName();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static class BodyTypeClientExt {
+        public static final Map<String, OrbitalBodyType.Supplier<? extends Orbit>> celestialBodyClientSuppliers = Map.of(
+                PLAYER_SPACECRAFT_BODY.getTypeName(), ClientPlayerSpacecraftBody::new
+        );
     }
 }

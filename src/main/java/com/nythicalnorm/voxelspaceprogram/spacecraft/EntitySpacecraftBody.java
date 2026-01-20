@@ -1,15 +1,13 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public class EntitySpacecraftBody extends Orbit {
+public abstract class EntitySpacecraftBody extends Orbit {
     protected Vector3f angularVelocity;
     protected boolean velocityChangedLastFrame;
     private static final float tolerance = 1e-8f;
@@ -17,11 +15,6 @@ public class EntitySpacecraftBody extends Orbit {
     public EntitySpacecraftBody() {
         this.angularVelocity = new Vector3f();
         this.orbitalElements = new OrbitalElements(0d,0d, 0L, 0d, 0d, 0d);
-    }
-
-    @Override
-    public OrbitalBodyType<? extends Orbit> getType() {
-        return CelestialBodyTypes.ENTITY_SPACECRAFT_BODY;
     }
 
     public void simulatePropagate(long TimeElapsed, Vector3d parentPos, double mass) {
@@ -67,9 +60,5 @@ public class EntitySpacecraftBody extends Orbit {
         velocityChangedLastFrame = true;
     }
 
-    // don't use this use the Overrides
-    public PhysicsContext getPhysicsContext() {
-        return null;
-    }
-
+    public abstract PhysicsContext getPhysicsContext();
 }

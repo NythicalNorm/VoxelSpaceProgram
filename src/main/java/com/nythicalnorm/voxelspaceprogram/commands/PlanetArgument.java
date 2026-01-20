@@ -8,8 +8,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
-import com.nythicalnorm.voxelspaceprogram.SolarSystem;
+import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -44,15 +44,10 @@ public class PlanetArgument implements ArgumentType<String> {
         String parsedBody = null;
         if (reader.canRead()) {
             String planetName = reader.readString();
-            if (CelestialStateSupplier.getInstance().isPresent()) {
-                if (!planetName.isEmpty() && CelestialStateSupplier.getInstance().get().getPlanetsProvider().getPlanet(planetName) != null) {
-                    parsedBody = planetName;
-                }
-            }
-            else if (SolarSystem.getInstance().isPresent()) {
-                if (!planetName.isEmpty() && SolarSystem.getInstance().get().getPlanetsProvider().getPlanet(planetName) != null) {
-                    parsedBody = planetName;
-                }
+            PlanetsProvider planetsProvider = VoxelSpaceProgram.getAnyPlanetsProvider();
+
+            if (!planetName.isEmpty() && planetsProvider.getPlanet(planetName) != null) {
+                parsedBody = planetName;
             }
         }
         if (parsedBody == null) {
@@ -65,7 +60,7 @@ public class PlanetArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        Iterable<String> planets = CelestialStateSupplier.getInstance().get().getPlanetsProvider().getAllPlanetNames();
+        Iterable<String> planets = VoxelSpaceProgram.getAnyPlanetsProvider().getAllPlanetNames();
         return context.getSource() instanceof SharedSuggestionProvider ? SharedSuggestionProvider.suggest(planets, builder) : Suggestions.empty();
     }
 

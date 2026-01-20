@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.spacecraft;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitCodec;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class EntityBodySpacecraftCodec extends OrbitCodec<EntitySpacecraftBody> {
+public class PlayerSpacecraftCodec extends OrbitCodec<EntitySpacecraftBody> {
     @Override
     public void encodeBuffer(EntitySpacecraftBody orbit, FriendlyByteBuf byteBuf) {
         super.encodeBuffer(orbit, byteBuf);

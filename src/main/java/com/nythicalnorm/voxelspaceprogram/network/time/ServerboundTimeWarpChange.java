@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.network;
+package com.nythicalnorm.voxelspaceprogram.network.time;
 
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import net.minecraft.network.FriendlyByteBuf;

@@ -32,7 +32,7 @@ public abstract class OrbitCodec<T extends Orbit> {
 //        }
     }
 
-    public T decodeBuffer (T orbit, FriendlyByteBuf byteBuf) {
+    public <M extends T> M decodeBuffer (M orbit, FriendlyByteBuf byteBuf) {
         orbit.id = new OrbitId(byteBuf);
         orbit.setDisplayName(byteBuf.readComponent());
         orbit.relativeOrbitalPos = NetworkEncoders.readVector3d(byteBuf);

@@ -3,6 +3,10 @@ package com.nythicalnorm.voxelspaceprogram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.DimensionTeleporter;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.network.*;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundFocusedOrbitUpdate;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSolarSystemState;
+import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundSolarSystemTimeUpdate;
+import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundTimeWarpUpdate;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeColorHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
@@ -40,6 +44,7 @@ public class SolarSystem extends Stage {
         timePassPerTick = 1000;
         this.server = server;
         BiomeColorHolder.init();
+        VoxelSpaceProgram.setPlanetsProvider(planetsProvider);
     }
 
     public static Optional<SolarSystem> getInstance() {
@@ -50,6 +55,7 @@ public class SolarSystem extends Stage {
     }
 
     public static void close() {
+        VoxelSpaceProgram.exitWorld();
         instance = null;
     }
 
@@ -83,14 +89,16 @@ public class SolarSystem extends Stage {
 
         // this is not working check before making a saving system
         if (planetsProvider.getAllSpacecraftBodies().containsKey(playerEntityID)) {
-            EntitySpacecraftBody playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(playerEntityID);
-            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies), (ServerPlayer) entity);
+            if (planetsProvider.getAllSpacecraftBodies().get(playerEntityID) instanceof ServerPlayerSpacecraftBody playerSpacecraftBody) {
+                PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies), (ServerPlayer) entity);
+            }
         }
         else {
             if (entity.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
                 ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
                 entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
             }
+
             PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(allPlanetaryBodies), (ServerPlayer) entity);
         }
         if (planetTexHandler != null) {

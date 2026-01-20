@@ -1,18 +1,17 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
-
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
+import com.nythicalnorm.voxelspaceprogram.util.SidedCallsUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-
-import java.util.Optional;
 
 @Mixin(LevelReader.class)
 public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, SignalGetter, BiomeManager.NoiseBiomeSource {
@@ -28,14 +27,14 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
      * the correct time for a timezone.
      */
     @Overwrite
-    default int getMaxLocalRawBrightness(BlockPos pPos) {
-        int DarkenAmount = this.getSkyDarken();
-        Optional<Integer> darkLevelFromPlanet = Optional.empty();
+    default int getMaxLocalRawBrightness(BlockPos pPos) throws Exception {
+        Integer darkLevelFromPlanet = null;
 
         if (this instanceof Level level) {
             if (level.isClientSide) {
-                if (CelestialStateSupplier.getInstance().isPresent()) {
-                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(Optional.of(CelestialStateSupplier.getInstance().get().getPlayerOrbit().getSunAngle()), level);
+                Float result = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> SidedCallsUtil::getPlayerSunAngle).call();
+                if (result != null) {
+                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(result, level);
                 }
             }
             else {
@@ -52,9 +51,10 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
                 darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
             }
         }
-        if (darkLevelFromPlanet.isPresent()) {
-            DarkenAmount = darkLevelFromPlanet.get();
+        if (darkLevelFromPlanet != null) {
+            return darkLevelFromPlanet;
+        } else {
+            return getMaxLocalRawBrightness(pPos, this.getSkyDarken());
         }
-        return getMaxLocalRawBrightness(pPos, DarkenAmount);
     }
 }

@@ -10,8 +10,12 @@ import java.util.UUID;
 public class ServerPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
     private boolean isShipBound;
 
+    public ServerPlayerSpacecraftBody() {
+        super();
+    }
+
     public ServerPlayerSpacecraftBody(ServerPlayer playerEntity, boolean isStableOrbit, boolean isShipBound, Quaternionf playerRot, OrbitalElements elements) {
-        super(playerEntity);
+        setPlayerEntity(playerEntity);
         this.isStableOrbit = isStableOrbit;
         this.isShipBound = isShipBound;
         this.rotation = playerRot;

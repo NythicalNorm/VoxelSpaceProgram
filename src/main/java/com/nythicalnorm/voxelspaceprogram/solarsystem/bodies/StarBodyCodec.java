@@ -15,7 +15,7 @@ public class StarBodyCodec extends OrbitCodec<StarBody> {
     }
 
     @Override
-    public StarBody decodeBuffer(StarBody sunBody, FriendlyByteBuf byteBuf) {
+    public <M extends StarBody> M decodeBuffer(M sunBody, FriendlyByteBuf byteBuf) {
         super.decodeBuffer(sunBody, byteBuf);
         sunBody.name = NetworkEncoders.readASCII(byteBuf);
         sunBody.radius = byteBuf.readDouble();

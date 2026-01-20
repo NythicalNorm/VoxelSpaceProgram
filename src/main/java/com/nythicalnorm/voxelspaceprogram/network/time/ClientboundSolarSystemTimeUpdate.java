@@ -1,7 +1,6 @@
-package com.nythicalnorm.voxelspaceprogram.network;
+package com.nythicalnorm.voxelspaceprogram.network.time;
 
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
-import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
+import com.nythicalnorm.voxelspaceprogram.network.ClientPacketHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -32,10 +31,9 @@ public class ClientboundSolarSystemTimeUpdate {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
-            CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier -> {
-                context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientTimeHandler.UpdateState(currenttime, timePassPerSecond)));
-                celestialStateSupplier.setTimePassPerTick(this.timePassPerSecond);
-            });
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                    ClientPacketHandler.UpdateTimeState(currenttime, timePassPerSecond)));
+
             context.setPacketHandled(true);
         }
     }
