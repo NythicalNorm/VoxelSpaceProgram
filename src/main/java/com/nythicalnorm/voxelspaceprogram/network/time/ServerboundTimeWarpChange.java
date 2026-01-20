@@ -7,19 +7,19 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class ServerboundTimeWarpChange {
-    private final int ProposedSetTimeWarpSpeed;
+    private final long ProposedSetTimeWarpSpeed;
 
-    public ServerboundTimeWarpChange(int proposedSetTimeWarpSpeed)
+    public ServerboundTimeWarpChange(long proposedSetTimeWarpSpeed)
     {
         this.ProposedSetTimeWarpSpeed = proposedSetTimeWarpSpeed;
     }
 
     public ServerboundTimeWarpChange(FriendlyByteBuf friendlyByteBuf) {
-        this.ProposedSetTimeWarpSpeed = friendlyByteBuf.readInt();
+        this.ProposedSetTimeWarpSpeed = friendlyByteBuf.readLong();
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeInt(this.ProposedSetTimeWarpSpeed);
+        friendlyByteBuf.writeLong(this.ProposedSetTimeWarpSpeed);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {

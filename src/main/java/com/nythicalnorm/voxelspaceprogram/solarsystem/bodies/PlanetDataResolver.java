@@ -9,7 +9,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.storage.VSPDataManager;
+import com.nythicalnorm.voxelspaceprogram.storage.VSPDataPackManager;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
@@ -73,7 +73,7 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
             logger.error("No Stars found in the solar system data, can't start server...");
             return;
         }
-        VSPDataManager.planetDatapackLoaded(new PlanetLoadedData(rootStar, tempPlanetaryBodyMap, tempDimensionsMap, tempChildPlanetsMap));
+        VSPDataPackManager.planetDatapackLoaded(new PlanetLoadedData(rootStar, tempPlanetaryBodyMap, tempDimensionsMap, tempChildPlanetsMap));
     }
 
     private void parsePlanetaryBody(PlanetaryBody body, JsonObject jsonObj, Map<String, String> tempDimensionsMap, Map<String, String[]> tempChildPlanetsMap) {

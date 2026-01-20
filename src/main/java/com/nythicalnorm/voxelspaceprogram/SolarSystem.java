@@ -17,6 +17,8 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
+import com.nythicalnorm.voxelspaceprogram.storage.VSPCommonSaveData;
+import com.nythicalnorm.voxelspaceprogram.storage.VSPDataPackManager;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import com.nythicalnorm.voxelspaceprogram.util.Stage;
 import net.minecraft.network.chat.Component;
@@ -41,10 +43,14 @@ public class SolarSystem extends Stage {
     public SolarSystem(MinecraftServer server, PlanetsProvider pPlanets) {
         super(pPlanets);
         instance = this;
-        timePassPerTick = 1000;
         this.server = server;
         BiomeColorHolder.init();
+
         VoxelSpaceProgram.setPlanetsProvider(planetsProvider);
+    }
+
+    public static SolarSystem get() {
+        return instance;
     }
 
     public static Optional<SolarSystem> getInstance() {
@@ -66,45 +72,48 @@ public class SolarSystem extends Stage {
     public void OnTick() {
         setCurrentTime(currentTime + timePassPerTick);
         planetsProvider.UpdatePlanets(currentTime);
-        PacketHandler.sendToAllClients(new ClientboundSolarSystemTimeUpdate(currentTime, timePassPerTick));
+        PacketHandler.sendToAllClients(new ClientboundSolarSystemTimeUpdate(currentTime));
     }
 
     public void serverStarted() {
+        VSPCommonSaveData vspCommonSaveData = VSPDataPackManager.createOrLoadSaveData(server);
+        setCurrentTime(vspCommonSaveData.getCurrentTime());
+        setTimePassPerTick(vspCommonSaveData.getTimeWarp());
+
         this.planetTexHandler = new PlanetTexHandler();
         server.execute(() -> planetTexHandler.loadOrCreatePlanetTex(server, this.planetsProvider));
         //server.execute(() -> planetTexHandler.getOrCreateBiomeTex(server.overworld()));
     }
 
-    public void ChangeTimeWarp(int proposedSetTimeWarpSpeed, ServerPlayer player) {
-        long timePassPerSec = Mth.clamp(proposedSetTimeWarpSpeed, 0, 5000000);
-        timePassPerTick = Calcs.TimePerTickToTimePerMilliTick(timePassPerSec);
+    public void ChangeTimeWarp(long proposedSetTimeWarpSpeed, ServerPlayer player) {
+        long timePassPerSec = (long) Mth.clamp(proposedSetTimeWarpSpeed, 0, 5000000);
+        timePassPerSec = Calcs.TimePerTickToTimePerMilliTick(timePassPerSec);
+
+        setTimePassPerTick(timePassPerSec);
         server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.settimewarp",
                 proposedSetTimeWarpSpeed), true);
-        PacketHandler.sendToAllClients(new ClientboundTimeWarpUpdate(true, proposedSetTimeWarpSpeed));
+        PacketHandler.sendToAllClients(new ClientboundTimeWarpUpdate(true, timePassPerSec));
     }
 
     public void playerJoined(Player entity) {
         OrbitId playerEntityID = new OrbitId(entity);
         List<PlanetaryBody> allPlanetaryBodies = planetsProvider.getAllPlanetaryBodies().values().stream().toList();
+        ServerPlayerSpacecraftBody playerSpacecraftBody = null;
 
-        // this is not working check before making a saving system
         if (planetsProvider.getAllSpacecraftBodies().containsKey(playerEntityID)) {
-            if (planetsProvider.getAllSpacecraftBodies().get(playerEntityID) instanceof ServerPlayerSpacecraftBody playerSpacecraftBody) {
-                PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies), (ServerPlayer) entity);
+            if (planetsProvider.getAllSpacecraftBodies().get(playerEntityID) instanceof ServerPlayerSpacecraftBody pPlrSpacecraftBody) {
+                playerSpacecraftBody = pPlrSpacecraftBody;
             }
-        }
-        else {
-            if (entity.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
+        } else if (entity.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
                 ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
                 entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
-            }
-
-            PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(allPlanetaryBodies), (ServerPlayer) entity);
         }
+
+        PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies, getCurrentTime(), getTimePassPerTick()), (ServerPlayer) entity);
+
         if (planetTexHandler != null) {
             planetTexHandler.sendAllTexToPlayer((ServerPlayer) entity);
         }
-
         //server.execute(() -> planetTexHandler.sendBiomeTexToPlayer((ServerPlayer) entity, planetsProvider.getDimensionPlanet(entity.level().dimension())));
     }
 

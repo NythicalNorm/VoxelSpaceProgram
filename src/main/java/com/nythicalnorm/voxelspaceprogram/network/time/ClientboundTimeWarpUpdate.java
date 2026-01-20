@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 
 public class ClientboundTimeWarpUpdate {
     private final boolean successfullyChanged;
-    private final int setTimeWarpSpeed;
+    private final long setTimeWarpSpeed;
 
-    public ClientboundTimeWarpUpdate(boolean successfullyChanged, int pSetTimeWarpSpeed)
+    public ClientboundTimeWarpUpdate(boolean successfullyChanged, long pSetTimeWarpSpeed)
     {
         this.successfullyChanged = successfullyChanged;
         this.setTimeWarpSpeed = pSetTimeWarpSpeed;
@@ -21,12 +21,12 @@ public class ClientboundTimeWarpUpdate {
 
     public ClientboundTimeWarpUpdate(FriendlyByteBuf friendlyByteBuf) {
         this.successfullyChanged = friendlyByteBuf.readBoolean();
-        this.setTimeWarpSpeed = friendlyByteBuf.readInt();
+        this.setTimeWarpSpeed = friendlyByteBuf.readLong();
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeBoolean(this.successfullyChanged);
-        friendlyByteBuf.writeInt(this.setTimeWarpSpeed);
+        friendlyByteBuf.writeLong(this.setTimeWarpSpeed);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {

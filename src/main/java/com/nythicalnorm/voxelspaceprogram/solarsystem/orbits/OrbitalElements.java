@@ -54,9 +54,8 @@ public class OrbitalElements {
         boolean isElliptical = e < 1;
 
         // Calculating Mean Anamoly, M = n(t - t0)
-        long diff = timeElapsed - this.periapsisTime;
 
-        double M = this.MeanAngularMotion*(Calcs.timeLongToDouble(diff));
+        double M = this.MeanAngularMotion*(getModulusCurrentTime(timeElapsed));
 
         //Eccentric anomaly also this works for circular orbits I think
         double Anomaly = M;
@@ -116,6 +115,16 @@ public class OrbitalElements {
         stateVectors[1] = perifocalToEquatorial(vP, vQ); //, this.ArgumentOfPeriapsis, this.Inclination, this.LongitudeOfAscendingNode);
 
         return stateVectors;
+    }
+
+    private double getModulusCurrentTime(long timeElapsed) {
+        long diff = timeElapsed - this.periapsisTime;
+        if (this.Eccentricity < 1) {
+            long orbitalPeriod = Calcs.timeDoubleToLong((2*Math.PI) / this.MeanAngularMotion);
+            diff = diff % orbitalPeriod;
+        }
+
+        return Calcs.timeLongToDouble(diff);
     }
 
 //    private Vector3d perifocalToEquatorial(double P, double Q, double w, double i, double W) {

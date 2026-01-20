@@ -8,7 +8,7 @@ import com.nythicalnorm.voxelspaceprogram.commands.ModArguments;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.sound.ModSounds;
-import com.nythicalnorm.voxelspaceprogram.storage.VSPDataManager;
+import com.nythicalnorm.voxelspaceprogram.storage.VSPDataPackManager;
 import com.nythicalnorm.voxelspaceprogram.util.ModItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,7 +90,7 @@ public class VoxelSpaceProgram
     @SubscribeEvent
     public void onServerAboutToStart(ServerAboutToStartEvent event)
     {
-        VSPDataManager.loadServerDataAndStartSolarSystem(event.getServer());
+        VSPDataPackManager.loadServerDataAndStartSolarSystem(event.getServer());
     }
 
     @SubscribeEvent

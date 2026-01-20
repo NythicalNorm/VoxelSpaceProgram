@@ -17,8 +17,9 @@ import net.minecraft.world.level.Level;
 
 import java.util.Map;
 
-public class VSPDataManager {
+public class VSPDataPackManager {
     private static PlanetDataResolver.PlanetLoadedData planetLoadedData;
+    private static final String VSPCommonData = "vsp_common_data";
 
     public static void planetDatapackLoaded(PlanetDataResolver.PlanetLoadedData pPlanetLoadedData) {
         if (SolarSystem.getInstance().isEmpty()) {
@@ -44,6 +45,10 @@ public class VSPDataManager {
 
         PlanetsProvider planetsProvider = new PlanetsProvider(AllPlanetaryBodies, AllSpacecraftBodies, PlanetDimensions, rootStar);
         new SolarSystem(pServer, planetsProvider);
+    }
+
+    public static VSPCommonSaveData createOrLoadSaveData(MinecraftServer server) {
+       return server.overworld().getDataStorage().computeIfAbsent(VSPCommonSaveData::load, VSPCommonSaveData::new, VSPCommonData);
     }
 
     private static void loadPlanetData(Map<OrbitId, PlanetaryBody> pAllPlanetaryBodies, Map<ResourceKey<Level>, PlanetaryBody> pPlanetDimensions) {

@@ -32,7 +32,7 @@ public class TimeWarpWidget extends AbstractWidget {
             Component timeComp = parseTime(celestialStateSupplier.getCurrentTimeInSec(), celestialStateSupplier.getPlanetsProvider().getOverworldPlanet());
             pGuiGraphics.drawString(Minecraft.getInstance().font, timeComp,13, 6, 0x00ff2b, false);
 
-            int timeWarpSettingAmount = celestialStateSupplier.getTimeWarpSetting() + 1;
+            int timeWarpSettingAmount = celestialStateSupplier.getCurrentTimeWarpSetting() + 1;
             int ArrowXVal = 15;
 
             for (int i = 0; i < timeWarpSettingAmount; i++) {

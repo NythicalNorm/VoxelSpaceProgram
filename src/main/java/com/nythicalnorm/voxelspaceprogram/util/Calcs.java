@@ -130,8 +130,12 @@ public class Calcs {
         return (long) (timePassPerSec * 1000);
     }
 
-    public static double TimePerMilliTickToTick(double timePassPerTick) {
-        return timePassPerTick / 1000d;
+//    public static double TimePerMilliTickToTick(double timePassPerTick) {
+//        return timePassPerTick / 1000d;
+//    }
+
+    public static long TimePerMilliTickToTick(long timePassPerTick) {
+        return timePassPerTick / 1000L;
     }
 
     public static double timeLongToDouble(long diff) {

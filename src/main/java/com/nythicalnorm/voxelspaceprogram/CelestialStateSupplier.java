@@ -25,9 +25,7 @@ import java.util.Optional;
 @OnlyIn(Dist.CLIENT)
 public class CelestialStateSupplier extends Stage {
     private static CelestialStateSupplier instance;
-    private static final int[] timeWarpSettings = new int[]{1, 10, 100, 1000, 10000, 100000, 1000000};
     private final Minecraft minecraft;
-    private short currentTimeWarpSetting = 0;
 
     private final ClientPlayerSpacecraftBody playerOrbit;
     private PlanetaryBody currentPlanetOn;
@@ -71,7 +69,7 @@ public class CelestialStateSupplier extends Stage {
     }
 
     public void tick() {
-        if (controllingBody != null && screenManager.isSpacecraftScreenOpen() && currentTimeWarpSetting == 0) {
+        if (controllingBody != null && screenManager.isSpacecraftScreenOpen() && getCurrentTimeWarpSetting() == 0) {
             screenManager.getSpacecraftScreen().sendInputs(controllingBody);
         }
     }
@@ -104,28 +102,18 @@ public class CelestialStateSupplier extends Stage {
     }
 
     public void TryChangeTimeWarp(boolean doInc) {
-        short propesedSetIndex = currentTimeWarpSetting;
+        int propesedSetIndex = getCurrentTimeWarpSetting();
         propesedSetIndex = doInc ? ++propesedSetIndex : --propesedSetIndex;
 
-        if (propesedSetIndex >= 0 && propesedSetIndex < timeWarpSettings.length) {
-            PacketHandler.sendToServer(new ServerboundTimeWarpChange(timeWarpSettings[propesedSetIndex]));
+        if (propesedSetIndex >= 0 && propesedSetIndex < timeWarpSettings.size()) {
+            PacketHandler.sendToServer(new ServerboundTimeWarpChange(timeWarpSettings.get(propesedSetIndex)));
         }
     }
 
-    public void timeWarpSetFromServer(boolean successfullyChanged, int setTimeWarpSpeed) {
-        if (!successfullyChanged) {
-            return;
+    public void timeWarpSetFromServer(boolean successfullyChanged, long setTimeWarpSpeed) {
+        if (successfullyChanged) {
+            setTimePassPerTick(setTimeWarpSpeed);
         }
-
-        for (short i = 0; i<timeWarpSettings.length; i++) {
-            if (timeWarpSettings[i] == setTimeWarpSpeed) {
-                currentTimeWarpSetting = i;
-            }
-        }
-    }
-
-    public short getTimeWarpSetting() {
-        return this.currentTimeWarpSetting;
     }
 
     public void trackedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ClientPacketHandler {
-    public static void StartClientPacket(EntitySpacecraftBody playerData, OrbitId playerParentOrbit, List<PlanetaryBody> planetaryBodyList) {
+    public static void StartClientPacket(long currentTime, long timeWarp, EntitySpacecraftBody playerData, OrbitId playerParentOrbit, List<PlanetaryBody> planetaryBodyList) {
         Map<OrbitId, PlanetaryBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
         Map<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new Object2ObjectOpenHashMap<>();
         Map<ResourceKey<Level>, PlanetaryBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
@@ -36,14 +36,19 @@ public class ClientPacketHandler {
             throw new IllegalStateException ("can't start client Solar system without a host star");
         }
         PlanetsProvider planetsProvider = new PlanetsProvider(AllPlanetaryBodies, AllSpacecraftBodies, PlanetDimensions, rootStar);
-        if (playerData instanceof ClientPlayerSpacecraftBody clientPlayerSpacecraftBody) {
+        ClientPlayerSpacecraftBody clientPlayerSpacecraftBody = null;
+
+        if (playerData instanceof ClientPlayerSpacecraftBody plrSpacecraftBody) {
             if (playerParentOrbit != null) {
                 planetsProvider.playerJoinedOrbital(playerParentOrbit, playerData);
             }
-            new CelestialStateSupplier(clientPlayerSpacecraftBody, planetsProvider);
+            clientPlayerSpacecraftBody = plrSpacecraftBody;
         } else {
-            new CelestialStateSupplier(new ClientPlayerSpacecraftBody(), planetsProvider);
+            clientPlayerSpacecraftBody = new ClientPlayerSpacecraftBody();
         }
+        CelestialStateSupplier css =  new CelestialStateSupplier(clientPlayerSpacecraftBody, planetsProvider);
+        css.setCurrentTime(currentTime);
+        css.setTimePassPerTick(timeWarp);
     }
 
     public static void FocusedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {
@@ -61,14 +66,13 @@ public class ClientPacketHandler {
                 css.getPlanetTexManager().incomingPlanetTexture(css.getPlanetsProvider().getPlanet(planetID), planetTexture));
     }
 
-    public static void UpdateTimeState(long currenttime, long timePassPerSecond) {
+    public static void UpdateTimeState(long currenttime) {
         CelestialStateSupplier.getInstance().ifPresent(css -> {
-            ClientTimeHandler.UpdateState(currenttime, timePassPerSecond);
-            css.setTimePassPerTick(timePassPerSecond);
+            ClientTimeHandler.UpdateState(currenttime);
         });
     }
 
-    public static void timeWarpSetFromServer(boolean successfullyChanged, int setTimeWarpSpeed) {
+    public static void timeWarpSetFromServer(boolean successfullyChanged, long setTimeWarpSpeed) {
         CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier ->
                 celestialStateSupplier.timeWarpSetFromServer(successfullyChanged, setTimeWarpSpeed));
     }

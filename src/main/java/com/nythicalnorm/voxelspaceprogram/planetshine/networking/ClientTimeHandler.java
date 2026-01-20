@@ -15,8 +15,9 @@ public class ClientTimeHandler {
     private static volatile long serverNewSolarSystemTimeTarget = 0L;
     private static volatile boolean isServerUpdated = false;
 
-    public static void UpdateState(long serverTime, long TimePassedPerSec){
+    public static void UpdateState(long serverTime){
         serverNewSolarSystemTimeTarget = serverTime;
+
         isServerUpdated = true;
     }
 

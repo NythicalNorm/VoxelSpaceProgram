@@ -12,32 +12,38 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 public class ClientboundLoginSolarSystemState {
+    private final long currentTime;
+    private final long currentTimeWarp;
     private final AbstractPlayerSpacecraftBody playerData;
     private final List<PlanetaryBody> allPlanetaryBodies;
     private final OrbitId playerParentOrbit;
 
-    public ClientboundLoginSolarSystemState(ServerPlayerSpacecraftBody playerData, List<PlanetaryBody> allPlanetaryBodies) {
+    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerSpacecraftBody playerData, List<PlanetaryBody> allPlanetaryBodies,
+                                            long currentTime, long timeWarp) {
+        this.currentTime = currentTime;
+        this.currentTimeWarp = timeWarp;
         this.playerData = playerData;
-        if (playerData.getParent() != null) {
-            this.playerParentOrbit = playerData.getParent().getOrbitId();
-        } else {
-            this.playerParentOrbit = null;
+
+        OrbitId parentID = null;
+        if (playerData != null) {
+            if (playerData.getParent() != null) {
+                parentID = playerData.getParent().getOrbitId();
+            }
         }
+        playerParentOrbit = parentID;
         this.allPlanetaryBodies = allPlanetaryBodies;
     }
 
-    public ClientboundLoginSolarSystemState(List<PlanetaryBody> allPlanetaryBodies) {
-        this.playerData = null;
-        this.playerParentOrbit = null;
-        this.allPlanetaryBodies = allPlanetaryBodies;
-    }
 
     public ClientboundLoginSolarSystemState(FriendlyByteBuf friendlyByteBuf) {
+        currentTime = friendlyByteBuf.readLong();
+        currentTimeWarp = friendlyByteBuf.readLong();
         OrbitId playerParent = null;
         AbstractPlayerSpacecraftBody playerSpacecraftBody = null;
 
@@ -57,6 +63,8 @@ public class ClientboundLoginSolarSystemState {
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
+        friendlyByteBuf.writeLong(currentTime);
+        friendlyByteBuf.writeLong(currentTimeWarp);
         if (playerData != null) {
             friendlyByteBuf.writeBoolean(true);
             NetworkEncoders.writeOrbitalBody(friendlyByteBuf, playerData);
@@ -75,7 +83,7 @@ public class ClientboundLoginSolarSystemState {
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.StartClientPacket(playerData, playerParentOrbit, allPlanetaryBodies)));
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.StartClientPacket(currentTime, currentTimeWarp, playerData, playerParentOrbit, allPlanetaryBodies)));
             context.setPacketHandled(true);
         }
     }
