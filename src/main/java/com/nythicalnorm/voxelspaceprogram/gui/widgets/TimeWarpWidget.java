@@ -2,6 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.Minecraft;
@@ -42,14 +43,14 @@ public class TimeWarpWidget extends AbstractWidget {
         });
     }
 
-    private Component parseTime(Double currentTime, PlanetaryBody overworldPlanet) {
-        if (overworldPlanet == null) {
+    private Component parseTime(Double currentTime, CelestialBody overworldPlanet) {
+        if (!(overworldPlanet instanceof PlanetaryBody)) {
             return Component.empty();
         }
 
        double yearTime = (2*Math.PI)/overworldPlanet.getOrbitalElements().MeanAngularMotion;
        // this is not sidereal rotation period the values need to be changed and this calculation also needs to be changed.
-       double dayTime = Calcs.timeLongToDouble(overworldPlanet.getRotationPeriod());
+       double dayTime = Calcs.timeLongToDouble(((PlanetaryBody)overworldPlanet).getRotationPeriod());
        double hourTime = dayTime/24;
        double minuteTime = hourTime/60;
 

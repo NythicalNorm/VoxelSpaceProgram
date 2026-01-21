@@ -4,14 +4,11 @@ import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetDataResolver;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
@@ -30,9 +27,9 @@ public class VSPDataPackManager {
     }
 
     public static void loadServerDataAndStartSolarSystem(MinecraftServer pServer) {
-        Map<OrbitId, PlanetaryBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
+        Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
         Map<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new Object2ObjectOpenHashMap<>();
-        Map<ResourceKey<Level>, PlanetaryBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
+        Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
         StarBody rootStar;
 
         if (planetLoadedData != null) {
@@ -51,19 +48,17 @@ public class VSPDataPackManager {
        return server.overworld().getDataStorage().computeIfAbsent(VSPCommonSaveData::load, VSPCommonSaveData::new, VSPCommonData);
     }
 
-    private static void loadPlanetData(Map<OrbitId, PlanetaryBody> pAllPlanetaryBodies, Map<ResourceKey<Level>, PlanetaryBody> pPlanetDimensions) {
-        for (Map.Entry<String, PlanetaryBody> entry : planetLoadedData.tempPlanetaryBodyMap().entrySet()) {
+    private static void loadPlanetData(Map<OrbitId, CelestialBody> pAllPlanetaryBodies, Map<ResourceKey<Level>, CelestialBody> pPlanetDimensions) {
+        for (Map.Entry<String, CelestialBody> entry : planetLoadedData.tempPlanetaryBodyMap().entrySet()) {
             String[] childPlanets = planetLoadedData.tempChildPlanetsMap().get(entry.getKey());
             for (String planet : childPlanets) {
                 entry.getValue().addChildBody(planetLoadedData.tempPlanetaryBodyMap().get(planet));
             }
 
-            if (planetLoadedData.tempDimensionsMap().containsKey(entry.getKey())) {
-                ResourceLocation dimensionResourceLoc =  ResourceLocation.parse(planetLoadedData.tempDimensionsMap().get(entry.getKey()));
-                ResourceKey<Level> dimensionLevelKey = ResourceKey.create(Registries.DIMENSION, dimensionResourceLoc);
-                pPlanetDimensions.put(dimensionLevelKey, entry.getValue());
-                entry.getValue().setDimension(dimensionLevelKey);
+            if (entry.getValue().getDimension() != null) {
+                pPlanetDimensions.put(entry.getValue().getDimension(), entry.getValue());
             }
+
             pAllPlanetaryBodies.put(entry.getValue().getOrbitId(), entry.getValue());
         }
 

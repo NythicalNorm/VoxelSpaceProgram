@@ -2,8 +2,8 @@ package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.spacecraft.ServerboundSpacecraftMove;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.util.Mth;
@@ -22,17 +22,17 @@ import org.joml.Vector3f;
 public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
     private float sunAngle = 0f;
 
-    public ClientPlayerSpacecraftBody() {
-        super();
+    public ClientPlayerSpacecraftBody(PlayerSpacecraftBuilder playerSpacecraftBuilder) {
+        super(playerSpacecraftBuilder);
     }
 
-    public void updatePlayerPosRot(Player player, PlanetaryBody currentPlanetOn) {
+    public void updatePlayerPosRot(Player player, CelestialBody currentPlanetOn) {
         updatePlanetPos(player.level(), player.position(), currentPlanetOn);
         updatePlanetRot(new Quaternionf(), currentPlanetOn);
         sunAngle = DayNightCycleHandler.getSunAngle(this.relativeOrbitalPos, this.absoluteOrbitalPos);
     }
 
-    private void updatePlanetRot(Quaternionf existingrotation, PlanetaryBody currentPlanet) {
+    private void updatePlanetRot(Quaternionf existingrotation, CelestialBody currentPlanet) {
         //quaternion to rotate the output of lookalong function to the correct -y direction.
         this.rotation = new Quaternionf(new AxisAngle4f(Mth.HALF_PI,1f,0f,0f));
         Vector3f playerRelativePos = new Vector3f((float) relativeOrbitalPos.x, (float) relativeOrbitalPos.y, (float) relativeOrbitalPos.z);
@@ -41,7 +41,7 @@ public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
         this.rotation.lookAlong(playerRelativePos, upVector);
     }
 
-    private void updatePlanetPos(Level level, Vec3 position, PlanetaryBody currentPlanetOn) {
+    private void updatePlanetPos(Level level, Vec3 position, CelestialBody currentPlanetOn) {
         double seaLevel = level.getMinBuildHeight() + 127;
         position = new Vec3(position.x, position.y - seaLevel, position.z);
 

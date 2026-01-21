@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
@@ -34,7 +34,7 @@ public abstract class SpaceRenderable {
         return new Vector3f((float) differenceVector.x, (float)differenceVector.y, (float) differenceVector.z).normalize();
     }
 
-    public abstract void calculatePos(Orbit relativeTo);
+    public abstract void calculatePos(OrbitalBody relativeTo);
 
     public abstract void render(Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack, Matrix4f projectionMatrix, float currentAlbedo);
 }

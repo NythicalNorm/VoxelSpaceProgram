@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
@@ -18,22 +18,23 @@ import java.util.Optional;
 @Mixin(Level.class)
 public class LevelMixin implements PlanetAccessor {
     @Unique
-    PlanetaryBody planetaryBody;
+    CelestialBody celestialBody;
 
     @Override
     public boolean isPlanet() {
-        return planetaryBody != null;
+        return celestialBody != null;
     }
 
     @Override
-    public PlanetaryBody getPlanetaryBody() {
-        return planetaryBody;
+    public CelestialBody getCelestialBody() {
+        return celestialBody;
     }
 
     @Override
-    public void setPlanetaryBody(PlanetaryBody planetaryBody) {
-        this.planetaryBody = planetaryBody;
+    public void setCelestialBody(CelestialBody celestialBody) {
+        this.celestialBody = celestialBody;
     }
+
 
     // Still makes no sense why mixining this function affects passive mob spawn as this seems to just
     // linearly increase difficulty and caps out at 3 days...???
@@ -44,7 +45,7 @@ public class LevelMixin implements PlanetAccessor {
         if (!level.isClientSide()) {
             Optional<Long> currentTime = Optional.empty();
             if (isPlanet() && SolarSystem.getInstance().isPresent()) {
-                currentTime = DayNightCycleHandler.getDayTime(pPos, getPlanetaryBody(), SolarSystem.getInstance().get().getCurrentTime());
+                currentTime = DayNightCycleHandler.getDayTime(pPos, getCelestialBody(), SolarSystem.getInstance().get().getCurrentTime());
             }
 
             if (currentTime.isPresent()) {

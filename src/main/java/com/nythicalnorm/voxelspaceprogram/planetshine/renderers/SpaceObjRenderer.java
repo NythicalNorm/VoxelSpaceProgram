@@ -1,9 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderers;
 
 import com.mojang.blaze3d.vertex.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes.SpaceRenderable;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes.RenderablePlanet;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
@@ -23,12 +23,12 @@ public class SpaceObjRenderer {
     private static SpaceRenderable[] renderPlanets;
 
     public static void PopulateRenderPlanets(PlanetsProvider planets) {
-        List<PlanetaryBody> planetList = planets.getAllPlanetOrbitsList();
+        List<CelestialBody> planetList = planets.getAllPlanetOrbitsList();
 
         renderPlanets = new SpaceRenderable[planetList.size()];
         int i = 0;
 
-        for (PlanetaryBody planet : planetList) {
+        for (CelestialBody planet : planetList) {
             renderPlanets[i] = new RenderablePlanet(planet);
             i++;
         }
@@ -49,7 +49,7 @@ public class SpaceObjRenderer {
     }
 
     public static void renderPlanets(SpaceRenderable[] renderPlanets, CelestialStateSupplier css, PoseStack poseStack, Matrix4f projectionMatrix, float partialTick) {
-        Optional<PlanetaryBody> planetOn = css.getCurrentPlanet();
+        Optional<CelestialBody> planetOn = css.getCurrentPlanet();
         float currentAlbedo = 1.0f;
         float starAlpha = 1.0f;
         Optional<PlanetAtmosphere> atmosphere = Optional.empty();

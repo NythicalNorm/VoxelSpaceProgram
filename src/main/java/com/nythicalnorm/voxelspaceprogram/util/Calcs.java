@@ -1,5 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.util;
 
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -102,11 +103,12 @@ public class Calcs {
 
 
     //client side only
-    public static Vector3f getUpVectorForPlanetRot(Vector3f playerRelativePos, PlanetaryBody planet) {
+    public static Vector3f getUpVectorForPlanetRot(Vector3f playerRelativePos, CelestialBody planet) {
         Vector3f upDir = new Vector3f(0f,-1f,0f);
-        AxisAngle4f northPole = planet.getNorthPoleDir();
-        upDir = new Vector3f(northPole.x, northPole.z, northPole.y);
-
+        if (planet instanceof PlanetaryBody planetaryBody) {
+            AxisAngle4f northPole = planetaryBody.getNorthPoleDir();
+            upDir = new Vector3f(northPole.x, northPole.z, northPole.y);
+        }
         upDir.normalize();
         Quaternionf rot = new Quaternionf(new AxisAngle4f(Mth.HALF_PI, 1f, 0f, 0f));
 

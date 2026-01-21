@@ -1,11 +1,14 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
+import com.google.gson.JsonObject;
 import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import net.minecraft.network.FriendlyByteBuf;
 
-public abstract class OrbitCodec<T extends Orbit> {
+import java.util.Map;
+
+public abstract class OrbitCodec<T extends OrbitalBody, M extends OrbitalBody.Builder<T>> {
     public void encodeBuffer(T orbit, FriendlyByteBuf byteBuf) {
         String typeName = CelestialBodyTypes.getOrbitalBodyTypeName(orbit);
         NetworkEncoders.writeASCII(byteBuf, typeName);
@@ -32,13 +35,13 @@ public abstract class OrbitCodec<T extends Orbit> {
 //        }
     }
 
-    public <M extends T> M decodeBuffer (M orbit, FriendlyByteBuf byteBuf) {
-        orbit.id = new OrbitId(byteBuf);
+    public M decodeBuffer (M orbit, FriendlyByteBuf byteBuf) {
+        orbit.setId(new OrbitId(byteBuf));
         orbit.setDisplayName(byteBuf.readComponent());
-        orbit.relativeOrbitalPos = NetworkEncoders.readVector3d(byteBuf);
-        orbit.absoluteOrbitalPos = NetworkEncoders.readVector3d(byteBuf);
-        orbit.relativeVelocity = NetworkEncoders.readVector3d(byteBuf);
-        orbit.rotation = byteBuf.readQuaternion();
+        orbit.setRelativeOrbitalPos(NetworkEncoders.readVector3d(byteBuf));
+        orbit.setAbsoluteOrbitalPos(NetworkEncoders.readVector3d(byteBuf));
+        orbit.setRelativeVelocity(NetworkEncoders.readVector3d(byteBuf));
+        orbit.setRotation(byteBuf.readQuaternion());
 
         if (byteBuf.readBoolean()) {
             orbit.setOrbitalElements(NetworkEncoders.readOrbitalElements(byteBuf));
@@ -47,5 +50,9 @@ public abstract class OrbitCodec<T extends Orbit> {
         orbit.setStableOrbit(byteBuf.readBoolean());
 
         return orbit;
+    }
+
+    public M readCelestialBodyDatapack(M body, String name, JsonObject jsonObj, Map<String, String[]> tempChildPlanetsMap) {
+        return null;
     }
 }

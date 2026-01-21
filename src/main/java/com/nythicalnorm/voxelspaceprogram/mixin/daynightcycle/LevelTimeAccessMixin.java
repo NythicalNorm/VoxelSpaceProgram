@@ -35,7 +35,7 @@ public interface LevelTimeAccessMixin extends LevelReader {
         else {
             PlanetAccessor planetAccessor = (PlanetAccessor) this;
             if (planetAccessor.isPlanet()) {
-                return DayNightCycleHandler.getSunAngleAtSpawn(planetAccessor.getPlanetaryBody());
+                return DayNightCycleHandler.getSunAngleAtSpawn(planetAccessor.getCelestialBody());
             }
         }
         return this.dimensionType().timeOfDay(this.dayTime());

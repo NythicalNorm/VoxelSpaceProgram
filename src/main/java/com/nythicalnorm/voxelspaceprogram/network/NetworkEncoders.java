@@ -2,11 +2,14 @@ package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3d;
 
 import java.nio.charset.StandardCharsets;
@@ -14,26 +17,27 @@ import java.util.*;
 
 public class NetworkEncoders {
 
-    public static void writeOrbitalBody(FriendlyByteBuf friendlyByteBuf, Orbit orbitalBody) {
+    public static void writeOrbitalBody(FriendlyByteBuf friendlyByteBuf, OrbitalBody orbitalBody) {
         orbitalBody.getType().encodeToBuffer(orbitalBody, friendlyByteBuf);
     }
 
-    public static Orbit readOrbitalBody(FriendlyByteBuf friendlyByteBuf) {
-        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf);
+    public static OrbitalBody readOrbitalBody(FriendlyByteBuf friendlyByteBuf) {
+        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf).build();
     }
 
-    public static Orbit readOrbitalBodyClient(FriendlyByteBuf friendlyByteBuf) {
-        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBufferToClient(friendlyByteBuf);
+    @OnlyIn(Dist.CLIENT)
+    public static OrbitalBody readOrbitalBodyClient(FriendlyByteBuf friendlyByteBuf) {
+        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf).buildClientSide();
     }
 
-    public static void writePlanetaryBodyList(FriendlyByteBuf friendlyByteBuf, List<PlanetaryBody> bodyList) {
+    public static void writePlanetaryBodyList(FriendlyByteBuf friendlyByteBuf, List<CelestialBody> bodyList) {
         friendlyByteBuf.writeVarInt(bodyList.size());
 
-        for (PlanetaryBody orbitBody : bodyList) {
+        for (CelestialBody orbitBody : bodyList) {
             NetworkEncoders.writeOrbitalBody(friendlyByteBuf, orbitBody);
             List<OrbitId> planetChildBodiesIDs = new ArrayList<>();
 
-            for (Orbit childBody : orbitBody.getChildren()) {
+            for (OrbitalBody childBody : orbitBody.getChildren()) {
                 if (childBody instanceof PlanetaryBody planetaryBody) {
                     planetChildBodiesIDs.add(planetaryBody.getOrbitId());
                 }
@@ -46,12 +50,12 @@ public class NetworkEncoders {
         }
     }
 
-    public static List<PlanetaryBody> readPlanetaryBodyList(FriendlyByteBuf friendlyByteBuf) {
+    public static List<CelestialBody> readPlanetaryBodyList(FriendlyByteBuf friendlyByteBuf) {
         int planetNo = friendlyByteBuf.readVarInt();
         Map<OrbitId, TempPlanetaryHolder> tempPlanetHolderMap = new Object2ObjectOpenHashMap<>();
 
         for (int i = 0; i < planetNo; i++) {
-            if (NetworkEncoders.readOrbitalBody(friendlyByteBuf) instanceof PlanetaryBody planetaryBody) {
+            if (NetworkEncoders.readOrbitalBody(friendlyByteBuf) instanceof CelestialBody planetaryBody) {
                 List<OrbitId> childPlanets = new ArrayList<>();
                 int childSize = friendlyByteBuf.readVarInt();
 
@@ -73,7 +77,7 @@ public class NetworkEncoders {
                 }
             }
         }
-        List<PlanetaryBody> bodyList = new ArrayList<>();
+        List<CelestialBody> bodyList = new ArrayList<>();
         tempPlanetHolderMap.forEach((orbitId, tempPlanetaryHolder) -> bodyList.add(tempPlanetaryHolder.planetaryBody));
         return bodyList;
     }
@@ -120,7 +124,7 @@ public class NetworkEncoders {
         return friendlyByteBuf.readCharSequence(stringSize, StandardCharsets.US_ASCII).toString();
     }
 
-    private record TempPlanetaryHolder(PlanetaryBody planetaryBody, List<OrbitId> orbitIdList) {
+    private record TempPlanetaryHolder(CelestialBody planetaryBody, List<OrbitId> orbitIdList) {
 
     }
 }

@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.planetshine.map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
@@ -70,7 +70,7 @@ public class OrbitDrawer {
         VertexBuffer.unbind();
     }
 
-    public static void drawOrbit(Orbit orbitalBody, float scaleFactor, PoseStack poseStack, Matrix4f projectionMatrix) {
+    public static void drawOrbit(OrbitalBody orbitalBody, float scaleFactor, PoseStack poseStack, Matrix4f projectionMatrix) {
         OrbitalElements orbitalElements = orbitalBody.getOrbitalElements();
         boolean isElliptical = (orbitalElements.Eccentricity >= 0 && orbitalElements.Eccentricity < 1);
 

@@ -4,12 +4,14 @@ import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.AbstractPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
@@ -17,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ClientPacketHandler {
-    public static void StartClientPacket(long currentTime, long timeWarp, EntitySpacecraftBody playerData, OrbitId playerParentOrbit, List<PlanetaryBody> planetaryBodyList) {
-        Map<OrbitId, PlanetaryBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
+    public static void StartClientPacket(long currentTime, long timeWarp, EntitySpacecraftBody playerData, OrbitId playerParentOrbit, List<CelestialBody> planetaryBodyList) {
+        Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
         Map<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new Object2ObjectOpenHashMap<>();
-        Map<ResourceKey<Level>, PlanetaryBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
+        Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
         StarBody rootStar = null;
 
-        for (PlanetaryBody planetaryBody : planetaryBodyList) {
+        for (CelestialBody planetaryBody : planetaryBodyList) {
             if (planetaryBody instanceof StarBody starBody) {
                 rootStar = starBody;
             }
@@ -44,7 +46,10 @@ public class ClientPacketHandler {
             }
             clientPlayerSpacecraftBody = plrSpacecraftBody;
         } else {
-            clientPlayerSpacecraftBody = new ClientPlayerSpacecraftBody();
+            AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder playerSpacecraftBuilder = new AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder();
+            playerSpacecraftBuilder.setPlayer(Minecraft.getInstance().player);
+            playerSpacecraftBuilder.setDisplayName(Minecraft.getInstance().player.getDisplayName());
+            clientPlayerSpacecraftBody = (ClientPlayerSpacecraftBody) playerSpacecraftBuilder.buildClientSide();
         }
         CelestialStateSupplier css =  new CelestialStateSupplier(clientPlayerSpacecraftBody, planetsProvider);
         css.setCurrentTime(currentTime);

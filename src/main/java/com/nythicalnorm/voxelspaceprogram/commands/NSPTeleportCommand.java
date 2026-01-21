@@ -3,8 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -44,7 +44,7 @@ public class NSPTeleportCommand {
         for(Entity entity : pTargets) {
             if (entity instanceof ServerPlayer) {
                 SolarSystem.getInstance().ifPresent(solarSystem -> {
-                    PlanetaryBody planet = solarSystem.getPlanetsProvider().getPlanet(body);
+                    CelestialBody planet = solarSystem.getPlanetsProvider().getPlanet(body);
                     double semiMajorAxis = (semiMajorAxisInput*1000d) + planet.getRadius();
                     if (semiMajorAxisInput < 0) {
                         semiMajorAxis = (semiMajorAxisInput*1000d) - planet.getRadius();

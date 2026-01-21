@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -52,7 +52,7 @@ public class AltitudeWidget extends AbstractWidget {
     private void renderAltitudeNumbers(CelestialStateSupplier css, GuiGraphics pGuiGraphics, int xPos, int yPos) {
         //altitude = 100000000 - altitude;
         double altitude = 0;
-        Optional<PlanetaryBody> playerParent = css.getCurrentPlanetSOIin();
+        Optional<CelestialBody> playerParent = css.getCurrentPlanetSOIin();
 
         if (css.getPlayerOrbit() != null && playerParent.isPresent()) {
             altitude = css.getPlayerOrbit().getRelativePosDistance() + 0.5d - playerParent.get().getRadius();

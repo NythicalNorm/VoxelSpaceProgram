@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.*;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import net.minecraft.resources.ResourceKey;
@@ -13,12 +13,12 @@ import org.joml.Quaternionf;
 import java.util.*;
 
 public class PlanetsProvider {
-    private final Map<ResourceKey<Level>, PlanetaryBody> planetDimensions;
-    private final Map<OrbitId, PlanetaryBody> allPlanetaryBodies;
+    private final Map<ResourceKey<Level>, CelestialBody> planetDimensions;
+    private final Map<OrbitId, CelestialBody> allPlanetaryBodies;
     private final Map<OrbitId, EntitySpacecraftBody> allSpacecraftBodies;
     private final StarBody rootStar;
 
-    public PlanetsProvider(Map<OrbitId, PlanetaryBody> pAllPlanetaryBodies, Map<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, PlanetaryBody> pPlanetDimensions, StarBody rootStar) {
+    public PlanetsProvider(Map<OrbitId, CelestialBody> pAllPlanetaryBodies, Map<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, CelestialBody> pPlanetDimensions, StarBody rootStar) {
         this.allPlanetaryBodies = pAllPlanetaryBodies;
         this.allSpacecraftBodies = pAllSpacecraftBodies;
         this.planetDimensions = pPlanetDimensions;
@@ -34,12 +34,12 @@ public class PlanetsProvider {
         return allSpacecraftBodies;
     }
 
-    public Map<ResourceKey<Level>, PlanetaryBody> getPlanetDimensions() {
+    public Map<ResourceKey<Level>, CelestialBody> getPlanetDimensions() {
         return planetDimensions;
     }
 
-    public @Nullable PlanetaryBody getPlanet(String key) {
-        for (PlanetaryBody planetaryBody : allPlanetaryBodies.values()) {
+    public @Nullable CelestialBody getPlanet(String key) {
+        for (CelestialBody planetaryBody : allPlanetaryBodies.values()) {
             if (planetaryBody.getName().equals(key)) {
                 return planetaryBody;
             }
@@ -47,16 +47,16 @@ public class PlanetsProvider {
         return null;
     }
 
-    public PlanetaryBody getPlanet(OrbitId planetID) {
+    public CelestialBody getPlanet(OrbitId planetID) {
         return allPlanetaryBodies.get(planetID);
     }
 
-    public Orbit getSpacecraftOrbit(OrbitId spacecraftBodyAddress) {
+    public OrbitalBody getSpacecraftOrbit(OrbitId spacecraftBodyAddress) {
         return allSpacecraftBodies.get(spacecraftBodyAddress);
     }
 
-    public void playerChangeOrbitalSOIs(Orbit spacecraftBody, OrbitId newParentID, OrbitalElements orbitalElementsNew) {
-        PlanetaryBody newOrbitPlanet = getPlanet(newParentID);
+    public void playerChangeOrbitalSOIs(OrbitalBody spacecraftBody, OrbitId newParentID, OrbitalElements orbitalElementsNew) {
+        CelestialBody newOrbitPlanet = getPlanet(newParentID);
 
         orbitalElementsNew.setOrbitalPeriod(newOrbitPlanet.getMass());
         spacecraftBody.setOrbitalElements(orbitalElementsNew);
@@ -69,7 +69,7 @@ public class PlanetsProvider {
 
     // Need to split off this into its own data packet
     public void playerJoinedOrbital(OrbitId newParentID, EntitySpacecraftBody OrbitalDataNew) {
-        Orbit newOrbitPlanet = getPlanet(newParentID);
+        OrbitalBody newOrbitPlanet = getPlanet(newParentID);
 
         if (newOrbitPlanet instanceof PlanetaryBody plnt) {
             OrbitalDataNew.getOrbitalElements().setOrbitalPeriod(plnt.getMass());
@@ -81,21 +81,21 @@ public class PlanetsProvider {
 
     public List<String> getAllPlanetNames() {
         List<String> planetNames = new ArrayList<>();
-        for (PlanetaryBody planetaryBody : allPlanetaryBodies.values()) {
+        for (CelestialBody planetaryBody : allPlanetaryBodies.values()) {
             planetNames.add(planetaryBody.getName());
         }
         return planetNames;
     }
 
-    public Map<OrbitId, PlanetaryBody> getAllPlanetaryBodies() {
+    public Map<OrbitId, CelestialBody> getAllPlanetaryBodies() {
         return allPlanetaryBodies;
     }
 
-    public List<PlanetaryBody> getAllPlanetOrbitsList() {
+    public List<CelestialBody> getAllPlanetOrbitsList() {
         return allPlanetaryBodies.values().stream().toList();
     }
 
-    public PlanetaryBody getOverworldPlanet() {
+    public CelestialBody getOverworldPlanet() {
         return planetDimensions.get(Level.OVERWORLD);
     }
 
@@ -103,7 +103,7 @@ public class PlanetsProvider {
         return rootStar;
     }
 
-    public PlanetaryBody getDimensionPlanet(ResourceKey<Level> dim) {
+    public CelestialBody getDimensionPlanet(ResourceKey<Level> dim) {
         return planetDimensions.get(dim);
     }
 

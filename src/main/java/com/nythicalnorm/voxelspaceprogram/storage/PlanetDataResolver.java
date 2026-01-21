@@ -1,15 +1,16 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
+package com.nythicalnorm.voxelspaceprogram.storage;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.storage.VSPDataPackManager;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
@@ -17,11 +18,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.Deserializers;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
@@ -33,10 +32,9 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        Map<String, String> tempDimensionsMap = new Object2ObjectOpenHashMap<>();
+    protected void apply(Map<ResourceLocation, JsonElement> pObject, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {
         Map<String, String[]> tempChildPlanetsMap = new Object2ObjectOpenHashMap<>();
-        Map<String, PlanetaryBody> tempPlanetaryBodyMap = new Object2ObjectOpenHashMap<>();
+        Map<String, CelestialBody> tempPlanetaryBodyMap = new Object2ObjectOpenHashMap<>();
         StarBody rootStar = null;
 
         pObject.forEach((key, element) -> {
@@ -47,12 +45,12 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
                 JsonObject jsonObject = element.getAsJsonObject();
                 String name = jsonObject.get("name").getAsString();
                 String bodyType = jsonObject.get("type").getAsString();
-                OrbitalBodyType<? extends Orbit> orbitalBodyCodec = CelestialBodyTypes.getType(bodyType);
-                if (orbitalBodyCodec != null) {
-                    if (orbitalBodyCodec.getInstance() instanceof PlanetaryBody planetaryBody) {
-                        planetaryBody.initStaticName(name);
-                        parsePlanetaryBody(planetaryBody, jsonObject, tempDimensionsMap, tempChildPlanetsMap);
-                        tempPlanetaryBodyMap.put(planetaryBody.getName(), planetaryBody);
+                OrbitalBodyType<? extends OrbitalBody, ? extends OrbitalBody.Builder<?>> orbitalBodyType = CelestialBodyTypes.getType(bodyType);
+                if (orbitalBodyType != null) {
+                    OrbitalBody.Builder<?> planetBuilder = orbitalBodyType.readCelestialBodyDataPack(name, jsonObject, tempChildPlanetsMap);
+                    OrbitalBody readOrbitalBody = planetBuilder.build();
+                    if (readOrbitalBody instanceof CelestialBody celestialBody) {
+                        tempPlanetaryBodyMap.put(celestialBody.getName(), celestialBody);
                     }
                 } else {
                     throw new IllegalStateException("Planetary Body is of unknown type: " + bodyType);
@@ -63,8 +61,8 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
             }
         });
 
-        for (PlanetaryBody planetaryBody : tempPlanetaryBodyMap.values()) {
-            if (planetaryBody instanceof StarBody starBody) {
+        for (CelestialBody celestialBody : tempPlanetaryBodyMap.values()) {
+            if (celestialBody instanceof StarBody starBody) {
                 rootStar = starBody;
             }
         }
@@ -73,51 +71,10 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
             logger.error("No Stars found in the solar system data, can't start server...");
             return;
         }
-        VSPDataPackManager.planetDatapackLoaded(new PlanetLoadedData(rootStar, tempPlanetaryBodyMap, tempDimensionsMap, tempChildPlanetsMap));
+        VSPDataPackManager.planetDatapackLoaded(new PlanetLoadedData(rootStar, tempPlanetaryBodyMap, tempChildPlanetsMap));
     }
 
-    private void parsePlanetaryBody(PlanetaryBody body, JsonObject jsonObj, Map<String, String> tempDimensionsMap, Map<String, String[]> tempChildPlanetsMap) {
-        body.radius = jsonObj.get("radius").getAsDouble();
-        body.mass = jsonObj.get("mass").getAsDouble();
-
-        JsonElement north_pole_dir = jsonObj.get("north_pole_dir");
-        JsonElement starting_rotation = jsonObj.get("starting_rotation");
-        if (north_pole_dir != null && starting_rotation != null) {
-            JsonObject north_pole_obj = north_pole_dir.getAsJsonObject();
-            body.setNorthPoleDir(north_pole_obj.get("right_ascension").getAsFloat(),
-                    north_pole_obj.get("declination").getAsFloat(),
-                    starting_rotation.getAsFloat());
-        }
-        JsonElement rotation_period = jsonObj.get("rotation_period");
-        body.RotationPeriod = rotation_period != null ? Calcs.timeDoubleToLong(rotation_period.getAsDouble()) : 0L;
-
-        JsonElement dimensionID = jsonObj.get("dimension_id");
-        if (dimensionID != null) {
-            tempDimensionsMap.put(body.getName(), dimensionID.getAsString());
-        }
-
-        JsonElement orbital_elements_json = jsonObj.get("orbital_elements");
-        if (orbital_elements_json != null) {
-            body.setOrbitalElements(parseOrbitalElements(orbital_elements_json.getAsJsonObject()));
-        }
-
-        JsonElement atmosphericData = jsonObj.get("atmospheric_data");
-        if (atmosphericData != null) {
-           body.atmosphericEffects = parseAtmosphericData(atmosphericData.getAsJsonObject());
-        }
-
-        List<String> childPlanetNames = new ArrayList<>();
-        JsonElement childPlanets = jsonObj.get("child_planets");
-
-        if (childPlanets != null) {
-             JsonArray planetNameArray = childPlanets.getAsJsonArray();
-             planetNameArray.forEach(jsonElement -> childPlanetNames.add(jsonElement.getAsString()));
-        }
-
-        tempChildPlanetsMap.put(body.getName(), childPlanetNames.toArray(new String[0]));
-    }
-
-    private @Nullable OrbitalElements parseOrbitalElements(JsonObject orbital_elements_json) {
+    public static OrbitalElements parseOrbitalElements(JsonObject orbital_elements_json) {
         double semiMajorAxis = orbital_elements_json.get("semi_major_axis").getAsDouble();
         double eccentricity = orbital_elements_json.get("eccentricity").getAsDouble();
         double periapsisTime = orbital_elements_json.get("periapsis_time").getAsDouble();
@@ -129,7 +86,7 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
                 , inclination, argumentOfPeriapsis, longitudeOfAscendingNode);
     }
 
-    private PlanetAtmosphere parseAtmosphericData(JsonObject jsonObj) {
+    public static PlanetAtmosphere parseAtmosphericData(JsonObject jsonObj) {
         boolean hasAtmosphere = jsonObj.get("has_atmosphere").getAsBoolean();
         int surfaceColor = 0;
         int atmosphereColor = 0;
@@ -150,7 +107,7 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
         return new PlanetAtmosphere(hasAtmosphere, surfaceColor, atmosphereColor, atmosphereHeight, atmosphereAlpha, alphaNight, alphaDay);
     }
 
-    public record PlanetLoadedData(StarBody rootStar, Map<String, PlanetaryBody> tempPlanetaryBodyMap, Map<String, String> tempDimensionsMap, Map<String, String[]> tempChildPlanetsMap) {
+    public record PlanetLoadedData(StarBody rootStar, Map<String, CelestialBody> tempPlanetaryBodyMap, Map<String, String[]> tempChildPlanetsMap) {
 
     }
 }

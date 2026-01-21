@@ -1,46 +1,53 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class OrbitalBodyType<T extends Orbit> {
+import java.util.Map;
+
+public class OrbitalBodyType<T extends OrbitalBody, M extends OrbitalBody.Builder<T>> {
     private final String typeName;
-    private final OrbitCodec<T> codec;
-    private final Supplier<T> supplier;
+    private final OrbitCodec<T, M> codec;
+    private final Supplier<M> builder;
 
-    public OrbitalBodyType(String typeName, OrbitCodec<T> codec, Supplier<T> pSupplier) {
+    public OrbitalBodyType(String typeName, OrbitCodec<T, M> codec, Supplier<M> builder) {
         this.codec = codec;
         this.typeName = typeName;
-        this.supplier = pSupplier;
+        this.builder = builder;
     }
 
     public String getTypeName() {
         return typeName;
     }
 
-    public <M> void encodeToBuffer(M orbit, FriendlyByteBuf friendlyByteBuf) {
+    public void encodeToBuffer(OrbitalBody orbit, FriendlyByteBuf friendlyByteBuf) {
         codec.encodeBuffer((T) orbit, friendlyByteBuf);
     }
 
-    public T decodeFromBuffer(FriendlyByteBuf friendlyByteBuf) {
-       return codec.decodeBuffer(supplier.getInstance(), friendlyByteBuf);
+    public M decodeFromBuffer(FriendlyByteBuf friendlyByteBuf) {
+       return codec.decodeBuffer(builder.getInstance(), friendlyByteBuf);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public Orbit decodeFromBufferToClient(FriendlyByteBuf friendlyByteBuf) {
-        T orbit = (T) CelestialBodyTypes.BodyTypeClientExt.celestialBodyClientSuppliers.get(typeName).getInstance();
-        return codec.decodeBuffer(orbit, friendlyByteBuf);
+    public OrbitCodec<T, M> getCodec() {
+        return codec;
     }
 
-    // Server Side Instance (or common instance if both sides use the same class)
-    public Orbit getInstance() {
-        return supplier.getInstance();
+    public M readCelestialBodyDataPack(String name, JsonObject jsonObj,  Map<String, String[]> tempChildPlanetsMap) {
+        return codec.readCelestialBodyDatapack(getInstance(), name, jsonObj, tempChildPlanetsMap);
+    }
+
+    //    @OnlyIn(Dist.CLIENT)
+//    public OrbitalBody decodeFromBufferToClient(FriendlyByteBuf friendlyByteBuf) {
+//        T orbit = (T) CelestialBodyTypes.BodyTypeClientExt.celestialBodyClientSuppliers.get(typeName).getInstance();
+//        return codec.decodeBuffer(orbit, friendlyByteBuf);
+//    }
+
+    public M getInstance() {
+        return builder.getInstance();
     }
 
     @FunctionalInterface
-    public interface Supplier<T extends Orbit> {
-        T getInstance();
+    public interface Supplier<M extends OrbitalBody.Builder<?>> {
+        M getInstance();
     }
 }

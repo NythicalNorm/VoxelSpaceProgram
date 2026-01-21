@@ -3,8 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.network.orbitaldata;
 import com.nythicalnorm.voxelspaceprogram.network.ClientPacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.AbstractPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,10 +21,10 @@ public class ClientboundLoginSolarSystemState {
     private final long currentTime;
     private final long currentTimeWarp;
     private final AbstractPlayerSpacecraftBody playerData;
-    private final List<PlanetaryBody> allPlanetaryBodies;
+    private final List<CelestialBody> allPlanetaryBodies;
     private final OrbitId playerParentOrbit;
 
-    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerSpacecraftBody playerData, List<PlanetaryBody> allPlanetaryBodies,
+    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerSpacecraftBody playerData, List<CelestialBody> allPlanetaryBodies,
                                             long currentTime, long timeWarp) {
         this.currentTime = currentTime;
         this.currentTimeWarp = timeWarp;
@@ -48,7 +48,7 @@ public class ClientboundLoginSolarSystemState {
         AbstractPlayerSpacecraftBody playerSpacecraftBody = null;
 
         if (friendlyByteBuf.readBoolean()) {
-            Orbit entityOrbit = NetworkEncoders.readOrbitalBodyClient(friendlyByteBuf);
+            OrbitalBody entityOrbit = NetworkEncoders.readOrbitalBodyClient(friendlyByteBuf);
             if (entityOrbit instanceof AbstractPlayerSpacecraftBody spacecraftBody) {
                 playerSpacecraftBody = spacecraftBody;
                 if (friendlyByteBuf.readBoolean()) {

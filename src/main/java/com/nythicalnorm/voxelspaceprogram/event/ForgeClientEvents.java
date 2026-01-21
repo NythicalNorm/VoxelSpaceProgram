@@ -92,7 +92,7 @@ public class ForgeClientEvents {
     public static void onPlayerCloned(ClientPlayerNetworkEvent.Clone event) {
         CelestialStateSupplier.getInstance().ifPresent(css -> {
             if (css.getPlayerOrbit() != null) {
-                css.getPlayerOrbit().setPlayerEntity(event.getNewPlayer());
+                css.getPlayerOrbit().setPlayer(event.getNewPlayer());
 
                 if (event.getNewPlayer().level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
                     css.getPlayerOrbit().removeYourself();

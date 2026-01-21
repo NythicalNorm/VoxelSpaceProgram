@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
@@ -46,11 +46,11 @@ public class PlanetRenderer {
     }
 
     //for rendering in the map screen
-    public static void render(PlanetaryBody planet, PoseStack poseStack, Matrix4f projectionMatrix) {
+    public static void render(CelestialBody planet, PoseStack poseStack, Matrix4f projectionMatrix) {
         render(planet, Optional.empty(), poseStack, projectionMatrix, 0, 1.0f, null);
     }
 
-    public static void render(PlanetaryBody planet, Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack,
+    public static void render(CelestialBody planet, Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack,
                               Matrix4f projectionMatrix, double distance, float currentAlbedo, @Nullable Vector3d differenceVector) {
 
         if ((differenceVector != null) && (distance < (planet.getRadius() + 320))) {

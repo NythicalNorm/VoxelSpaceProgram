@@ -1,20 +1,19 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public abstract class EntitySpacecraftBody extends Orbit {
+public abstract class EntitySpacecraftBody extends OrbitalBody {
     protected Vector3f angularVelocity;
     protected boolean velocityChangedLastFrame;
     private static final float tolerance = 1e-8f;
 
-    public EntitySpacecraftBody() {
-        this.angularVelocity = new Vector3f();
-        this.orbitalElements = new OrbitalElements(0d,0d, 0L, 0d, 0d, 0d);
+    public EntitySpacecraftBody(AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder playerSpacecraftBuilder, Vector3f angularVelocity) {
+        super(playerSpacecraftBuilder);
+        this.angularVelocity = angularVelocity;
     }
 
     public void simulatePropagate(long TimeElapsed, Vector3d parentPos, double mass) {

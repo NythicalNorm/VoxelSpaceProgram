@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.AltitudeWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.LeftPanelWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.NavballWidget;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.TimeWarpWidget;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
@@ -25,7 +25,7 @@ import java.lang.Math;
 @OnlyIn(Dist.CLIENT)
 public class MapSolarSystemScreen extends MouseLookScreen {
     private CelestialStateSupplier css;
-    private Orbit[] FocusableBodies;
+    private OrbitalBody[] FocusableBodies;
     private int currentFocusedBodyIndex;
     private final boolean isSpacecraftScreenOpen;
 
@@ -124,7 +124,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
         if (currentFocusedBodyIndex >= FocusableBodies.length) {
             currentFocusedBodyIndex = 0;
         }
-        if (FocusableBodies[currentFocusedBodyIndex] instanceof PlanetaryBody) {
+        if (FocusableBodies[currentFocusedBodyIndex] instanceof CelestialBody celestialBody) {
             if (css.getCurrentPlanet().isPresent()) {
                 if (css.getCurrentPlanet().get().equals(FocusableBodies[currentFocusedBodyIndex])) {
                     Vector3d playerRelativePos = css.getPlayerOrbit().getRelativePos();
@@ -133,7 +133,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
                     cameraXrot = (float) Math.asin(playerRelativePos.y);
                 }
             }
-            radiusZoomLevel = ((PlanetaryBody) FocusableBodies[currentFocusedBodyIndex]).getRadius();
+            radiusZoomLevel = celestialBody.getRadius();
         } else if (FocusableBodies[currentFocusedBodyIndex] instanceof EntitySpacecraftBody) {
             radiusZoomLevel = 1000000;
         }
@@ -142,7 +142,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
     }
 
     private void populateFocusedBodiesList() {
-        Orbit currentFocusedBody = null;
+        OrbitalBody currentFocusedBody = null;
 
         if (css.isOnPlanet()) {
             currentFocusedBody = css.getCurrentPlanet().get();
@@ -158,11 +158,11 @@ public class MapSolarSystemScreen extends MouseLookScreen {
         //setting the first element to the desired body and later filling in planets that aren't currentfocusedbody
         int index = 0;
 
-        FocusableBodies = new Orbit[totalFocusAmount];
+        FocusableBodies = new OrbitalBody[totalFocusAmount];
         FocusableBodies[index] = currentFocusedBody;
         currentFocusedBodyIndex = index;
 
-        for (PlanetaryBody plnt : css.getPlanetsProvider().getAllPlanetaryBodies().values()) {
+        for (CelestialBody plnt : css.getPlanetsProvider().getAllPlanetaryBodies().values()) {
             if (plnt != currentFocusedBody) {
                 index++;
                 FocusableBodies[index] = plnt;

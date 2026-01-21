@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.PlanetRenderer;
 import org.jetbrains.annotations.Nullable;
@@ -10,9 +10,9 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class MapRenderablePlanet extends MapRenderable {
-    protected PlanetaryBody planetBody;
+    protected CelestialBody planetBody;
 
-    public MapRenderablePlanet(PlanetaryBody planetBody, MapRelativeState mapRelativeState, @Nullable Orbit parentBody) {
+    public MapRenderablePlanet(CelestialBody planetBody, MapRelativeState mapRelativeState, @Nullable OrbitalBody parentBody) {
         super(mapRelativeState, parentBody);
         this.planetBody = planetBody;
     }
@@ -31,7 +31,7 @@ public class MapRenderablePlanet extends MapRenderable {
         return pos;
     }
 
-    public PlanetaryBody getBody() {
+    public CelestialBody getBody() {
         return planetBody;
     }
 }

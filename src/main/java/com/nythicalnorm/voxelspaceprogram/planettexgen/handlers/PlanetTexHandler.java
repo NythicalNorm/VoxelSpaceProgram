@@ -7,6 +7,7 @@ import com.nythicalnorm.voxelspaceprogram.planettexgen.GradientSupplier;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeTexGenTask;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.network.chat.Component;
@@ -50,7 +51,7 @@ public class PlanetTexHandler {
 
         server.getPlayerList().broadcastSystemMessage(Component.translatable("voxelspaceprogram.state.planetgen_start"), true);
 
-        for (PlanetaryBody planetaryBody : planets.getAllPlanetaryBodies().values()) {
+        for (CelestialBody planetaryBody : planets.getAllPlanetaryBodies().values()) {
             CompletableFuture<byte[]> planetImgData = CompletableFuture.supplyAsync(
                     new WholePlanetTexGenTask(planetDir, planetaryBody.getName(), randomSource.nextLong(), GradientSupplier.textureForPlanets.get(planetaryBody.getName())), texExecuter);
             planetTexturesBytes.put(planetaryBody.getOrbitId(), planetImgData);

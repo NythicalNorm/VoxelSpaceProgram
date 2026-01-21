@@ -2,6 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.util;
 
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import net.minecraft.core.BlockPos;
@@ -43,7 +44,7 @@ public class DayNightCycleHandler {
             return null;
         }
 
-        PlanetaryBody planet =  ((PlanetAccessor)level).getPlanetaryBody();
+        CelestialBody planet =  ((PlanetAccessor)level).getCelestialBody();
         if (planet != null) {
             Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), planet.getRadius(), planet.getRotation(), true);
             Vector3d planetAbsolutePos = planet.getAbsolutePos().add(blockPosOnPlanet);
@@ -92,21 +93,21 @@ public class DayNightCycleHandler {
         return Mth.clamp(diff, 0f, 1f);
     }
 
-    public static float getSunAngleAtSpawn(PlanetaryBody planetaryBody) {
-        Vector3d spawnLocation = new Vector3d(planetaryBody.getRadius(), 0f, 0f);
-        Quaternionf planetRot = planetaryBody.getRotation();
+    public static float getSunAngleAtSpawn(CelestialBody celestialBody) {
+        Vector3d spawnLocation = new Vector3d(celestialBody.getRadius(), 0f, 0f);
+        Quaternionf planetRot = celestialBody.getRotation();
         spawnLocation.rotate(new Quaterniond(planetRot.x, planetRot.y,planetRot.z, planetRot.w));
-        Vector3d planetAbsolutePos = planetaryBody.getAbsolutePos().add(spawnLocation);
+        Vector3d planetAbsolutePos = celestialBody.getAbsolutePos().add(spawnLocation);
         return getSunAngle(spawnLocation, planetAbsolutePos);
     }
 
 
     // this will not work when the starting earth rotation at time 0 is different from it is now
     // reference: https://stackoverflow.com/questions/5188561/signed-angle-between-two-3d-vectors-with-same-origin-within-the-same-plane
-    public static Optional<Long> getDayTime(BlockPos pos, PlanetaryBody plnt, long TimeElapsed) {
-        Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), plnt.getRadius(), plnt.getRotation(), true);
+    public static Optional<Long> getDayTime(BlockPos pos, CelestialBody clst, long TimeElapsed) {
+        Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), clst.getRadius(), clst.getRotation(), true);
         blockPosOnPlanet.normalize();
-        Vector3d planetAbsolutePos = plnt.getAbsolutePos().add(blockPosOnPlanet);
+        Vector3d planetAbsolutePos = clst.getAbsolutePos().add(blockPosOnPlanet);
         float signedAngle = getSunAngle(blockPosOnPlanet, planetAbsolutePos);
 
 //        Vector3d crossProduct = planetAbsolutePos.cross(blockPosOnPlanet);
@@ -128,7 +129,12 @@ public class DayNightCycleHandler {
 //        if (timeNormalized < 0) {
 //            timeNormalized = timeNormalized + 24000d;
 //        }
-        double extraTime = (double) TimeElapsed / plnt.getRotationPeriod();
+        double extraTime = 0;
+
+        if (clst instanceof PlanetaryBody planetaryBody) {
+            extraTime = (double) TimeElapsed / planetaryBody.getRotationPeriod();
+        }
+
         float normalTime = 6000f + (signedAngle*24000f) + (float) Math.floor(extraTime)*24000f;
         return Optional.of((long) normalTime);
     }

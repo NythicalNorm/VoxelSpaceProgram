@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
@@ -12,10 +12,10 @@ import java.util.List;
 
 public abstract class MapRenderable {
     protected final MapRelativeState relativeState;
-    Orbit parentBody;
+    OrbitalBody parentBody;
     protected List<MapRenderable> childRenderables;
 
-    public MapRenderable(MapRelativeState mapRelativeState, Orbit parentBody) {
+    public MapRenderable(MapRelativeState mapRelativeState, OrbitalBody parentBody) {
         this.relativeState = mapRelativeState;
         this.parentBody = parentBody;
         this.childRenderables = new ArrayList<>();
@@ -38,7 +38,7 @@ public abstract class MapRenderable {
         }
     }
 
-    protected Vector3f getPos(Orbit bodyToPlace, Orbit currentFocusedBody) {
+    protected Vector3f getPos(OrbitalBody bodyToPlace, OrbitalBody currentFocusedBody) {
         Vector3d returnPos = switch (relativeState) {
             case AbsolutePos -> bodyToPlace.getAbsolutePos().sub(currentFocusedBody.getAbsolutePos());
             case RelativePos, AlwaysParentRelative -> bodyToPlace.getRelativePos();

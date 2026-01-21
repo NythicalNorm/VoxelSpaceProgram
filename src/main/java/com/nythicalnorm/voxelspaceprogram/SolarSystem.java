@@ -8,12 +8,13 @@ import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSo
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundSolarSystemTimeUpdate;
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundTimeWarpUpdate;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeColorHolder;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.Orbit;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.handlers.PlanetTexHandler;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.AbstractPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
@@ -97,7 +98,7 @@ public class SolarSystem extends Stage {
 
     public void playerJoined(Player entity) {
         OrbitId playerEntityID = new OrbitId(entity);
-        List<PlanetaryBody> allPlanetaryBodies = planetsProvider.getAllPlanetaryBodies().values().stream().toList();
+        List<CelestialBody> allPlanetaryBodies = planetsProvider.getAllPlanetaryBodies().values().stream().toList();
         ServerPlayerSpacecraftBody playerSpacecraftBody = null;
 
         if (planetsProvider.getAllSpacecraftBodies().containsKey(playerEntityID)) {
@@ -105,8 +106,8 @@ public class SolarSystem extends Stage {
                 playerSpacecraftBody = pPlrSpacecraftBody;
             }
         } else if (entity.level().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
-                ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
-                entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
+            ServerLevel overworldLevel = server.getLevel(Level.OVERWORLD);
+            entity.changeDimension(overworldLevel, new DimensionTeleporter(overworldLevel.getSharedSpawnPos().getCenter()));
         }
 
         PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies, getCurrentTime(), getTimePassPerTick()), (ServerPlayer) entity);
@@ -118,7 +119,7 @@ public class SolarSystem extends Stage {
     }
 
     // Called when the player changes SOIs or joins on orbit artificially like the teleport command
-    public void playerJoinOrbit(PlanetaryBody body, ServerPlayer player, OrbitalElements elements) {
+    public void playerJoinOrbit(CelestialBody body, ServerPlayer player, OrbitalElements elements) {
         OrbitId newPlanetID = body.getOrbitId();
         OrbitId PlayerID = new OrbitId(player.getUUID());
         if (player.level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
@@ -126,7 +127,7 @@ public class SolarSystem extends Stage {
         }
 
         if (planetsProvider.getAllSpacecraftBodies().containsKey(PlayerID)) {
-            Orbit playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(PlayerID);
+            OrbitalBody playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(PlayerID);
             if (playerSpacecraftBody == null) {
                 return;
             }
@@ -135,8 +136,14 @@ public class SolarSystem extends Stage {
             PacketHandler.sendToPlayer(new ClientboundFocusedOrbitUpdate(PlayerID, newPlanetID, elements), player);
         }
         else  {
-            Quaternionf playerRot = new Quaternionf();
-            ServerPlayerSpacecraftBody newOrbitalData = new ServerPlayerSpacecraftBody(player, true, true, playerRot, elements);
+            AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder builder = new AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder();
+            builder.setPlayer(player);
+            builder.setRotation(new Quaternionf());
+            builder.setStableOrbit(true);
+            builder.setOrbitalElements(elements);
+
+            ServerPlayerSpacecraftBody newOrbitalData = (ServerPlayerSpacecraftBody) builder.build();
+
             planetsProvider.playerJoinedOrbital(newPlanetID, newOrbitalData);
             planetsProvider.getAllSpacecraftBodies().put(PlayerID, newOrbitalData);
             PacketHandler.sendToPlayer(new ClientboundFocusedOrbitUpdate(PlayerID, newPlanetID, elements), player);
@@ -146,14 +153,14 @@ public class SolarSystem extends Stage {
     public void playerCloned(ServerPlayer player) {
         EntitySpacecraftBody spacecraftBody = planetsProvider.getAllSpacecraftBodies().get(new OrbitId(player));
         if (spacecraftBody instanceof ServerPlayerSpacecraftBody serverPlayerSpacecraftBody) {
-            serverPlayerSpacecraftBody.setPlayerEntity(player);
+            serverPlayerSpacecraftBody.setPlayer(player);
         }
 
         playerDimChanged(player, player.level().dimension());
     }
 
     public void handleSpacecraftMove(ServerPlayer player, OrbitId spacecraftBodyAddress, SpacecraftControlState state) {
-       Orbit spacecraft = planetsProvider.getSpacecraftOrbit(spacecraftBodyAddress);
+       OrbitalBody spacecraft = planetsProvider.getSpacecraftOrbit(spacecraftBodyAddress);
        if (spacecraft == null) {
            return;
        }

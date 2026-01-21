@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.planetshine.textures;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -23,7 +23,7 @@ public class PlanetTexManager {
         this.planetResourceLocations = new HashMap<>();
     }
 
-    public void incomingPlanetTexture(PlanetaryBody planet, byte[] tex) {
+    public void incomingPlanetTexture(CelestialBody planet, byte[] tex) {
         String planetName = planet.getName();
         VoxelSpaceProgram.log(planetName + " texture received, Size: " + tex.length);
         ByteBuffer texBytebuffer = ByteBuffer.allocateDirect(tex.length);
