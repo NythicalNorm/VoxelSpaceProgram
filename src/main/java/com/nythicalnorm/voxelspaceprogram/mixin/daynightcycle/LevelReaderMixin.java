@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import com.nythicalnorm.voxelspaceprogram.util.SidedCallsUtil;
 import net.minecraft.core.BlockPos;
@@ -38,7 +38,7 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
                 }
             }
             else {
-                PlanetAccessor planetAccessor = (PlanetAccessor) level;
+                CelestialBodyAccessor planetAccessor = (CelestialBodyAccessor) level;
                 if (planetAccessor.isPlanet()) {
                    darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
                 }
@@ -46,7 +46,7 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
         }
         else if (this instanceof WorldGenRegion worldGenRegion) {
             Level level = worldGenRegion.getLevel();
-            PlanetAccessor planetAccessor = (PlanetAccessor) level;
+            CelestialBodyAccessor planetAccessor = (CelestialBodyAccessor) level;
             if (planetAccessor.isPlanet()) {
                 darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
             }

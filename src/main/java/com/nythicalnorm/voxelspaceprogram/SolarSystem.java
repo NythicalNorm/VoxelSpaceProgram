@@ -113,7 +113,7 @@ public class SolarSystem extends Stage {
         PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies, getCurrentTime(), getTimePassPerTick()), (ServerPlayer) entity);
 
         if (planetTexHandler != null) {
-            planetTexHandler.sendAllTexToPlayer((ServerPlayer) entity);
+            planetTexHandler.sendAllTexToPlayer((ServerPlayer) entity, planetsProvider.getAllPlanetaryBodies());
         }
         //server.execute(() -> planetTexHandler.sendBiomeTexToPlayer((ServerPlayer) entity, planetsProvider.getDimensionPlanet(entity.level().dimension())));
     }

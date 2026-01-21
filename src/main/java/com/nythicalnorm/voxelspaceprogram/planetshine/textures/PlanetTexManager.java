@@ -2,8 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.planetshine.textures;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ClientCelestialBody;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -13,19 +12,10 @@ import net.minecraft.world.level.Level;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Optional;
 
 public class PlanetTexManager {
-    HashMap<OrbitId, ResourceLocation> planetResourceLocations;
-
-    public PlanetTexManager() {
-        this.planetResourceLocations = new HashMap<>();
-    }
-
-    public void incomingPlanetTexture(CelestialBody planet, byte[] tex) {
-        String planetName = planet.getName();
-        VoxelSpaceProgram.log(planetName + " texture received, Size: " + tex.length);
+    public void incomingPlanetTexture(ClientCelestialBody planet, byte[] tex) {
+        VoxelSpaceProgram.log(planet.getName() +" texture received, Size: " + tex.length);
         ByteBuffer texBytebuffer = ByteBuffer.allocateDirect(tex.length);
         texBytebuffer.put(tex);
         texBytebuffer.rewind();
@@ -34,20 +24,11 @@ public class PlanetTexManager {
             NativeImage planetImage = NativeImage.read(texBytebuffer);
             DynamicTexture texture = new DynamicTexture(planetImage);
             TextureManager texturemanager = Minecraft.getInstance().getTextureManager();
-            ResourceLocation texResourceLocation = texturemanager.register("voxelspaceprogram/planets/" + planetName, texture);
-            planetResourceLocations.put(planet.getOrbitId(), texResourceLocation);
+            ResourceLocation texResourceLocation = texturemanager.register("voxelspaceprogram/planets/" + planet.getName(), texture);
+            planet.setMainTexture(texResourceLocation);
         } catch (IOException e) {
             VoxelSpaceProgram.logError(e.toString());
             VoxelSpaceProgram.logError("png texture can't be parsed");
-        }
-    }
-
-    public Optional<ResourceLocation> getTextureForPlanet(OrbitId planetName) {
-        ResourceLocation returnLoc = planetResourceLocations.get(planetName);
-        if (returnLoc != null) {
-            return Optional.of(returnLoc);
-        } else {
-            return Optional.empty();
         }
     }
 
@@ -55,7 +36,5 @@ public class PlanetTexManager {
         if (dimensionID != Minecraft.getInstance().level.dimension()) {
             return;
         }
-
-
     }
 }

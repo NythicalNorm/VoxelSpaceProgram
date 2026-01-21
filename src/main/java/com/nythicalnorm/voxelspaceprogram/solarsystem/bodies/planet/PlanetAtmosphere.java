@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet;
 
 public class PlanetAtmosphere {
     protected final boolean hasAtmosphere;
@@ -30,6 +30,15 @@ public class PlanetAtmosphere {
 
     public float[] getAtmoColor() {
         return getRGBAFloats(atmoColor, 1.0f);
+    }
+
+    public int getOverlayColorInt()
+    {
+        return surfaceColor;
+    }
+
+    public int getAtmoColorInt() {
+        return atmoColor;
     }
 
     public double getAtmosphereHeight() {

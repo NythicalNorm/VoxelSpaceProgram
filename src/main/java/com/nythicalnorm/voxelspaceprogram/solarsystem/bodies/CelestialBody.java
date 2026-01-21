@@ -1,5 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

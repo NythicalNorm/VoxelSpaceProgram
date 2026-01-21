@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.util;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;

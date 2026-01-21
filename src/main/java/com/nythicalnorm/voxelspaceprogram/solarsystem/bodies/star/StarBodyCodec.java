@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,10 +16,10 @@ public class StarBodyCodec extends OrbitCodec<StarBody, StarBody.StarBuilder> {
     @Override
     public void encodeBuffer(StarBody sunBody, FriendlyByteBuf byteBuf) {
         super.encodeBuffer(sunBody, byteBuf);
-        NetworkEncoders.writeASCII(byteBuf, sunBody.name);
+        NetworkEncoders.writeASCII(byteBuf, sunBody.getName());
         byteBuf.writeDouble(sunBody.getRadius());
         byteBuf.writeDouble(sunBody.getMass());
-        writePlanetAtmosphere(byteBuf, sunBody.getAtmosphere());
+        NetworkEncoders.writePlanetAtmosphere(byteBuf, sunBody.getAtmosphere());
     }
 
     @Override
@@ -28,30 +28,8 @@ public class StarBodyCodec extends OrbitCodec<StarBody, StarBody.StarBuilder> {
         sunBody.setName(NetworkEncoders.readASCII(byteBuf));
         sunBody.setRadius(byteBuf.readDouble());
         sunBody.setMass(byteBuf.readDouble());
-        sunBody.setAtmosphericEffects(readPlanetAtmosphere(byteBuf));
+        sunBody.setAtmosphericEffects(NetworkEncoders.readPlanetAtmosphere(byteBuf));
         return sunBody;
-    }
-
-    private void writePlanetAtmosphere(FriendlyByteBuf byteBuf, PlanetAtmosphere atmosphere) {
-        byteBuf.writeBoolean(atmosphere.hasAtmosphere);
-        byteBuf.writeInt(atmosphere.surfaceColor);
-        byteBuf.writeInt(atmosphere.atmoColor);
-        byteBuf.writeDouble(atmosphere.atmosphereHeight);
-        byteBuf.writeFloat(atmosphere.atmosphereAlpha);
-        byteBuf.writeFloat(atmosphere.alphaNight);
-        byteBuf.writeFloat(atmosphere.alphaDay);
-    }
-
-    private PlanetAtmosphere readPlanetAtmosphere(FriendlyByteBuf byteBuf) {
-        return new PlanetAtmosphere(
-                byteBuf.readBoolean(),
-                byteBuf.readInt(),
-                byteBuf.readInt(),
-                byteBuf.readDouble(),
-                byteBuf.readFloat(),
-                byteBuf.readFloat(),
-                byteBuf.readFloat()
-        );
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandl
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.AbstractPlayerSpacecraftBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
@@ -68,7 +68,7 @@ public class ClientPacketHandler {
 
     public static void incomingPlanetTexture(OrbitId planetID, byte[] planetTexture) {
         CelestialStateSupplier.getInstance().ifPresent(css ->
-                css.getPlanetTexManager().incomingPlanetTexture(css.getPlanetsProvider().getPlanet(planetID), planetTexture));
+                css.getPlanetTexManager().incomingPlanetTexture(css.getClientPlanet(planetID), planetTexture));
     }
 
     public static void UpdateTimeState(long currenttime) {

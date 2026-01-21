@@ -1,9 +1,9 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBodyCodec;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBodyCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBodyCodec;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBodyCodec;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.*;

@@ -4,7 +4,7 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.commands.NSPTeleportCommand;
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.storage.PlanetDataResolver;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,7 +44,7 @@ public class ForgeServerEvents {
         if (!event.getLevel().isClientSide() && event.getLevel() instanceof ServerLevel serverLevel) {
             SolarSystem.getInstance().ifPresent(solarSystem -> {
                 CelestialBody planetaryBody = solarSystem.getPlanetsProvider().getDimensionPlanet(serverLevel.dimension());
-                ((PlanetAccessor) serverLevel).setCelestialBody(planetaryBody);
+                ((CelestialBodyAccessor) serverLevel).setCelestialBody(planetaryBody);
             });
         }
     }

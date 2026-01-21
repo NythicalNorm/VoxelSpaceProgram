@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.WorldGenRegion;
@@ -22,7 +22,7 @@ public class WorldGenRegionMixin {
         WorldGenRegion worldGenRegion = (WorldGenRegion) (Object)this;
         Level level = worldGenRegion.getLevel();
         if (!level.isClientSide()) {
-            CelestialBody plnt = ((PlanetAccessor)level).getCelestialBody();
+            CelestialBody plnt = ((CelestialBodyAccessor)level).getCelestialBody();
             Optional<Long> currentTime = Optional.empty();
             if (plnt != null && SolarSystem.getInstance().isPresent()) {
                 currentTime = DayNightCycleHandler.getDayTime(pPos, plnt, SolarSystem.getInstance().get().getCurrentTime());

@@ -4,7 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -27,7 +27,7 @@ public class EntityGravityHandler {
     public static void onFallDamage(LivingFallEvent event) {
         float fallDistance = event.getDistance();
         Level level = event.getEntity().level();
-        PlanetAccessor planetAccessor = (PlanetAccessor) level;
+        CelestialBodyAccessor planetAccessor = (CelestialBodyAccessor) level;
 
         if (planetAccessor.isPlanet()){
             double planetAcceleration = planetAccessor.getCelestialBody().getEntityAccelerationDueToGravity();
@@ -49,7 +49,7 @@ public class EntityGravityHandler {
         Entity entity = event.getEntity();
         if (entity instanceof LivingEntity) {
             AttributeMap entityAttributes = ((LivingEntity)entity).getAttributes();
-            PlanetAccessor planetAccessor = (PlanetAccessor) event.getLevel();
+            CelestialBodyAccessor planetAccessor = (CelestialBodyAccessor) event.getLevel();
 
             //Optional<Double> levelGravity = PlanetDimensions.getAccelerationDueToGravityAt(entity.level());
             double tempGravity = 0;

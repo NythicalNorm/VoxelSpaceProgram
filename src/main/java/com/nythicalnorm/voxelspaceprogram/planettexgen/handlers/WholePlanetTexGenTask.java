@@ -13,13 +13,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class WholePlanetTexGenTask extends TexGenTask {
-    private final Path planetsDir;
+    private final Path planetDir;
     private final String planetName;
     private final long seed;
     private final PlanetGradient gradient;
 
-    public WholePlanetTexGenTask(Path planetsDir, String planetName, long seed, PlanetGradient gradient) {
-        this.planetsDir = planetsDir;
+    public WholePlanetTexGenTask(Path planetDir, String planetName, long seed, PlanetGradient gradient) {
+        this.planetDir = planetDir;
         this.planetName = planetName;
         this.seed = seed;
         this.gradient = gradient;
@@ -27,7 +27,7 @@ public class WholePlanetTexGenTask extends TexGenTask {
 
     @Override
     public byte[] get() {
-        Path planetTexPath = planetsDir.resolve(planetName + ".png");
+        Path planetTexPath = planetDir.resolve("0.png");
         File planetTexFileLocation = new File(planetTexPath.toUri());
 
         if (!planetTexFileLocation.exists()) {

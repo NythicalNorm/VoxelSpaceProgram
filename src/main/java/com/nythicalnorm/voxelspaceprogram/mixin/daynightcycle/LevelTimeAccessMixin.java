@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import com.nythicalnorm.voxelspaceprogram.util.SidedCallsUtil;
 import net.minecraft.world.level.LevelReader;
@@ -33,7 +33,7 @@ public interface LevelTimeAccessMixin extends LevelReader {
           }
         }
         else {
-            PlanetAccessor planetAccessor = (PlanetAccessor) this;
+            CelestialBodyAccessor planetAccessor = (CelestialBodyAccessor) this;
             if (planetAccessor.isPlanet()) {
                 return DayNightCycleHandler.getSunAngleAtSpawn(planetAccessor.getCelestialBody());
             }

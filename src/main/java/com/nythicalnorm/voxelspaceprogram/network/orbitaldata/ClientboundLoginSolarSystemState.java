@@ -59,6 +59,7 @@ public class ClientboundLoginSolarSystemState {
 
         this.playerData = playerSpacecraftBody;
         this.playerParentOrbit = playerParent;
+
         allPlanetaryBodies = NetworkEncoders.readPlanetaryBodyList(friendlyByteBuf);
     }
 

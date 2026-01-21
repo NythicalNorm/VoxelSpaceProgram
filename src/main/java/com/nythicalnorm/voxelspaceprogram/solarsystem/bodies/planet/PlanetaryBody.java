@@ -1,6 +1,7 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import net.minecraft.resources.ResourceKey;
@@ -13,7 +14,7 @@ import org.joml.*;
 
 import java.lang.Math;
 
-public class PlanetaryBody extends CelestialBody {
+public abstract class PlanetaryBody extends CelestialBody {
     protected final AxisAngle4f NorthPoleDir;
     protected final long RotationPeriod;
 
@@ -36,10 +37,6 @@ public class PlanetaryBody extends CelestialBody {
         this.rotation.identity().rotationTo(NorthPoleDir.x,NorthPoleDir.y,NorthPoleDir.z, 0f, 1f, 0f);
         Quaternionf rotated = new Quaternionf(new AxisAngle4f(rotationAngle, 0f, 1f, 0f));
         this.rotation.mul(rotated);
-    }
-
-    public double getRadius(){
-        return radius;
     }
 
     public long getRotationPeriod() {
@@ -105,13 +102,13 @@ public class PlanetaryBody extends CelestialBody {
 
         @Override
         public PlanetaryBody build() {
-            return new PlanetaryBody(this);
+            return new ServerPlanetaryBody(this);
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
         public PlanetaryBody buildClientSide() {
-            return null;
+            return new ClientPlanetaryBody(this);
         }
     }
 }

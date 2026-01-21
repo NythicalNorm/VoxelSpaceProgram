@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -23,7 +23,7 @@ public class PlanetaryBodyCodec extends OrbitCodec<PlanetaryBody, PlanetaryBody.
     @Override
     public void encodeBuffer(PlanetaryBody planetBody, FriendlyByteBuf byteBuf) {
         super.encodeBuffer(planetBody, byteBuf);
-        NetworkEncoders.writeASCII(byteBuf, planetBody.name);
+        NetworkEncoders.writeASCII(byteBuf, planetBody.getName());
         byteBuf.writeDouble(planetBody.getRadius());
         byteBuf.writeDouble(planetBody.getMass());
 
@@ -33,7 +33,7 @@ public class PlanetaryBodyCodec extends OrbitCodec<PlanetaryBody, PlanetaryBody.
         byteBuf.writeFloat(planetBody.getNorthPoleDir().z);
 
         byteBuf.writeLong(planetBody.getRotationPeriod());
-        writePlanetAtmosphere(byteBuf, planetBody.getAtmosphere());
+        NetworkEncoders.writePlanetAtmosphere(byteBuf, planetBody.getAtmosphere());
 
         if (planetBody.getDimension() == null) {
             byteBuf.writeBoolean(false);
@@ -57,35 +57,13 @@ public class PlanetaryBodyCodec extends OrbitCodec<PlanetaryBody, PlanetaryBody.
                 byteBuf.readFloat()));
 
         planetBuilder.setRotationPeriod(byteBuf.readLong());
-        planetBuilder.setAtmosphericEffects(readPlanetAtmosphere(byteBuf));
+        planetBuilder.setAtmosphericEffects(NetworkEncoders.readPlanetAtmosphere(byteBuf));
 
         if (byteBuf.readBoolean()) {
             planetBuilder.setDimension(byteBuf.readResourceKey(Registries.DIMENSION));
         }
 
         return planetBuilder;
-    }
-
-    private void writePlanetAtmosphere(FriendlyByteBuf byteBuf, PlanetAtmosphere atmosphere) {
-        byteBuf.writeBoolean(atmosphere.hasAtmosphere);
-        byteBuf.writeInt(atmosphere.surfaceColor);
-        byteBuf.writeInt(atmosphere.atmoColor);
-        byteBuf.writeDouble(atmosphere.atmosphereHeight);
-        byteBuf.writeFloat(atmosphere.atmosphereAlpha);
-        byteBuf.writeFloat(atmosphere.alphaNight);
-        byteBuf.writeFloat(atmosphere.alphaDay);
-    }
-
-    private PlanetAtmosphere readPlanetAtmosphere(FriendlyByteBuf byteBuf) {
-        return new PlanetAtmosphere(
-                byteBuf.readBoolean(),
-                byteBuf.readInt(),
-                byteBuf.readInt(),
-                byteBuf.readDouble(),
-                byteBuf.readFloat(),
-                byteBuf.readFloat(),
-                byteBuf.readFloat()
-        );
     }
 
     @Override

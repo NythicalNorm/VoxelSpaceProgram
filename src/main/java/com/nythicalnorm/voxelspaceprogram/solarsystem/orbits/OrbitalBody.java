@@ -192,31 +192,4 @@ public abstract class OrbitalBody {
         @OnlyIn(Dist.CLIENT)
         public abstract T buildClientSide();
     }
-//    public CompoundTag saveNBT(CompoundTag nbt) {
-//        nbt.putDouble("NSP.AbsoluteOrbitalPosX", this.absoluteOrbitalPos.x);
-//        nbt.putDouble("NSP.AbsoluteOrbitalPosY", this.absoluteOrbitalPos.y);
-//        nbt.putDouble("NSP.AbsoluteOrbitalPosZ", this.absoluteOrbitalPos.z);
-//
-//        nbt.putDouble("NSP.RelativeOrbitalPosX", this.relativeOrbitalPos.x);
-//        nbt.putDouble("NSP.RelativeOrbitalPosY", this.relativeOrbitalPos.y);
-//        nbt.putDouble("NSP.RelativeOrbitalPosZ", this.relativeOrbitalPos.z);
-//
-//        nbt.putFloat("NSP.OrbitalrotationX", this.rotation.x);
-//        nbt.putFloat("NSP.OrbitalrotationY", this.rotation.y);
-//        nbt.putFloat("NSP.OrbitalrotationZ", this.rotation.z);
-//        nbt.putFloat("NSP.OrbitalrotationW", this.rotation.w);
-//        return nbt;
-//    }
-//
-//    public void loadNBT(CompoundTag nbt) {
-//        this.absoluteOrbitalPos = new Vector3d(nbt.getDouble("NSP.AbsoluteOrbitalPosX"),
-//                nbt.getDouble("NSP.AbsoluteOrbitalPosY"),nbt.getDouble("NSP.AbsoluteOrbitalPosZ"));
-//
-//        this.relativeOrbitalPos = new Vector3d(nbt.getDouble("NSP.RelativeOrbitalPosX"),
-//                nbt.getDouble("NSP.RelativeOrbitalPosY"),nbt.getDouble("NSP.RelativeOrbitalPosZ"));
-//
-//        this.rotation = new Quaternionf(nbt.getFloat("NSP.OrbitalrotationX"),
-//                nbt.getFloat("NSP.OrbitalrotationY"),nbt.getFloat("NSP.OrbitalrotationZ"),
-//                nbt.getFloat("NSP.OrbitalrotationW"));
-//    }
 }

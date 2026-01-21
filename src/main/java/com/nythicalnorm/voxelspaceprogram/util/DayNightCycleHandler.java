@@ -3,8 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.util;
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -44,7 +44,7 @@ public class DayNightCycleHandler {
             return null;
         }
 
-        CelestialBody planet =  ((PlanetAccessor)level).getCelestialBody();
+        CelestialBody planet =  ((CelestialBodyAccessor)level).getCelestialBody();
         if (planet != null) {
             Vector3d blockPosOnPlanet = Calcs.planetDimPosToNormalizedVector(pos.getCenter(), planet.getRadius(), planet.getRotation(), true);
             Vector3d planetAbsolutePos = planet.getAbsolutePos().add(blockPosOnPlanet);

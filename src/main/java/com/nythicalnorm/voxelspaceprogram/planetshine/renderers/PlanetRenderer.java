@@ -4,11 +4,11 @@ import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAtmosphere;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.StarBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ClientCelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
 import com.nythicalnorm.voxelspaceprogram.planetshine.generators.QuadSphereModelGenerator;
 import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.ModShaders;
@@ -78,10 +78,12 @@ public class PlanetRenderer {
         }
 
         QuadSphereModelGenerator.getSphereBuffer().bind();
-
-        Optional<ResourceLocation> planetTex = CelestialStateSupplier.getInstance().get().getPlanetTexManager().getTextureForPlanet(planet.getOrbitId());
-        planetTex.ifPresentOrElse(tex -> RenderSystem.setShaderTexture(0, tex),
-                () -> RenderSystem.setShaderTexture(0, MissingTextureAtlasSprite.getLocation()));
+        ResourceLocation planetTex = ((ClientCelestialBody) planet).getMainTexture();
+        if (planetTex != null) {
+            RenderSystem.setShaderTexture(0, planetTex);
+        } else {
+            RenderSystem.setShaderTexture(0, MissingTextureAtlasSprite.getLocation());
+        }
 
         Vector3d absoluteDir = planet.getAbsolutePos().normalize();
         Vector3f lightDir = new Vector3f((float) absoluteDir.x,(float) absoluteDir.y,(float) absoluteDir.z);

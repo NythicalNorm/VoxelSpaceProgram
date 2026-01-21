@@ -1,14 +1,16 @@
-package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
+package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3d;
 
-public class StarBody extends CelestialBody {
+public abstract class StarBody extends CelestialBody {
 
     public StarBody(StarBuilder starBuilder) {
         super(starBuilder.name, starBuilder.radius, starBuilder.mass, starBuilder.atmosphericEffects, null, starBuilder);
@@ -60,13 +62,13 @@ public class StarBody extends CelestialBody {
 
         @Override
         public StarBody build() {
-            return new StarBody(this);
+            return new ServerStarBody(this);
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
         public StarBody buildClientSide() {
-            return null;
+            return new ClientStarBody(this);
         }
     }
 }

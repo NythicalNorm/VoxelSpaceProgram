@@ -3,7 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.network;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -55,7 +56,7 @@ public class NetworkEncoders {
         Map<OrbitId, TempPlanetaryHolder> tempPlanetHolderMap = new Object2ObjectOpenHashMap<>();
 
         for (int i = 0; i < planetNo; i++) {
-            if (NetworkEncoders.readOrbitalBody(friendlyByteBuf) instanceof CelestialBody planetaryBody) {
+            if (NetworkEncoders.readOrbitalBodyClient(friendlyByteBuf) instanceof CelestialBody planetaryBody) {
                 List<OrbitId> childPlanets = new ArrayList<>();
                 int childSize = friendlyByteBuf.readVarInt();
 
@@ -101,6 +102,28 @@ public class NetworkEncoders {
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readDouble(),
                 friendlyByteBuf.readDouble()
+        );
+    }
+
+    public static void writePlanetAtmosphere(FriendlyByteBuf byteBuf, PlanetAtmosphere atmosphere) {
+        byteBuf.writeBoolean(atmosphere.hasAtmosphere());
+        byteBuf.writeInt(atmosphere.getOverlayColorInt());
+        byteBuf.writeInt(atmosphere.getAtmoColorInt());
+        byteBuf.writeDouble(atmosphere.getAtmosphereHeight());
+        byteBuf.writeFloat(atmosphere.getAtmosphereAlpha());
+        byteBuf.writeFloat(atmosphere.getAlphaNight());
+        byteBuf.writeFloat(atmosphere.getAlphaDay());
+    }
+
+    public static PlanetAtmosphere readPlanetAtmosphere(FriendlyByteBuf byteBuf) {
+        return new PlanetAtmosphere(
+                byteBuf.readBoolean(),
+                byteBuf.readInt(),
+                byteBuf.readInt(),
+                byteBuf.readDouble(),
+                byteBuf.readFloat(),
+                byteBuf.readFloat(),
+                byteBuf.readFloat()
         );
     }
 

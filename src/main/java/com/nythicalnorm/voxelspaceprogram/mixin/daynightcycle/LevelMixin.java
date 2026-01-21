@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.mixin.daynightcycle;
 
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(Level.class)
-public class LevelMixin implements PlanetAccessor {
+public class LevelMixin implements CelestialBodyAccessor {
     @Unique
     CelestialBody celestialBody;
 

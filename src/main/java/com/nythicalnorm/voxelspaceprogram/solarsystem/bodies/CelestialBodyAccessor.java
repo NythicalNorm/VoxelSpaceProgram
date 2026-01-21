@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
-public interface PlanetAccessor {
+public interface CelestialBodyAccessor {
     boolean isPlanet();
     CelestialBody getCelestialBody();
     void setCelestialBody(CelestialBody celestialBody);

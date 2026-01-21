@@ -4,11 +4,11 @@ import com.nythicalnorm.voxelspaceprogram.gui.ModScreenManager;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.time.ServerboundTimeWarpChange;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ClientCelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
 import com.nythicalnorm.voxelspaceprogram.planetshine.textures.PlanetTexManager;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
@@ -59,6 +59,10 @@ public class CelestialStateSupplier extends Stage {
         return Optional.empty();
     }
 
+    public ClientCelestialBody getClientPlanet(OrbitId planetID) {
+       return (ClientCelestialBody) this.planetsProvider.getPlanet(planetID);
+    }
+
     public float getSunAngle() {
         return playerOrbit.getSunAngle();
     }
@@ -77,7 +81,7 @@ public class CelestialStateSupplier extends Stage {
     public void onClientLevelLoad(ClientLevel clientLevel) {
         CelestialBody celestialBody = planetsProvider.getDimensionPlanet(clientLevel.dimension());
         if (celestialBody != null) {
-            ((PlanetAccessor) clientLevel).setCelestialBody(celestialBody);
+            ((CelestialBodyAccessor) clientLevel).setCelestialBody(celestialBody);
             currentPlanetOn = celestialBody;
         } else {
             currentPlanetOn = null;
@@ -128,7 +132,7 @@ public class CelestialStateSupplier extends Stage {
         if (minecraft.level == null) {
             return false;
         }
-        PlanetAccessor planetAccessor = (PlanetAccessor) minecraft.level;
+        CelestialBodyAccessor planetAccessor = (CelestialBodyAccessor) minecraft.level;
         return planetAccessor.isPlanet() || planetsProvider.isDimensionSpace(minecraft.level.dimension());
     }
 
@@ -142,7 +146,7 @@ public class CelestialStateSupplier extends Stage {
     }
 
     public Optional<CelestialBody> getCurrentPlanetSOIin() {
-        if (playerOrbit.getParent() != null && playerOrbit.getParent() instanceof PlanetaryBody body) {
+        if (playerOrbit.getParent() != null && playerOrbit.getParent() instanceof CelestialBody body) {
             return Optional.of(body);
         } else if (currentPlanetOn != null) {
             return Optional.of(currentPlanetOn);
