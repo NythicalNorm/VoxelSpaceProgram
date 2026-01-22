@@ -57,6 +57,7 @@ public abstract class AbstractPlayerSpacecraftBody extends EntitySpacecraftBody 
 
         public void setPlayer(Player player) {
             this.player = player;
+            this.displayName = player.getDisplayName();
             this.id = new OrbitId(player);
         }
 

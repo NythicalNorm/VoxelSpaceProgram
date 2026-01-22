@@ -4,12 +4,13 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosp
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class CelestialBody extends OrbitalBody {
     protected final String name;
@@ -29,7 +30,7 @@ public abstract class CelestialBody extends OrbitalBody {
         this.mass = mass;
         this.atmosphericEffects = atmosphericEffects;
         this.dimension = dimension;
-        this.childElements = new Object2ObjectOpenHashMap<>();
+        this.childElements = new ConcurrentHashMap<>();
     }
 
     public String getName() {

@@ -63,7 +63,7 @@ public class OrbitId {
     }
 
     public OrbitId(CompoundTag nbt) {
-        CompoundTag idBits = nbt.getCompound("voxelspaceprogram.orbit_id");
+        CompoundTag idBits = nbt.getCompound("orbit_id");
         this.mostSignificantBits = idBits.getLong("most");
         this.leastSignificantBits = idBits.getLong("least");
     }
@@ -73,6 +73,6 @@ public class OrbitId {
         idBits.putLong("most", mostSignificantBits);
         idBits.putLong("least", leastSignificantBits);
 
-        tag.put("voxelspaceprogram.orbit_id", idBits);
+        tag.put("orbit_id", idBits);
     }
 }

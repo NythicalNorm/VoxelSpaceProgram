@@ -17,11 +17,13 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ClientPacketHandler {
     public static void StartClientPacket(long currentTime, long timeWarp, EntitySpacecraftBody playerData, OrbitId playerParentOrbit, List<CelestialBody> planetaryBodyList) {
         Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
-        Map<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new Object2ObjectOpenHashMap<>();
+        ConcurrentMap<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new ConcurrentHashMap<>();
         Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
         StarBody rootStar = null;
 
@@ -38,17 +40,17 @@ public class ClientPacketHandler {
             throw new IllegalStateException ("can't start client Solar system without a host star");
         }
         PlanetsProvider planetsProvider = new PlanetsProvider(AllPlanetaryBodies, AllSpacecraftBodies, PlanetDimensions, rootStar);
-        ClientPlayerSpacecraftBody clientPlayerSpacecraftBody = null;
+        ClientPlayerSpacecraftBody clientPlayerSpacecraftBody;
 
         if (playerData instanceof ClientPlayerSpacecraftBody plrSpacecraftBody) {
             if (playerParentOrbit != null) {
                 planetsProvider.playerJoinedOrbital(playerParentOrbit, playerData);
+                plrSpacecraftBody.setPlayer(Minecraft.getInstance().player);
             }
             clientPlayerSpacecraftBody = plrSpacecraftBody;
         } else {
             AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder playerSpacecraftBuilder = new AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder();
             playerSpacecraftBuilder.setPlayer(Minecraft.getInstance().player);
-            playerSpacecraftBuilder.setDisplayName(Minecraft.getInstance().player.getDisplayName());
             clientPlayerSpacecraftBody = (ClientPlayerSpacecraftBody) playerSpacecraftBuilder.buildClientSide();
         }
         CelestialStateSupplier css =  new CelestialStateSupplier(clientPlayerSpacecraftBody, planetsProvider);
@@ -72,9 +74,8 @@ public class ClientPacketHandler {
     }
 
     public static void UpdateTimeState(long currenttime) {
-        CelestialStateSupplier.getInstance().ifPresent(css -> {
-            ClientTimeHandler.UpdateState(currenttime);
-        });
+        CelestialStateSupplier.getInstance().ifPresent(css ->
+                ClientTimeHandler.UpdateState(currenttime));
     }
 
     public static void timeWarpSetFromServer(boolean successfullyChanged, long setTimeWarpSpeed) {

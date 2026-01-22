@@ -8,8 +8,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
+import com.nythicalnorm.voxelspaceprogram.util.Stage;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -21,9 +21,8 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class PlanetArgument implements ArgumentType<String> {
-    private static final DynamicCommandExceptionType ERROR_INVALID = new DynamicCommandExceptionType((p_260119_) -> {
-        return Component.translatable("voxelspaceprogram.commands.planet_invalid", p_260119_);
-    });
+    private static final DynamicCommandExceptionType ERROR_INVALID = new DynamicCommandExceptionType((p_260119_) ->
+            Component.translatable("voxelspaceprogram.commands.planet_invalid", p_260119_));
     final String planet;
 
 
@@ -44,7 +43,7 @@ public class PlanetArgument implements ArgumentType<String> {
         String parsedBody = null;
         if (reader.canRead()) {
             String planetName = reader.readString();
-            PlanetsProvider planetsProvider = VoxelSpaceProgram.getAnyPlanetsProvider();
+            PlanetsProvider planetsProvider = Stage.getAnyPlanetsProvider();
 
             if (!planetName.isEmpty() && planetsProvider.getPlanet(planetName) != null) {
                 parsedBody = planetName;
@@ -60,7 +59,7 @@ public class PlanetArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        Iterable<String> planets = VoxelSpaceProgram.getAnyPlanetsProvider().getAllPlanetNames();
+        Iterable<String> planets = Stage.getAnyPlanetsProvider().getAllPlanetNames();
         return context.getSource() instanceof SharedSuggestionProvider ? SharedSuggestionProvider.suggest(planets, builder) : Suggestions.empty();
     }
 

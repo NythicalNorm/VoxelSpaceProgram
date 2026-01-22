@@ -59,7 +59,7 @@ public class Calcs {
 
     public static Vector3d getQuadPlanettoSquarePos(double sidesUpIter, double sidesRightIter, double MaxPerSide, int squareSide, double radius) {
         double sidesrightP = sidesRightIter/MaxPerSide;
-        //negative correction because north is negative z in mc
+        // negative correction because north is negative z in mc
         double sidesupP = -sidesUpIter/MaxPerSide;
         Vector3d squarePos = new Vector3d();
 //        sidesupP = (sidesupP - 0.5f)*2f;
@@ -80,8 +80,6 @@ public class Calcs {
         return squarePos;
     }
 
-
-
     public static Vector3f getQuadSquarePos(float sidesUpIter, float sidesRightIter, float MaxPerSide, int squareSide, float radius) {
         float sidesrightP = sidesRightIter/MaxPerSide;
         float sidesupP = sidesUpIter/MaxPerSide;
@@ -101,6 +99,23 @@ public class Calcs {
         return squarePos;
     }
 
+    public static Vector3f getQuadSquarePos(float sidesrightP, float sidesupP, int squareSide) {
+        Vector3f squarePos = new Vector3f();
+        sidesrightP = Math.fma(sidesrightP, 2f, -1f);
+        sidesupP = Math.fma(sidesupP, 2f, -1f);
+
+        squarePos = switch (squareSide) {
+            case 0 -> new Vector3f(sidesrightP, sidesupP, 1f);
+            case 1 -> new Vector3f(1f, sidesupP, -sidesrightP);
+            case 2 -> new Vector3f(-sidesrightP, sidesupP, -1);
+            case 3 -> new Vector3f(-1f, sidesupP, sidesrightP);
+            case 4 -> new Vector3f(-sidesrightP, 1f, sidesupP);
+            case 5 -> new Vector3f(sidesrightP, -1f, sidesupP);
+            default -> squarePos;
+        };
+        squarePos.normalize();
+        return squarePos;
+    }
 
     //client side only
     public static Vector3f getUpVectorForPlanetRot(Vector3f playerRelativePos, CelestialBody planet) {
@@ -124,34 +139,26 @@ public class Calcs {
         return new Quaternionf(quaterniond.x, quaterniond.y, quaterniond.z, quaterniond.w);
     }
 
+    private static final long longTicksPerSecond = 6000;
+    public static final long TickToMilliTick = 100;
+
     public static long TimePerTickToTimePerMilliTick(long timePassPerSec) {
-        return timePassPerSec * 1000;
+        return timePassPerSec * TickToMilliTick;
     }
 
     public static long TimePerTickToTimePerMilliTick(double timePassPerSec) {
-        return (long) (timePassPerSec * 1000);
+        return (long) (timePassPerSec * TickToMilliTick);
     }
 
-//    public static double TimePerMilliTickToTick(double timePassPerTick) {
-//        return timePassPerTick / 1000d;
-//    }
-
     public static long TimePerMilliTickToTick(long timePassPerTick) {
-        return timePassPerTick / 1000L;
+        return timePassPerTick / TickToMilliTick;
     }
 
     public static double timeLongToDouble(long diff) {
-       return (double) diff / 20000;
+       return (double) diff / longTicksPerSecond;
     }
 
     public static long timeDoubleToLong(double diff) {
-        return (long) (diff * 20000);
+        return (long) (diff * longTicksPerSecond);
     }
-
-//    public static boolean IsNaN(Quaternionf q) {
-//        return Double.isNaN(q.w()) ||
-//                Double.isNaN(q.x()) ||
-//                Double.isNaN(q.y()) ||
-//                Double.isNaN(q.z());
-//    }
 }

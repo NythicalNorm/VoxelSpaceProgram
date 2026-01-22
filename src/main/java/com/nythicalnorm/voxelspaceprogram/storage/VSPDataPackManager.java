@@ -13,6 +13,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class VSPDataPackManager {
     private static PlanetDataResolver.PlanetLoadedData planetLoadedData;
@@ -28,8 +30,9 @@ public class VSPDataPackManager {
 
     public static void loadServerDataAndStartSolarSystem(MinecraftServer pServer) {
         Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
-        Map<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new Object2ObjectOpenHashMap<>();
         Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
+        ConcurrentMap<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new ConcurrentHashMap<>();
+
         StarBody rootStar;
 
         if (planetLoadedData != null) {

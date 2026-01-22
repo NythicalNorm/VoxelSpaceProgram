@@ -46,10 +46,6 @@ public class CelestialStateSupplier extends Stage {
         if (minecraft.level != null) {
             onClientLevelLoad(minecraft.level);
         }
-
-        if (VoxelSpaceProgram.getAnyPlanetsProvider() == null) {
-            VoxelSpaceProgram.setPlanetsProvider(planetProvider);
-        }
     }
 
     public static Optional<CelestialStateSupplier> getInstance() {
@@ -68,7 +64,7 @@ public class CelestialStateSupplier extends Stage {
     }
 
     public static void close() {
-        VoxelSpaceProgram.exitWorld();
+        Stage.close();
         instance = null;
     }
 

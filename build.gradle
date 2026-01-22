@@ -186,20 +186,26 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    //implementation fg.deobf("curse.maven:architectury-api-419699:4663010")
+    // implementation fg.deobf("curse.maven:architectury-api-419699:4663010")
     runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_version}")
 
     implementation         ("org.valkyrienskies.core:api:${vs_core_version}")
     implementation         ("org.valkyrienskies.core:internal:${vs_core_version}")
     implementation         ("org.valkyrienskies.core:util:${vs_core_version}")
+    implementation         ("org.valkyrienskies.core:impl:$vs_core_version")
+
     implementation         fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}") {transitive = false}
 
-    implementation(fg.deobf("dev.architectury:architectury-forge:9.1.12"))
+    // implementation(fg.deobf("dev.architectury:architectury-forge:9.1.12"))
     // Drive by Wire - With deobfuscation for development environment
     //runtimeOnly fg.deobf("curse.maven:drive-by-wire-1192722:6224008")
     // Add your CurseForge mods here using the template above:
     // runtimeOnly fg.deobf("curse.maven:MOD_SLUG-PROJECT_ID:FILE_ID")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+//    implementation("maven.modrinth:vlib:1.20.1-0.1.0+forge")
+//    implementation fg.deobf("curse.maven:lodestone-616457:6213794")
+//    implementation fg.deobf("curse.maven:zero-point-labs-1369441:7387597")
 
 //    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
 //    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))

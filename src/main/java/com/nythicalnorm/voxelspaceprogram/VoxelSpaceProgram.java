@@ -5,8 +5,8 @@ import com.nythicalnorm.voxelspaceprogram.Item.ModCreativeModeTab;
 import com.nythicalnorm.voxelspaceprogram.Item.ModItems;
 import com.nythicalnorm.voxelspaceprogram.block.ModBlocks;
 import com.nythicalnorm.voxelspaceprogram.commands.ModArguments;
+import com.nythicalnorm.voxelspaceprogram.event.VSEvents;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.sound.ModSounds;
 import com.nythicalnorm.voxelspaceprogram.storage.VSPDataPackManager;
 import com.nythicalnorm.voxelspaceprogram.util.ModItemProperties;
@@ -23,13 +23,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+import org.valkyrienskies.mod.api.ValkyrienSkies;
 
 @Mod(VoxelSpaceProgram.MODID)
 public class VoxelSpaceProgram
 {
     public static final String MODID = "voxelspaceprogram";
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static PlanetsProvider planetsProvider;
 
     public VoxelSpaceProgram(FMLJavaModLoadingContext context)
     {
@@ -45,6 +45,7 @@ public class VoxelSpaceProgram
         modEventBus.addListener(this::commonSetup);
         ModCreativeModeTab.register(modEventBus);
 
+        ValkyrienSkies.api().getPhysTickEvent().on(VSEvents::onPhysTick);
         //modEventBus.addListener(this::addCreative);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
@@ -62,19 +63,6 @@ public class VoxelSpaceProgram
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(PacketHandler::register);
-    }
-
-    public static void exitWorld() {
-        planetsProvider = null;
-    }
-
-    // Returns the server planets provider when on singleplayer, and returns the client planets provider in multiplayer
-    public static PlanetsProvider getAnyPlanetsProvider() {
-        return planetsProvider;
-    }
-
-    public static void setPlanetsProvider(PlanetsProvider planetsProvider) {
-        VoxelSpaceProgram.planetsProvider = planetsProvider;
     }
 
     public static void log(String msg){

@@ -4,6 +4,7 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.PlanetGradient;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.PlanetMapGen;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.TexGenTask;
+import net.minecraft.util.RandomSource;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,13 +16,13 @@ import java.nio.file.Path;
 public class WholePlanetTexGenTask extends TexGenTask {
     private final Path planetDir;
     private final String planetName;
-    private final long seed;
+    private final RandomSource randomSource;
     private final PlanetGradient gradient;
 
-    public WholePlanetTexGenTask(Path planetDir, String planetName, long seed, PlanetGradient gradient) {
+    public WholePlanetTexGenTask(Path planetDir, String planetName, RandomSource randomSource, PlanetGradient gradient) {
         this.planetDir = planetDir;
         this.planetName = planetName;
-        this.seed = seed;
+        this.randomSource = randomSource;
         this.gradient = gradient;
     }
 
@@ -31,7 +32,7 @@ public class WholePlanetTexGenTask extends TexGenTask {
         File planetTexFileLocation = new File(planetTexPath.toUri());
 
         if (!planetTexFileLocation.exists()) {
-            BufferedImage planetMap = PlanetMapGen.GenerateMap(seed, gradient);
+            BufferedImage planetMap = PlanetMapGen.GenerateMap(randomSource, gradient);
 
             try (FileOutputStream fileWriter = new FileOutputStream(planetTexFileLocation)) {
                 byte[] imageBytes = convertBufferedImageToPngBytes(planetMap);

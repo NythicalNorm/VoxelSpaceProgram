@@ -9,7 +9,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 public abstract class OrbitalBody {
     protected final OrbitId id;
@@ -19,7 +19,7 @@ public abstract class OrbitalBody {
     protected Vector3d relativeVelocity;
     protected Quaternionf rotation;
     protected @Nullable OrbitalElements orbitalElements;
-    protected Map<OrbitId, OrbitalBody> childElements;
+    protected ConcurrentMap<OrbitId, OrbitalBody> childElements;
     protected @Nullable OrbitalBody parent; // Nullable only in the case of the sun
     protected boolean isStableOrbit;
 

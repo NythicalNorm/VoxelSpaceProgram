@@ -2,7 +2,6 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem;
 
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.*;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
@@ -13,14 +12,15 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 public class PlanetsProvider {
     private final Map<ResourceKey<Level>, CelestialBody> planetDimensions;
     private final Map<OrbitId, CelestialBody> allPlanetaryBodies;
-    private final Map<OrbitId, EntitySpacecraftBody> allSpacecraftBodies;
+    private final ConcurrentMap<OrbitId, EntitySpacecraftBody> allSpacecraftBodies;
     private final StarBody rootStar;
 
-    public PlanetsProvider(Map<OrbitId, CelestialBody> pAllPlanetaryBodies, Map<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, CelestialBody> pPlanetDimensions, StarBody rootStar) {
+    public PlanetsProvider(Map<OrbitId, CelestialBody> pAllPlanetaryBodies, ConcurrentMap<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, CelestialBody> pPlanetDimensions, StarBody rootStar) {
         this.allPlanetaryBodies = pAllPlanetaryBodies;
         this.allSpacecraftBodies = pAllSpacecraftBodies;
         this.planetDimensions = pPlanetDimensions;
@@ -58,7 +58,10 @@ public class PlanetsProvider {
     }
 
     public void playerChangeOrbitalSOIs(OrbitalBody spacecraftBody, OrbitId newParentID, OrbitalElements orbitalElementsNew) {
-        CelestialBody newOrbitPlanet = getPlanet(newParentID);
+        playerChangeOrbitalSOIs(spacecraftBody, getPlanet(newParentID), orbitalElementsNew);
+    }
+
+    public void playerChangeOrbitalSOIs(OrbitalBody spacecraftBody, CelestialBody newOrbitPlanet, OrbitalElements orbitalElementsNew) {
 
         orbitalElementsNew.setOrbitalPeriod(newOrbitPlanet.getMass());
         spacecraftBody.setOrbitalElements(orbitalElementsNew);
@@ -69,15 +72,20 @@ public class PlanetsProvider {
         newOrbitPlanet.addChildBody(spacecraftBody);
     }
 
-    // Need to split off this into its own data packet
-    public void playerJoinedOrbital(OrbitId newParentID, EntitySpacecraftBody OrbitalDataNew) {
-        OrbitalBody newOrbitPlanet = getPlanet(newParentID);
+    public void playerJoinedOrbital(OrbitId newParentID, OrbitalBody OrbitalDataNew) {
+        playerJoinedOrbital(getPlanet(newParentID), OrbitalDataNew);
+    }
 
-        if (newOrbitPlanet instanceof PlanetaryBody plnt) {
-            OrbitalDataNew.getOrbitalElements().setOrbitalPeriod(plnt.getMass());
+    public void playerJoinedOrbital(CelestialBody newOrbitPlanet, OrbitalBody OrbitalDataNew) {
+        if (newOrbitPlanet != null) {
+            OrbitalDataNew.getOrbitalElements().setOrbitalPeriod(newOrbitPlanet.getMass());
             //temp default Rotation
             OrbitalDataNew.setRotation(new Quaternionf());
-            plnt.addChildBody(OrbitalDataNew);
+            newOrbitPlanet.addChildBody(OrbitalDataNew);
+
+            if (OrbitalDataNew instanceof EntitySpacecraftBody entitySpacecraftBody) {
+                getAllSpacecraftBodies().putIfAbsent(entitySpacecraftBody.getOrbitId(), entitySpacecraftBody);
+            }
         }
     }
 

@@ -2,12 +2,14 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ServerCelestialBody;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerPlanetaryBody extends PlanetaryBody implements ServerCelestialBody {
     CompletableFuture<byte[]> planetTexBytes;
     Path planetFolder;
+    File planetDataFile;
 
     public ServerPlanetaryBody(PlanetBuilder planetBuilder) {
         super(planetBuilder);
@@ -24,12 +26,22 @@ public class ServerPlanetaryBody extends PlanetaryBody implements ServerCelestia
     }
 
     @Override
-    public Path getPlanetFolder() {
+    public Path getPlanetTextureFolder() {
         return planetFolder;
     }
 
     @Override
-    public void setPlanetFolder(Path folder) {
+    public void setPlanetTextureFolder(Path folder) {
         planetFolder = folder;
+    }
+
+    @Override
+    public File getPlanetDataFile() {
+        return planetDataFile;
+    }
+
+    @Override
+    public void setPlanetDataFile(File dataFile) {
+        this.planetDataFile = dataFile;
     }
 }

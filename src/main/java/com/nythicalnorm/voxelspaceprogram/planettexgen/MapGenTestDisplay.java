@@ -1,11 +1,12 @@
 package com.nythicalnorm.voxelspaceprogram.planettexgen;
 
+import net.minecraft.util.RandomSource;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -44,11 +45,10 @@ public class MapGenTestDisplay {
     }
 
     public static Image generateImage() {
-        Random random = new Random(); // Create a new Random object
-        long randomLong = random.nextLong();
+        RandomSource random = RandomSource.create();
         long starttime = System.nanoTime();
 
-        BufferedImage planetMap = PlanetMapGen.GenerateMap(randomLong, GradientSupplier.STAR_GRADIENT);
+        BufferedImage planetMap = PlanetMapGen.GenerateMap(random, GradientSupplier.STAR_GRADIENT);
 
         float timeDiff = ((float)(System.nanoTime() - starttime))/1000000f;
         System.out.println("Generation took : " + timeDiff + " milliseconds");

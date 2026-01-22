@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import com.google.gson.JsonObject;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Map;
@@ -28,8 +29,12 @@ public class OrbitalBodyType<T extends OrbitalBody, M extends OrbitalBody.Builde
        return codec.decodeBuffer(builder.getInstance(), friendlyByteBuf);
     }
 
-    public OrbitCodec<T, M> getCodec() {
-        return codec;
+    public CompoundTag encodeToNBT(OrbitalBody orbitalBody) {
+        return codec.encodeNBT((T) orbitalBody);
+    }
+
+    public M decodeFromNBT(CompoundTag tag) {
+        return codec.decodeNBT(builder.getInstance(), tag);
     }
 
     public M readCelestialBodyDataPack(String name, JsonObject jsonObj,  Map<String, String[]> tempChildPlanetsMap) {

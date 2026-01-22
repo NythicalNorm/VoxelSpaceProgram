@@ -3,11 +3,13 @@ package com.nythicalnorm.voxelspaceprogram.event;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.commands.NSPTeleportCommand;
 import com.nythicalnorm.voxelspaceprogram.SolarSystem;
+import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.storage.PlanetDataResolver;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -20,13 +22,6 @@ import net.minecraftforge.server.command.ConfigCommand;
 
 @Mod.EventBusSubscriber(modid = VoxelSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeServerEvents {
-
-    @SubscribeEvent
-    public static void OnTick(TickEvent.ServerTickEvent event) {
-        if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.START) {
-            SolarSystem.getInstance().ifPresent(SolarSystem::OnTick);
-        }
-    }
 
     @SubscribeEvent
     public static void onCommandsRegiser(RegisterCommandsEvent event) {
@@ -46,6 +41,15 @@ public class ForgeServerEvents {
                 CelestialBody planetaryBody = solarSystem.getPlanetsProvider().getDimensionPlanet(serverLevel.dimension());
                 ((CelestialBodyAccessor) serverLevel).setCelestialBody(planetaryBody);
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void OnLevelSave(LevelEvent.Save event) {
+        if (event.getLevel() instanceof Level level) {
+            if (level.dimension().equals(SpaceDimension.SPACE_LEVEL_KEY) && SolarSystem.get() != null) {
+                SolarSystem.get().saveSolarSys();
+            }
         }
     }
 

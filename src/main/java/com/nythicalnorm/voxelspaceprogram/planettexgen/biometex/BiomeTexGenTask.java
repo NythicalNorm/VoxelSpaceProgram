@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class BiomeTexGenTask extends TexGenTask {
-    public static final int textureResolution = 256;
+    public static final int textureResolution = 512;
     public static final int textureSizeJumpExponent = 32;
 
     private final ServerPlayer player;
@@ -45,10 +45,10 @@ public class BiomeTexGenTask extends TexGenTask {
 
         for (int x = 0; x < textureResolution; x++) {
             for (int z = 0; z < textureResolution; z++) {
+                int xDist = (int) Math.floor(minPosX + (((float)x / textureResolution) * texturePixelSize));
+                int zDist = (int) Math.floor(minPosZ + (((float)z / textureResolution) * texturePixelSize));
 
-
-                BlockPos pos = getBlockPosForImage(x, z, minPosX, minPosZ, texturePixelSize);
-                Holder<Biome> biomeAtPos = player.level().getUncachedNoiseBiome(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getY()), QuartPos.fromBlock(pos.getZ()));
+                Holder<Biome> biomeAtPos = player.level().getUncachedNoiseBiome(QuartPos.fromBlock(xDist), 32, QuartPos.fromBlock(zDist));
                 int BiomeColor = BiomeColorHolder.getColorForBiome(biomeAtPos.unwrapKey());
                 genTexture.setRGB(x, z, BiomeColor);
             }
@@ -57,19 +57,6 @@ public class BiomeTexGenTask extends TexGenTask {
         long currentTime = Util.getNanos() - beforeTimes;
         VoxelSpaceProgram.log("time Took for biomeTex: " + currentTime);
         return genTexture;
-    }
-
-    private BlockPos getBlockPosForImage(int x, int z, double minPosX, double minPosZ, int texturePixelSize) {
-        double xDist = minPosX + (((float)x / textureResolution) * texturePixelSize);
-        double zDist = minPosZ + (((float)z / textureResolution) * texturePixelSize);
-        return new BlockPos((int) Math.floor(xDist), 128,(int)  Math.floor(zDist));
-    }
-
-    private static BlockPos getBlockPosForImages(int x, int z, BlockPos centerChunkPos, int size) {
-        int Xdist = (x - textureResolution/2) * (int) (Math.pow(textureSizeJumpExponent, size));
-        int Zdist = (z - textureResolution/2) * (int) (Math.pow(textureSizeJumpExponent, size));
-
-        return new BlockPos(centerChunkPos.getX() + (Xdist * 16), 128, centerChunkPos.getZ() + (Zdist * 16));
     }
 
     @Override
