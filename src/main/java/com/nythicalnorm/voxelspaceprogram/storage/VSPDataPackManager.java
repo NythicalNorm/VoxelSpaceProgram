@@ -6,7 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +31,7 @@ public class VSPDataPackManager {
     public static void loadServerDataAndStartSolarSystem(MinecraftServer pServer) {
         Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
         Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
-        ConcurrentMap<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new ConcurrentHashMap<>();
+        ConcurrentMap<OrbitId, EntityOrbitBody> AllSpacecraftBodies = new ConcurrentHashMap<>();
 
         StarBody rootStar;
 

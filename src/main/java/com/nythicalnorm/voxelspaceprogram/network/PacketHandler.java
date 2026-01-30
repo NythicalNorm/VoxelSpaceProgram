@@ -4,7 +4,7 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundFocusedOrbitUpdate;
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSolarSystemState;
 import com.nythicalnorm.voxelspaceprogram.network.spacecraft.ServerboundSpacecraftMove;
-import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundBiomeTexturePacket;
+import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundLodTexturePacket;
 import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundPlanetTexturePacket;
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundSolarSystemTimeUpdate;
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundTimeWarpUpdate;
@@ -57,10 +57,10 @@ public class PacketHandler {
                 .consumerMainThread(ClientboundPlanetTexturePacket::handle)
                 .add();
 
-        INSTANCE.messageBuilder(ClientboundBiomeTexturePacket.class, ++id)
-                .encoder(ClientboundBiomeTexturePacket::encode)
-                .decoder(ClientboundBiomeTexturePacket::new)
-                .consumerMainThread(ClientboundBiomeTexturePacket::handle)
+        INSTANCE.messageBuilder(ClientboundLodTexturePacket.class, ++id)
+                .encoder(ClientboundLodTexturePacket::encode)
+                .decoder(ClientboundLodTexturePacket::new)
+                .consumerMainThread(ClientboundLodTexturePacket::handle)
                 .add();
 
 

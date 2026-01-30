@@ -7,7 +7,7 @@ import com.nythicalnorm.voxelspaceprogram.gui.widgets.LeftPanelWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.NavballWidget;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.TimeWarpWidget;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
@@ -134,7 +134,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
                 }
             }
             radiusZoomLevel = celestialBody.getRadius();
-        } else if (FocusableBodies[currentFocusedBodyIndex] instanceof EntitySpacecraftBody) {
+        } else if (FocusableBodies[currentFocusedBodyIndex] instanceof EntityOrbitBody) {
             radiusZoomLevel = 1000000;
         }
 
@@ -151,7 +151,7 @@ public class MapSolarSystemScreen extends MouseLookScreen {
         }
 
         int totalFocusAmount = css.getPlanetsProvider().getAllPlanetaryBodies().size();
-        if (currentFocusedBody instanceof EntitySpacecraftBody) {
+        if (currentFocusedBody instanceof EntityOrbitBody) {
             totalFocusAmount += 1;
         }
 

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
@@ -94,7 +94,7 @@ public class OrbitDrawer {
         poseStack.translate(-distanceFromCenterToFoci, 0f, 0f);
         poseStack.scale((float) a,1f,(float) b);
 
-        if (orbitalBody instanceof EntitySpacecraftBody) {
+        if (orbitalBody instanceof EntityOrbitBody) {
             RenderSystem.setShaderColor(0.0f,0.0f,1.0f,1.0f);
         } else {
             RenderSystem.setShaderColor(1.0f,1.0f,1.0f,1.0f);

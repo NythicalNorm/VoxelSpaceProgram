@@ -23,7 +23,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
-import org.valkyrienskies.mod.api.ValkyrienSkies;
 
 @Mod(VoxelSpaceProgram.MODID)
 public class VoxelSpaceProgram
@@ -45,7 +44,7 @@ public class VoxelSpaceProgram
         modEventBus.addListener(this::commonSetup);
         ModCreativeModeTab.register(modEventBus);
 
-        ValkyrienSkies.api().getPhysTickEvent().on(VSEvents::onPhysTick);
+        VSEvents.addListeners();
         //modEventBus.addListener(this::addCreative);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us

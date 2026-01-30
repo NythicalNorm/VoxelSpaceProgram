@@ -12,30 +12,30 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ClientboundBiomeTexturePacket {
+public class ClientboundLodTexturePacket {
     private final ResourceKey<Level> dimensionID;
     private final int textureID;
-    private final short textureSize;
+    private final int textureSize;
     private final byte[] biomeTexture;
 
-    public ClientboundBiomeTexturePacket(ResourceKey<Level> pDimensionID, int pTextureID, short pTextureSize, byte[] tex) {
+    public ClientboundLodTexturePacket(ResourceKey<Level> pDimensionID, int pTextureID, int pTextureSize, byte[] tex) {
         this.dimensionID = pDimensionID;
         this.textureID = pTextureID;
         this.textureSize = pTextureSize;
         this.biomeTexture = tex;
     }
 
-    public ClientboundBiomeTexturePacket(FriendlyByteBuf friendlyByteBuf) {
+    public ClientboundLodTexturePacket(FriendlyByteBuf friendlyByteBuf) {
         this.dimensionID = friendlyByteBuf.readResourceKey(Registries.DIMENSION);
         this.textureID = friendlyByteBuf.readInt();
-        this.textureSize = friendlyByteBuf.readShort();
+        this.textureSize = friendlyByteBuf.readInt();
         this.biomeTexture = friendlyByteBuf.readByteArray();
     }
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeResourceKey(this.dimensionID);
         friendlyByteBuf.writeInt(this.textureID);
-        friendlyByteBuf.writeShort(this.textureSize);
+        friendlyByteBuf.writeInt(this.textureSize);
         friendlyByteBuf.writeByteArray(this.biomeTexture);
     }
 
@@ -43,7 +43,7 @@ public class ClientboundBiomeTexturePacket {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                    ClientPacketHandler.incomingBiomeTexture(dimensionID, textureID, textureSize, biomeTexture)));
+                    ClientPacketHandler.incomingLodTexture(dimensionID, textureID, textureSize, biomeTexture)));
         }
     }
 }

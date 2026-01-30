@@ -8,7 +8,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes.*;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.AtmosphereRenderer;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -103,7 +103,7 @@ public class MapRenderer {
 
                 if (childBody instanceof CelestialBody celestialBody) {
                     renderInMap = new MapRenderablePlanet(celestialBody, mapState, parentBody);
-                } else if (childBody instanceof EntitySpacecraftBody clientBody) {
+                } else if (childBody instanceof EntityOrbitBody clientBody) {
                     ResourceLocation playerHeadTexture = Minecraft.getInstance().player.getSkinTextureLocation();
                     MapRenderableIcon iconMap = new MapRenderableIcon(clientBody, playerHeadTexture, mapState, parentBody);
                     iconsList.add(iconMap);

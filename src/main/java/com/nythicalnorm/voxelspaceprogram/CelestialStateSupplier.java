@@ -10,10 +10,10 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandler;
-import com.nythicalnorm.voxelspaceprogram.planetshine.textures.PlanetTexManager;
+import com.nythicalnorm.voxelspaceprogram.planetshine.textures.ClientTexManager;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.SpaceObjRenderer;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.player.ClientPlayerOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.util.Stage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -28,21 +28,21 @@ public class CelestialStateSupplier extends Stage {
     private static CelestialStateSupplier instance;
     private final Minecraft minecraft;
 
-    private final ClientPlayerSpacecraftBody playerOrbit;
+    private final ClientPlayerOrbitBody playerOrbit;
     private CelestialBody currentPlanetOn;
-    private ClientPlayerSpacecraftBody controllingBody;
+    private ClientPlayerOrbitBody controllingBody;
 
     private final ModScreenManager screenManager;
-    private final PlanetTexManager planetTexManager;
+    private final ClientTexManager planetTexManager;
 
-    public CelestialStateSupplier(ClientPlayerSpacecraftBody playerDataFromServer, PlanetsProvider planetProvider) {
+    public CelestialStateSupplier(ClientPlayerOrbitBody playerDataFromServer, PlanetsProvider planetProvider) {
         super(planetProvider);
         instance = this;
         minecraft = Minecraft.getInstance();
         playerOrbit = playerDataFromServer;
         SpaceObjRenderer.PopulateRenderPlanets(planetProvider);
         this.screenManager = new ModScreenManager();
-        this.planetTexManager = new PlanetTexManager();
+        this.planetTexManager = new ClientTexManager();
         if (minecraft.level != null) {
             onClientLevelLoad(minecraft.level);
         }
@@ -53,6 +53,10 @@ public class CelestialStateSupplier extends Stage {
             return Optional.of(instance);
         }
         return Optional.empty();
+    }
+
+    public static CelestialStateSupplier get() {
+        return instance;
     }
 
     public ClientCelestialBody getClientPlanet(OrbitId planetID) {
@@ -97,7 +101,7 @@ public class CelestialStateSupplier extends Stage {
         }
     }
 
-    public ClientPlayerSpacecraftBody getPlayerOrbit() {
+    public ClientPlayerOrbitBody getPlayerOrbit() {
         return playerOrbit;
     }
 
@@ -159,7 +163,7 @@ public class CelestialStateSupplier extends Stage {
         return Optional.empty();
     }
 
-    public void setControllingBody(ClientPlayerSpacecraftBody controllingBody) {
+    public void setControllingBody(ClientPlayerOrbitBody controllingBody) {
         this.controllingBody = controllingBody;
     }
 
@@ -180,7 +184,7 @@ public class CelestialStateSupplier extends Stage {
         return screenManager;
     }
 
-    public PlanetTexManager getPlanetTexManager() {
+    public ClientTexManager getPlanetTexManager() {
         return planetTexManager;
     }
 }

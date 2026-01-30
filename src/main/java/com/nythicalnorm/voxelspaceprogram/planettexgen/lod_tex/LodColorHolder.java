@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.planettexgen.biometex;
+package com.nythicalnorm.voxelspaceprogram.planettexgen.lod_tex;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceKey;
@@ -8,7 +8,7 @@ import net.minecraft.world.level.biome.Biomes;
 import java.util.Map;
 import java.util.Optional;
 
-public class BiomeColorHolder {
+public class LodColorHolder {
     private static final Map<ResourceKey<Biome>, Integer> biomeColorMap = new Object2IntOpenHashMap<>();
 
     public static void init() {

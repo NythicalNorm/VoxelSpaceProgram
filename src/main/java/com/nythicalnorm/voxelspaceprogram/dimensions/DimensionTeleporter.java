@@ -17,19 +17,6 @@ public class DimensionTeleporter implements ITeleporter {
         this.newPos = pos;
     }
 
-//    @Override
-//    public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destinationWorld,
-//                              float yaw, Function<Boolean, Entity> repositionEntity) {
-//
-//        entity = repositionEntity.apply(false);
-//
-//        BlockPos destinationPos = newPos;
-//
-//        entity.setPos(destinationPos.getX(), destinationPos.getY(), destinationPos.getZ());
-//
-//        return entity;
-//    }
-
     @Override
     public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
         return false;

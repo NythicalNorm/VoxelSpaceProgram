@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Objects;
+
 @Mixin(LevelReader.class)
 public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, SignalGetter, BiomeManager.NoiseBiomeSource {
     @Shadow
@@ -31,7 +33,7 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
         Integer darkLevelFromPlanet = null;
 
         if (this instanceof Level level) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 Float result = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> SidedCallsUtil::getPlayerSunAngle).call();
                 if (result != null) {
                     darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(result, level);
@@ -51,10 +53,6 @@ public interface LevelReaderMixin extends BlockAndTintGetter, CollisionGetter, S
                 darkLevelFromPlanet = DayNightCycleHandler.getDarknessLightLevel(pPos, level);
             }
         }
-        if (darkLevelFromPlanet != null) {
-            return darkLevelFromPlanet;
-        } else {
-            return getMaxLocalRawBrightness(pPos, this.getSkyDarken());
-        }
+        return getMaxLocalRawBrightness(pPos, Objects.requireNonNullElseGet(darkLevelFromPlanet, this::getSkyDarken));
     }
 }

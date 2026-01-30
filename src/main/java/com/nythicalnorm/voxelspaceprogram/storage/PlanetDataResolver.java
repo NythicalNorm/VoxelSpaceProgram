@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyTypesHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
@@ -45,7 +45,7 @@ public class PlanetDataResolver extends SimpleJsonResourceReloadListener {
                 JsonObject jsonObject = element.getAsJsonObject();
                 String name = jsonObject.get("name").getAsString();
                 String bodyType = jsonObject.get("type").getAsString();
-                OrbitalBodyType<? extends OrbitalBody, ? extends OrbitalBody.Builder<?>> orbitalBodyType = CelestialBodyTypes.getType(bodyType);
+                OrbitalBodyType<? extends OrbitalBody, ? extends OrbitalBody.Builder<?>> orbitalBodyType = OrbitalBodyTypesHolder.getType(bodyType);
                 if (orbitalBodyType != null) {
                     OrbitalBody.Builder<?> planetBuilder = orbitalBodyType.readCelestialBodyDataPack(name, jsonObject, tempChildPlanetsMap);
                     OrbitalBody readOrbitalBody = planetBuilder.build();

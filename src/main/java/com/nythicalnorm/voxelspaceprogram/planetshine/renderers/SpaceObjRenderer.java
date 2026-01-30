@@ -45,6 +45,7 @@ public class SpaceObjRenderer {
 
         renderPlanets(renderPlanets, css, poseStack, projectionMatrix, partialTick);
 
+        LodTexRenderer.renderBiomeTex(css.getPlayerOrbit(), css.getPlanetTexManager(), poseStack, projectionMatrix);
         poseStack.popPose();
     }
 

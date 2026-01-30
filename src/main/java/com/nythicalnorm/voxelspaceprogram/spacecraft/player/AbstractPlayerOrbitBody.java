@@ -1,10 +1,11 @@
-package com.nythicalnorm.voxelspaceprogram.spacecraft;
+package com.nythicalnorm.voxelspaceprogram.spacecraft.player;
 
 import com.nythicalnorm.voxelspaceprogram.dimensions.SpaceDimension;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyTypesHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBodyType;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PlayerPhysicsPlanet;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PlayerPhysicsSpace;
@@ -14,20 +15,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-public abstract class AbstractPlayerSpacecraftBody extends EntitySpacecraftBody {
+public abstract class AbstractPlayerOrbitBody extends EntityOrbitBody {
     protected static final float JetpackRotationalForce = 0.1f;
     protected static final double JetpackTranslationForce = 1d;
     protected static final double JetpackThrottleForce = 25d;
     protected Player player;
 
-    public AbstractPlayerSpacecraftBody(PlayerSpacecraftBuilder playerSpacecraftBuilder) {
+    public AbstractPlayerOrbitBody(PlayerOrbitBuilder playerSpacecraftBuilder) {
         super(playerSpacecraftBuilder, playerSpacecraftBuilder.angularVelocity);
         this.player = playerSpacecraftBuilder.player;
     }
 
     @Override
     public OrbitalBodyType<? extends OrbitalBody, ? extends Builder<?>> getType() {
-        return CelestialBodyTypes.PLAYER_SPACECRAFT_BODY;
+        return OrbitalBodyTypesHolder.PLAYER_ORBITAL_BODY;
     }
 
     @Override
@@ -49,10 +50,10 @@ public abstract class AbstractPlayerSpacecraftBody extends EntitySpacecraftBody 
         return player;
     }
 
-    public static class PlayerSpacecraftBuilder extends OrbitalBody.Builder<AbstractPlayerSpacecraftBody> {
+    public static class PlayerOrbitBuilder extends OrbitalBody.Builder<AbstractPlayerOrbitBody> {
         Player player = null;
 
-        public PlayerSpacecraftBuilder() {
+        public PlayerOrbitBuilder() {
         }
 
         public void setPlayer(Player player) {
@@ -68,14 +69,14 @@ public abstract class AbstractPlayerSpacecraftBody extends EntitySpacecraftBody 
         }
 
         @Override
-        public AbstractPlayerSpacecraftBody build() {
-            return new ServerPlayerSpacecraftBody(this);
+        public AbstractPlayerOrbitBody build() {
+            return new ServerPlayerOrbitBody(this);
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public AbstractPlayerSpacecraftBody buildClientSide() {
-            return new ClientPlayerSpacecraftBody(this);
+        public AbstractPlayerOrbitBody buildClientSide() {
+            return new ClientPlayerOrbitBody(this);
         }
     }
 }

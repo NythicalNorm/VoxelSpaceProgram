@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderTypes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.map.MapRenderer;
 import com.nythicalnorm.voxelspaceprogram.util.RenderingCommon;
@@ -11,10 +11,10 @@ import org.joml.Vector3f;
 
 public class MapRenderableIcon extends MapRenderable {
     private final ResourceLocation spacecraftTextureLoc;
-    private final EntitySpacecraftBody spacecraftBody;
+    private final EntityOrbitBody spacecraftBody;
     private int[] screenPos;
 
-    public MapRenderableIcon(EntitySpacecraftBody playerBody, ResourceLocation playerHeadTex, MapRelativeState mapRelativeState, OrbitalBody parentBody) {
+    public MapRenderableIcon(EntityOrbitBody playerBody, ResourceLocation playerHeadTex, MapRelativeState mapRelativeState, OrbitalBody parentBody) {
         super(mapRelativeState, parentBody);
         this.spacecraftTextureLoc = playerHeadTex;
         this.spacecraftBody = playerBody;
@@ -39,7 +39,7 @@ public class MapRenderableIcon extends MapRenderable {
         return screenPos;
     }
 
-    public EntitySpacecraftBody getPlayerBody() {
+    public EntityOrbitBody getPlayerBody() {
         return spacecraftBody;
     }
 

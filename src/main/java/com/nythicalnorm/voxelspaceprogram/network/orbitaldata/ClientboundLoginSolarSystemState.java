@@ -5,8 +5,8 @@ import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.AbstractPlayerSpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.ServerPlayerSpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.player.AbstractPlayerOrbitBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.player.ServerPlayerOrbitBody;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -20,11 +20,11 @@ import java.util.function.Supplier;
 public class ClientboundLoginSolarSystemState {
     private final long currentTime;
     private final long currentTimeWarp;
-    private final AbstractPlayerSpacecraftBody playerData;
+    private final AbstractPlayerOrbitBody playerData;
     private final List<CelestialBody> allPlanetaryBodies;
     private final OrbitId playerParentOrbit;
 
-    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerSpacecraftBody playerData, List<CelestialBody> allPlanetaryBodies,
+    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerOrbitBody playerData, List<CelestialBody> allPlanetaryBodies,
                                             long currentTime, long timeWarp) {
         this.currentTime = currentTime;
         this.currentTimeWarp = timeWarp;
@@ -45,11 +45,11 @@ public class ClientboundLoginSolarSystemState {
         currentTime = friendlyByteBuf.readLong();
         currentTimeWarp = friendlyByteBuf.readLong();
         OrbitId playerParent = null;
-        AbstractPlayerSpacecraftBody playerSpacecraftBody = null;
+        AbstractPlayerOrbitBody playerSpacecraftBody = null;
 
         if (friendlyByteBuf.readBoolean()) {
             OrbitalBody entityOrbit = NetworkEncoders.readOrbitalBodyClient(friendlyByteBuf);
-            if (entityOrbit instanceof AbstractPlayerSpacecraftBody spacecraftBody) {
+            if (entityOrbit instanceof AbstractPlayerOrbitBody spacecraftBody) {
                 playerSpacecraftBody = spacecraftBody;
                 if (friendlyByteBuf.readBoolean()) {
                     playerParent = new OrbitId(friendlyByteBuf);

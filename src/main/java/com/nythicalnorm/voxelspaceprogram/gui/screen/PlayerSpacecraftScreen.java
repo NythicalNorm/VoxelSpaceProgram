@@ -6,7 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.gui.widgets.AltitudeWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.LeftPanelWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.NavballWidget;
 import com.nythicalnorm.voxelspaceprogram.gui.widgets.TimeWarpWidget;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.player.ClientPlayerOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import com.nythicalnorm.voxelspaceprogram.util.KeyBindings;
 import net.minecraft.client.CameraType;
@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerSpacecraftScreen extends MouseLookScreen {
@@ -159,7 +160,7 @@ public class PlayerSpacecraftScreen extends MouseLookScreen {
     }
 
     @Override
-    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         player.setYBodyRot(initialYLookDir);
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
@@ -172,7 +173,7 @@ public class PlayerSpacecraftScreen extends MouseLookScreen {
         return -cameraXrot*57.29577951308232f;
     }
 
-    public void sendInputs(ClientPlayerSpacecraftBody body) {
+    public void sendInputs(ClientPlayerOrbitBody body) {
         body.processLocalMovement(jetpackItem,ADAxis.getAxisValue(), SWAxis.getAxisValue(), QEAxis.getAxisValue(), CtrlShiftAxis.getAxisValue(), throttleAxis.getAxisValue(), SAS, RCS, dockingMode);
     }
 }

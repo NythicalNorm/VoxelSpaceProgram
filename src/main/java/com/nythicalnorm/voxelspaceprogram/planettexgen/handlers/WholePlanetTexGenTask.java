@@ -28,7 +28,7 @@ public class WholePlanetTexGenTask extends TexGenTask {
 
     @Override
     public byte[] get() {
-        Path planetTexPath = planetDir.resolve("0.png");
+        Path planetTexPath = planetDir.resolve("main.png");
         File planetTexFileLocation = new File(planetTexPath.toUri());
 
         if (!planetTexFileLocation.exists()) {
@@ -36,6 +36,7 @@ public class WholePlanetTexGenTask extends TexGenTask {
 
             try (FileOutputStream fileWriter = new FileOutputStream(planetTexFileLocation)) {
                 byte[] imageBytes = convertBufferedImageToPngBytes(planetMap);
+                assert imageBytes != null;
                 fileWriter.write(imageBytes);
                 return imageBytes;
             } catch (IOException e) {

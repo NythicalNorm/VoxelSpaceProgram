@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaterniond;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
@@ -173,6 +174,10 @@ public abstract class OrbitalBody {
 
         public void setRotation(Quaternionf rotation) {
             this.rotation = rotation;
+        }
+
+        public void setRotation(Quaterniond rotation) {
+            this.rotation.set(rotation);
         }
 
         public void setOrbitalElements(@Nullable OrbitalElements orbitalElements) {

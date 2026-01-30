@@ -6,13 +6,13 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public abstract class EntitySpacecraftBody extends OrbitalBody {
+public abstract class EntityOrbitBody extends OrbitalBody {
     protected Vector3f angularVelocity;
     protected boolean velocityChangedLastFrame;
     private static final float tolerance = 1e-8f;
 
-    public EntitySpacecraftBody(AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder playerSpacecraftBuilder, Vector3f angularVelocity) {
-        super(playerSpacecraftBuilder);
+    public EntityOrbitBody(OrbitalBody.Builder<?> orbitalBuilder, Vector3f angularVelocity) {
+        super(orbitalBuilder);
         this.angularVelocity = angularVelocity;
     }
 

@@ -1,9 +1,10 @@
 package com.nythicalnorm.voxelspaceprogram.planettexgen.handlers;
 
+import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundLodTexturePacket;
 import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundPlanetTexturePacket;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.GradientSupplier;
-import com.nythicalnorm.voxelspaceprogram.planettexgen.biometex.BiomeTexGenTask;
+import com.nythicalnorm.voxelspaceprogram.planettexgen.lod_tex.LodTexGenTask;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
@@ -79,15 +80,22 @@ public class PlanetTexHandler {
 
         int xIndex = Calcs.getCellIndex(texturePixelSize, plrPos.x);
         int zIndex = Calcs.getCellIndex(texturePixelSize, plrPos.z);
-        File biomeTexLocation = getFilePath(playerOnPlanet.getName(), planetsDir.toPath(), texSize, xIndex, zIndex);
 
-        CompletableFuture.supplyAsync(
-                new BiomeTexGenTask(player, texSize,  xIndex, zIndex, texturePixelSize, biomeTexLocation), texExecuter);
+        File biomeTexLocation = getFilePath(((ServerCelestialBody)playerOnPlanet).getPlanetTextureFolder(), texSize, xIndex, zIndex);
+
+        CompletableFuture<byte[]> biomeTex = CompletableFuture.supplyAsync(
+                new LodTexGenTask(player, texSize,  xIndex, zIndex, texturePixelSize, biomeTexLocation), texExecuter);
+
+        int index = xIndex*1024+zIndex;
+
+        biomeTex.thenAccept(texBytes -> {
+            PacketHandler.sendToPlayer(new ClientboundLodTexturePacket(playerOnPlanet.getDimension(), index, sizeMultiplier, texBytes), player);
+        });
     }
 
-    private static File getFilePath(String planetName, Path rootDir, int texSize, int xIndex, int zIndex) {
+    private static File getFilePath(Path rootDir, int texSize, int xIndex, int zIndex) {
 
-        String fileName = planetName + "_" + texSize + "_" + xIndex + "_" + zIndex;
+        String fileName = texSize + "_" + xIndex + "_" + zIndex;
         Path biomeTexPath = rootDir.resolve(fileName + ".png");
         return new File(biomeTexPath.toUri());
     }

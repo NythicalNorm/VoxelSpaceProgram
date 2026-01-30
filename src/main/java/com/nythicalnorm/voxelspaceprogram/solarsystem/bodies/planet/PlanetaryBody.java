@@ -26,7 +26,7 @@ public abstract class PlanetaryBody extends CelestialBody {
 
     @Override
     public OrbitalBodyType<? extends OrbitalBody, ? extends Builder<?>> getType() {
-        return CelestialBodyTypes.PLANETARY_BODY;
+        return OrbitalBodyTypesHolder.PLANETARY_BODY;
     }
 
     @Override

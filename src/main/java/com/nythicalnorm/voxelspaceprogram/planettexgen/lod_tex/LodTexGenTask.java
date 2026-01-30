@@ -1,9 +1,9 @@
-package com.nythicalnorm.voxelspaceprogram.planettexgen.biometex;
+package com.nythicalnorm.voxelspaceprogram.planettexgen.lod_tex;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.TexGenTask;
+import com.nythicalnorm.voxelspaceprogram.util.LodTexUtils;
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,9 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class BiomeTexGenTask extends TexGenTask {
-    public static final int textureResolution = 512;
-    public static final int textureSizeJumpExponent = 32;
+public class LodTexGenTask extends TexGenTask {
 
     private final ServerPlayer player;
     private final int texSizeIndex;
@@ -26,7 +24,7 @@ public class BiomeTexGenTask extends TexGenTask {
     private final int texturePixelSize;
     private final File biomeTexLoc;
 
-    public BiomeTexGenTask(ServerPlayer player, int texSize, int xIndex, int zIndex, int texturePixelSize, File saveFilePath) {
+    public LodTexGenTask(ServerPlayer player, int texSize, int xIndex, int zIndex, int texturePixelSize, File saveFilePath) {
         this.player = player;
         this.texSizeIndex = texSize;
         this.xIndex = xIndex;
@@ -36,20 +34,21 @@ public class BiomeTexGenTask extends TexGenTask {
     }
 
     public BufferedImage generateBiomeTex() {
-        BufferedImage genTexture = new BufferedImage(textureResolution, textureResolution, BufferedImage.TYPE_INT_RGB);
+        int textureRes = LodTexUtils.textureResolution;
+
+        BufferedImage genTexture = new BufferedImage(textureRes, textureRes, BufferedImage.TYPE_INT_RGB);
         long beforeTimes = Util.getNanos();
-        //int cellSizeWithResolution = texturePixelSize * textureResolution;
 
-        double minPosX = xIndex*texturePixelSize - ((double) texturePixelSize /2);
-        double minPosZ = zIndex*texturePixelSize - ((double) texturePixelSize /2);
+        double minPosX = xIndex*texturePixelSize - ((double) texturePixelSize / 2);
+        double minPosZ = zIndex*texturePixelSize - ((double) texturePixelSize / 2);
 
-        for (int x = 0; x < textureResolution; x++) {
-            for (int z = 0; z < textureResolution; z++) {
-                int xDist = (int) Math.floor(minPosX + (((float)x / textureResolution) * texturePixelSize));
-                int zDist = (int) Math.floor(minPosZ + (((float)z / textureResolution) * texturePixelSize));
+        for (int x = 0; x < textureRes; x++) {
+            for (int z = 0; z < textureRes; z++) {
+                int xDist = (int) Math.floor(minPosX + (((float)x / textureRes) * texturePixelSize));
+                int zDist = (int) Math.floor(minPosZ + (((float)z / textureRes) * texturePixelSize));
 
                 Holder<Biome> biomeAtPos = player.level().getUncachedNoiseBiome(QuartPos.fromBlock(xDist), 32, QuartPos.fromBlock(zDist));
-                int BiomeColor = BiomeColorHolder.getColorForBiome(biomeAtPos.unwrapKey());
+                int BiomeColor = LodColorHolder.getColorForBiome(biomeAtPos.unwrapKey());
                 genTexture.setRGB(x, z, BiomeColor);
             }
         }
@@ -75,7 +74,7 @@ public class BiomeTexGenTask extends TexGenTask {
             try {
                 return Files.readAllBytes(biomeTexLoc.toPath());
             } catch (IOException e) {
-                VoxelSpaceProgram.logError("Can't load " + " planet's Textures");
+                VoxelSpaceProgram.logError("Can't load textures");
             }
         }
         return null;

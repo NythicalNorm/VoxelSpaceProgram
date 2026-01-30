@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ServerCelestialBody;
+import net.minecraft.server.level.ServerLevel;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -10,9 +11,11 @@ public class ServerPlanetaryBody extends PlanetaryBody implements ServerCelestia
     CompletableFuture<byte[]> planetTexBytes;
     Path planetFolder;
     File planetDataFile;
+    ServerLevel level;
 
     public ServerPlanetaryBody(PlanetBuilder planetBuilder) {
         super(planetBuilder);
+        initServerPlanet();
     }
 
     @Override
@@ -43,5 +46,15 @@ public class ServerPlanetaryBody extends PlanetaryBody implements ServerCelestia
     @Override
     public void setPlanetDataFile(File dataFile) {
         this.planetDataFile = dataFile;
+    }
+
+    @Override
+    public ServerLevel getLevel() {
+        return level;
+    }
+
+    @Override
+    public void setLevel(ServerLevel level) {
+        this.level = level;
     }
 }

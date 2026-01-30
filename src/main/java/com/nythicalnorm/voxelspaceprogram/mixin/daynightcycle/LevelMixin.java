@@ -35,7 +35,7 @@ public class LevelMixin implements CelestialBodyAccessor {
         this.celestialBody = celestialBody;
     }
 
-    // Still makes no sense why mixining this function affects passive mob spawn as this seems to just
+    // Still makes no sense why this function affects passive mob spawn as this seems to just
     // linearly increase difficulty and caps out at 3 days...???
     @Inject(method = "getCurrentDifficultyAt", at= @At(value = "HEAD"),cancellable = true)
     public void getCurrentDifficultyAt(BlockPos pPos, CallbackInfoReturnable<DifficultyInstance> cir) {

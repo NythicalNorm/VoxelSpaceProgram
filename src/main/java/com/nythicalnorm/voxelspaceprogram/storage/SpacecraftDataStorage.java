@@ -5,7 +5,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ServerCelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -60,7 +60,7 @@ public class SpacecraftDataStorage {
             ListTag spacecraftTags = new ListTag();
 
             for (OrbitalBody orbitalBody : celestialBody.getChildren()) {
-                if (orbitalBody instanceof EntitySpacecraftBody) {
+                if (orbitalBody instanceof EntityOrbitBody) {
                     CompoundTag orbitalTag = NBTEncoders.putOrbitalBody(orbitalBody);
                     spacecraftTags.add(orbitalTag);
                 }
@@ -73,7 +73,7 @@ public class SpacecraftDataStorage {
     private void writeList(File dataFileLoc, ListTag tag) {
         try (
                 FileOutputStream fileoutputstream = new FileOutputStream(dataFileLoc);
-                DataOutputStream dataoutputstream = new DataOutputStream(fileoutputstream);
+                DataOutputStream dataoutputstream = new DataOutputStream(fileoutputstream)
         ) {
             tag.write(dataoutputstream);
         } catch (IOException exception) {
@@ -89,7 +89,7 @@ public class SpacecraftDataStorage {
             ListTag listTag = null;
             try (
                     FileInputStream fileinputstream = new FileInputStream(dataFileLoc);
-                    DataInputStream datainputstream = new DataInputStream(fileinputstream);
+                    DataInputStream datainputstream = new DataInputStream(fileinputstream)
             ) {
                 listTag = ListTag.TYPE.load(datainputstream, 500, NbtAccounter.UNLIMITED);
             } catch (IOException exception) {

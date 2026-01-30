@@ -22,6 +22,12 @@ import net.minecraftforge.server.command.ConfigCommand;
 
 @Mod.EventBusSubscriber(modid = VoxelSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeServerEvents {
+    @SubscribeEvent
+    public static void OnTick(TickEvent.ServerTickEvent event) {
+        if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.END && SolarSystem.get() != null) {
+            SolarSystem.get().OnGameTick();
+        }
+    }
 
     @SubscribeEvent
     public static void onCommandsRegiser(RegisterCommandsEvent event) {
@@ -37,10 +43,12 @@ public class ForgeServerEvents {
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide() && event.getLevel() instanceof ServerLevel serverLevel) {
-            SolarSystem.getInstance().ifPresent(solarSystem -> {
-                CelestialBody planetaryBody = solarSystem.getPlanetsProvider().getDimensionPlanet(serverLevel.dimension());
-                ((CelestialBodyAccessor) serverLevel).setCelestialBody(planetaryBody);
-            });
+            if (SolarSystem.get() != null) {
+                CelestialBody planetaryBody = SolarSystem.get().getPlanetsProvider().getDimensionPlanet(serverLevel.dimension());
+                if (planetaryBody != null && serverLevel instanceof CelestialBodyAccessor celestialBodyAccessor) {
+                    celestialBodyAccessor.setCelestialBody(planetaryBody);
+                }
+            }
         }
     }
 

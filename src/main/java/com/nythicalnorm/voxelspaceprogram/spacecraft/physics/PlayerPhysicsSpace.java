@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft.physics;
 
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -12,7 +12,7 @@ import org.joml.Vector3f;
 public class PlayerPhysicsSpace extends PhysicsContext{
     private static final double SIGNIFIACANT_ACCELERATION = 1e-9;
 
-    public PlayerPhysicsSpace(Entity playerEntity, EntitySpacecraftBody body) {
+    public PlayerPhysicsSpace(Entity playerEntity, EntityOrbitBody body) {
         super(playerEntity, body);
     }
 

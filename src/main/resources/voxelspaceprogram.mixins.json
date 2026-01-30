@@ -14,7 +14,9 @@
   "client": [
     "CameraMixin",
     "LevelRendererMixin",
-    "daynightcycle.FogRendererMixin"
+    "daynightcycle.FogRendererMixin",
+    "screen.ProgressScreenMixin",
+    "screen.ReceivingLevelScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

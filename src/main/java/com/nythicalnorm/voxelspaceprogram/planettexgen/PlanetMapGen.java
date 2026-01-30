@@ -12,12 +12,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class PlanetMapGen {
-    public static final int size = 1024;
+    public static final int size = 682;
     private static final int imageLength = size * 3;
     private static final DoubleList blendVals = DoubleList.of(1.1d, 0.6d, 1.1d, 1.2d, 1.2d);
 
     public static BufferedImage GenerateMap(RandomSource randomSource, PlanetGradient gradient) {
-        BufferedImage image = new BufferedImage(imageLength, imageLength, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(imageLength, imageLength, BufferedImage.TYPE_INT_RGB);
         PerlinNoise ns = PerlinNoise.create(randomSource, 0, blendVals);
 
         for (int side = 0; side < 6; side++){

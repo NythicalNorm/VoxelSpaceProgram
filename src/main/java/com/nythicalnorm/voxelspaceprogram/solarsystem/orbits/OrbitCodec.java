@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import com.google.gson.JsonObject;
 import com.nythicalnorm.voxelspaceprogram.network.NetworkEncoders;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyTypesHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.storage.NBTEncoders;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public abstract class OrbitCodec<T extends OrbitalBody, M extends OrbitalBody.Builder<T>> {
     public void encodeBuffer(T orbit, FriendlyByteBuf byteBuf) {
-        String typeName = CelestialBodyTypes.getOrbitalBodyTypeName(orbit);
+        String typeName = OrbitalBodyTypesHolder.getOrbitalBodyTypeName(orbit);
         NetworkEncoders.writeASCII(byteBuf, typeName);
         orbit.id.encodeToBuffer(byteBuf);
         byteBuf.writeComponent(orbit.displayName);
@@ -51,7 +51,7 @@ public abstract class OrbitCodec<T extends OrbitalBody, M extends OrbitalBody.Bu
 
     public CompoundTag encodeNBT(T orbit) {
         CompoundTag tag = new CompoundTag();
-        String typeName = CelestialBodyTypes.getOrbitalBodyTypeName(orbit);
+        String typeName = OrbitalBodyTypesHolder.getOrbitalBodyTypeName(orbit);
         tag.putString("type_name", typeName);
 
         orbit.id.encodeToNBT(tag);

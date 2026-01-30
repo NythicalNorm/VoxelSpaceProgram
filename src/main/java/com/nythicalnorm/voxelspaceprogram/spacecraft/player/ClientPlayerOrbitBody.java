@@ -1,8 +1,9 @@
-package com.nythicalnorm.voxelspaceprogram.spacecraft;
+package com.nythicalnorm.voxelspaceprogram.spacecraft.player;
 
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.spacecraft.ServerboundSpacecraftMove;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.SpacecraftControlState;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import com.nythicalnorm.voxelspaceprogram.util.DayNightCycleHandler;
@@ -19,10 +20,10 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientPlayerSpacecraftBody extends AbstractPlayerSpacecraftBody {
+public class ClientPlayerOrbitBody extends AbstractPlayerOrbitBody {
     private float sunAngle = 0f;
 
-    public ClientPlayerSpacecraftBody(PlayerSpacecraftBuilder playerSpacecraftBuilder) {
+    public ClientPlayerOrbitBody(PlayerOrbitBuilder playerSpacecraftBuilder) {
         super(playerSpacecraftBuilder);
     }
 

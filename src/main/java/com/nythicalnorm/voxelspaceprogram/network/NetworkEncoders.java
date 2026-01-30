@@ -23,12 +23,12 @@ public class NetworkEncoders {
     }
 
     public static OrbitalBody readOrbitalBody(FriendlyByteBuf friendlyByteBuf) {
-        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf).build();
+        return OrbitalBodyTypesHolder.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf).build();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static OrbitalBody readOrbitalBodyClient(FriendlyByteBuf friendlyByteBuf) {
-        return CelestialBodyTypes.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf).buildClientSide();
+        return OrbitalBodyTypesHolder.getType(readASCII(friendlyByteBuf)).decodeFromBuffer(friendlyByteBuf).buildClientSide();
     }
 
     public static void writePlanetaryBodyList(FriendlyByteBuf friendlyByteBuf, List<CelestialBody> bodyList) {

@@ -3,6 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.solarsystem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+import org.valkyrienskies.core.api.ships.Ship;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -25,6 +27,10 @@ public class OrbitId {
     public OrbitId(Long shipID) {
         this.leastSignificantBits =  shipID;
         this.mostSignificantBits = Long.MIN_VALUE;
+    }
+
+    public OrbitId(@NotNull Ship ship) {
+        this(ship.getId());
     }
 
     @Override

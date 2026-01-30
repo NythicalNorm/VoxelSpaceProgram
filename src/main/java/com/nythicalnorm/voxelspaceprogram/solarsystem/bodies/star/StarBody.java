@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyTypesHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
@@ -18,7 +18,7 @@ public abstract class StarBody extends CelestialBody {
 
     @Override
     public OrbitalBodyType<? extends OrbitalBody, ? extends Builder<?>> getType() {
-        return CelestialBodyTypes.STAR_BODY;
+        return OrbitalBodyTypesHolder.STAR_BODY;
     }
 
     public void simulatePlanets(long currentTime) {

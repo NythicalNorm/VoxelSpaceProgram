@@ -7,9 +7,9 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.AbstractPlayerSpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.ClientPlayerSpacecraftBody;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.player.AbstractPlayerOrbitBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.player.ClientPlayerOrbitBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class ClientPacketHandler {
-    public static void StartClientPacket(long currentTime, long timeWarp, EntitySpacecraftBody playerData, OrbitId playerParentOrbit, List<CelestialBody> planetaryBodyList) {
+    public static void StartClientPacket(long currentTime, long timeWarp, EntityOrbitBody playerData, OrbitId playerParentOrbit, List<CelestialBody> planetaryBodyList) {
         Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
-        ConcurrentMap<OrbitId, EntitySpacecraftBody > AllSpacecraftBodies = new ConcurrentHashMap<>();
+        ConcurrentMap<OrbitId, EntityOrbitBody> AllSpacecraftBodies = new ConcurrentHashMap<>();
         Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
         StarBody rootStar = null;
 
@@ -40,18 +40,18 @@ public class ClientPacketHandler {
             throw new IllegalStateException ("can't start client Solar system without a host star");
         }
         PlanetsProvider planetsProvider = new PlanetsProvider(AllPlanetaryBodies, AllSpacecraftBodies, PlanetDimensions, rootStar);
-        ClientPlayerSpacecraftBody clientPlayerSpacecraftBody;
+        ClientPlayerOrbitBody clientPlayerSpacecraftBody;
 
-        if (playerData instanceof ClientPlayerSpacecraftBody plrSpacecraftBody) {
+        if (playerData instanceof ClientPlayerOrbitBody plrSpacecraftBody) {
             if (playerParentOrbit != null) {
                 planetsProvider.playerJoinedOrbital(playerParentOrbit, playerData);
                 plrSpacecraftBody.setPlayer(Minecraft.getInstance().player);
             }
             clientPlayerSpacecraftBody = plrSpacecraftBody;
         } else {
-            AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder playerSpacecraftBuilder = new AbstractPlayerSpacecraftBody.PlayerSpacecraftBuilder();
+            AbstractPlayerOrbitBody.PlayerOrbitBuilder playerSpacecraftBuilder = new AbstractPlayerOrbitBody.PlayerOrbitBuilder();
             playerSpacecraftBuilder.setPlayer(Minecraft.getInstance().player);
-            clientPlayerSpacecraftBody = (ClientPlayerSpacecraftBody) playerSpacecraftBuilder.buildClientSide();
+            clientPlayerSpacecraftBody = (ClientPlayerOrbitBody) playerSpacecraftBuilder.buildClientSide();
         }
         CelestialStateSupplier css =  new CelestialStateSupplier(clientPlayerSpacecraftBody, planetsProvider);
         css.setCurrentTime(currentTime);
@@ -63,9 +63,9 @@ public class ClientPacketHandler {
                 celestialStateSupplier.trackedOrbitUpdate(spacecraftID, newParentID, orbitalElements));
     }
 
-    public static void incomingBiomeTexture(ResourceKey<Level> dimensionID, int textureID, short textureSize, byte[] biomeTexture) {
+    public static void incomingLodTexture(ResourceKey<Level> dimensionID, int textureID, int textureSize, byte[] biomeTexture) {
         CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier ->
-                celestialStateSupplier.getPlanetTexManager().incomingBiomeTexture(dimensionID, textureID, textureSize, biomeTexture));
+                celestialStateSupplier.getPlanetTexManager().incomingLodTexture(dimensionID, textureID, textureSize, biomeTexture));
     }
 
     public static void incomingPlanetTexture(OrbitId planetID, byte[] planetTexture) {

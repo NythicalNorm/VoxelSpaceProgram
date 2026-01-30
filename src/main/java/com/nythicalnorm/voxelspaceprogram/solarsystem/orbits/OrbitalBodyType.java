@@ -43,7 +43,7 @@ public class OrbitalBodyType<T extends OrbitalBody, M extends OrbitalBody.Builde
 
     //    @OnlyIn(Dist.CLIENT)
 //    public OrbitalBody decodeFromBufferToClient(FriendlyByteBuf friendlyByteBuf) {
-//        T orbit = (T) CelestialBodyTypes.BodyTypeClientExt.celestialBodyClientSuppliers.get(typeName).getInstance();
+//        T orbit = (T) OrbitalBodyTypesHolder.BodyTypeClientExt.celestialBodyClientSuppliers.get(typeName).getInstance();
 //        return codec.decodeBuffer(orbit, friendlyByteBuf);
 //    }
 

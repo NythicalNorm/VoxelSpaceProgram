@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.storage;
 
-import com.nythicalnorm.voxelspaceprogram.solarsystem.CelestialBodyTypes;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitalBodyTypesHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import net.minecraft.nbt.CompoundTag;
@@ -94,6 +94,6 @@ public class NBTEncoders {
     }
 
     public static OrbitalBody getOrbitalBody(CompoundTag tag) {
-       return CelestialBodyTypes.getType(tag.getString("type_name")).decodeFromNBT(tag).build();
+       return OrbitalBodyTypesHolder.getType(tag.getString("type_name")).decodeFromNBT(tag).build();
     }
 }

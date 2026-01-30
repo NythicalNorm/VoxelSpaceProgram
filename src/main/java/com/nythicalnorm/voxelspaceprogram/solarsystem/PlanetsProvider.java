@@ -5,7 +5,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
-import com.nythicalnorm.voxelspaceprogram.spacecraft.EntitySpacecraftBody;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentMap;
 public class PlanetsProvider {
     private final Map<ResourceKey<Level>, CelestialBody> planetDimensions;
     private final Map<OrbitId, CelestialBody> allPlanetaryBodies;
-    private final ConcurrentMap<OrbitId, EntitySpacecraftBody> allSpacecraftBodies;
+    private final ConcurrentMap<OrbitId, EntityOrbitBody> allSpacecraftBodies;
     private final StarBody rootStar;
 
-    public PlanetsProvider(Map<OrbitId, CelestialBody> pAllPlanetaryBodies, ConcurrentMap<OrbitId, EntitySpacecraftBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, CelestialBody> pPlanetDimensions, StarBody rootStar) {
+    public PlanetsProvider(Map<OrbitId, CelestialBody> pAllPlanetaryBodies, ConcurrentMap<OrbitId, EntityOrbitBody> pAllSpacecraftBodies, Map<ResourceKey<Level>, CelestialBody> pPlanetDimensions, StarBody rootStar) {
         this.allPlanetaryBodies = pAllPlanetaryBodies;
         this.allSpacecraftBodies = pAllSpacecraftBodies;
         this.planetDimensions = pPlanetDimensions;
@@ -32,7 +32,7 @@ public class PlanetsProvider {
         rootStar.simulatePlanets(currentTime);
     }
 
-    public Map<OrbitId, EntitySpacecraftBody> getAllSpacecraftBodies() {
+    public Map<OrbitId, EntityOrbitBody> getAllSpacecraftBodies() {
         return allSpacecraftBodies;
     }
 
@@ -83,7 +83,7 @@ public class PlanetsProvider {
             OrbitalDataNew.setRotation(new Quaternionf());
             newOrbitPlanet.addChildBody(OrbitalDataNew);
 
-            if (OrbitalDataNew instanceof EntitySpacecraftBody entitySpacecraftBody) {
+            if (OrbitalDataNew instanceof EntityOrbitBody entitySpacecraftBody) {
                 getAllSpacecraftBodies().putIfAbsent(entitySpacecraftBody.getOrbitId(), entitySpacecraftBody);
             }
         }
@@ -117,7 +117,12 @@ public class PlanetsProvider {
         return planetDimensions.get(dim);
     }
 
+
     public boolean isDimensionSpace(ResourceKey<Level> dim) {
         return dim == SpaceDimension.SPACE_LEVEL_KEY;
+    }
+
+    public boolean isDimensionPlanet(ResourceKey<Level> level) {
+        return planetDimensions.containsKey(level);
     }
 }
