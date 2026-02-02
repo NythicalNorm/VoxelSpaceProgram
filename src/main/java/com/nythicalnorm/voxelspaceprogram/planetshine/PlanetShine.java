@@ -22,6 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
 public class PlanetShine {
@@ -29,7 +30,6 @@ public class PlanetShine {
     private static VertexBuffer Skybox_Buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
     private static Vec3 latestSkyColor;
     private static boolean isFirstTime = true;
-    private static CelestialStateSupplier css;
 
     public static void setupBuffers() {
         BufferBuilder bufferbuilder =  Tesselator.getInstance().getBuilder();
@@ -51,7 +51,9 @@ public class PlanetShine {
     private static void setupShaders() {
         PlanetRenderer.setupShader();
         AtmosphereRenderer.setupShader(Skybox_Buffer);
-        //SpaceObjRenderer.PopulateRenderPlanets();
+        // enable depth clamping shouldn't break stuff i don't think anyway.
+        GL11.glEnable(0x864F);
+
     }
 
     public static void renderSkybox(Minecraft mc, LevelRenderer levelRenderer, PoseStack poseStack, float partialTick, Camera camera, VertexBuffer sky_Buffer, CelestialStateSupplier celestialStateSupplier)
@@ -59,7 +61,7 @@ public class PlanetShine {
         double fov = mc.gameRenderer.getFov(camera, partialTick, true);
         Matrix4f projectionMatrix = mc.gameRenderer.getProjectionMatrix(fov);
 
-        css = celestialStateSupplier;
+        CelestialStateSupplier css = celestialStateSupplier;
         if (isFirstTime) {
             setupShaders();
             isFirstTime = false;
@@ -93,12 +95,16 @@ public class PlanetShine {
         }
 
         poseStack.pushPose();
-        //Vector3d PlanetSurfaceDir = Calcs.planetDimPosToNormalizedVector(Minecraft.getInstance().player.position(), CelestialStateSupplier.getInstance().getCurrentPlanetWithinSOI());
         poseStack.mulPose(css.getPlayerOrbit().getRotation());
 
         SpaceObjRenderer.renderPlanetaryBodies(poseStack, mc, css, camera, projectionMatrix, partialTick);
         RenderSystem.depthMask(true);
         poseStack.popPose();
+    }
+
+    public static void close() {
+        isFirstTime = false;
+        latestSkyColor = null;
     }
 
     public static void drawStarBuffer(PoseStack poseStack, Matrix4f projectionMatrix, float alpha) {
@@ -187,7 +193,8 @@ public class PlanetShine {
 
     public static Vector3f getSunPosOverworld() {
         Level clientLevel = Minecraft.getInstance().level;
-        if (css != null && clientLevel != null) {
+        if (CelestialStateSupplier.get() != null && clientLevel != null) {
+            CelestialStateSupplier css = CelestialStateSupplier.get();
             if (css.isOnPlanet() && clientLevel.dimension() == Level.OVERWORLD) {
                 Vector3d sunPosD = css.getPlayerOrbit().getAbsolutePos().normalize();
                 Vector3f sunPosF = new Vector3f((float) sunPosD.x, (float) sunPosD.y, (float) sunPosD.z);
@@ -199,7 +206,7 @@ public class PlanetShine {
 
     private static void drawSunriseDisc(PoseStack poseStack, ClientLevel level) {
         RenderSystem.enableBlend();
-        float[] sunriseColor = level.effects().getSunriseColor(css.getPlayerOrbit().getSunAngle(),0f);
+        float[] sunriseColor = level.effects().getSunriseColor(CelestialStateSupplier.get().getPlayerOrbit().getSunAngle(),0f);
         Vector3f sunPos = getSunPosOverworld();
 
         if (sunriseColor == null || sunPos == null) {

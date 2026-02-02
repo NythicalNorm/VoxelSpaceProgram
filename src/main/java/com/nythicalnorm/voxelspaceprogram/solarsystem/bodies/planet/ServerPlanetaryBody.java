@@ -15,7 +15,6 @@ public class ServerPlanetaryBody extends PlanetaryBody implements ServerCelestia
 
     public ServerPlanetaryBody(PlanetBuilder planetBuilder) {
         super(planetBuilder);
-        initServerPlanet();
     }
 
     @Override

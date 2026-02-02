@@ -31,7 +31,7 @@ public class RenderablePlanet extends SpaceRenderable {
     }
 
     @Override
-    public void render(Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack, Matrix4f projectionMatrix, float currentAlbedo) {
-        PlanetRenderer.render(body, currentPlanetAtmosphere, poseStack, projectionMatrix, this.distance, currentAlbedo, this.differenceVector);
+    public void render(Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack, Matrix4f projectionMatrix, float currentAlbedo, boolean isCurrentPlanetOn, float opacityEasing) {
+        PlanetRenderer.render(body, currentPlanetAtmosphere, poseStack, projectionMatrix, currentAlbedo, isCurrentPlanetOn, opacityEasing);
     }
 }

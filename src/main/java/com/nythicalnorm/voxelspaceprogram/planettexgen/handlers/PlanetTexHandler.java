@@ -10,13 +10,14 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ServerCelestialBody;
 import com.nythicalnorm.voxelspaceprogram.storage.SpacecraftDataStorage;
-import com.nythicalnorm.voxelspaceprogram.util.Calcs;
+import com.nythicalnorm.voxelspaceprogram.util.LodTexUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector2i;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -72,30 +73,24 @@ public class PlanetTexHandler {
         }
 
         Vec3 plrPos = player.position();
-        int texSize = 3;
+        int texturePixelSize = LodTexUtils.getTexturePixelSize(playerOnPlanet);
+        Vector2i texPos = LodTexUtils.getPlanetTexCoordinates(plrPos, texturePixelSize);
 
-        double cellSize = Calcs.getSquareCellSize(playerOnPlanet.getRadius());
-        int sizeMultiplier = (int) Math.pow(32, texSize);
-        int texturePixelSize = (int) Math.ceil(cellSize / 1024f); // sizeMultiplier);
-
-        int xIndex = Calcs.getCellIndex(texturePixelSize, plrPos.x);
-        int zIndex = Calcs.getCellIndex(texturePixelSize, plrPos.z);
-
-        File biomeTexLocation = getFilePath(((ServerCelestialBody)playerOnPlanet).getPlanetTextureFolder(), texSize, xIndex, zIndex);
+        File biomeTexLocation = getFilePath(((ServerCelestialBody)playerOnPlanet).getPlanetTextureFolder(), texPos.x, texPos.y);
 
         CompletableFuture<byte[]> biomeTex = CompletableFuture.supplyAsync(
-                new LodTexGenTask(player, texSize,  xIndex, zIndex, texturePixelSize, biomeTexLocation), texExecuter);
+                new LodTexGenTask(((ServerCelestialBody)playerOnPlanet).getLevel(), 0,  texPos.x, texPos.y, texturePixelSize, biomeTexLocation), texExecuter);
 
-        int index = xIndex*1024+zIndex;
+        int index = texPos.x + (texPos.y * LodTexUtils.texQuadsPerCubeCell);
 
         biomeTex.thenAccept(texBytes -> {
-            PacketHandler.sendToPlayer(new ClientboundLodTexturePacket(playerOnPlanet.getDimension(), index, sizeMultiplier, texBytes), player);
+            PacketHandler.sendToPlayer(new ClientboundLodTexturePacket(playerOnPlanet.getDimension(), index, 0, texBytes), player);
         });
     }
 
-    private static File getFilePath(Path rootDir, int texSize, int xIndex, int zIndex) {
+    private static File getFilePath(Path rootDir, int xIndex, int zIndex) {
 
-        String fileName = texSize + "_" + xIndex + "_" + zIndex;
+        String fileName = xIndex + "_" + zIndex;
         Path biomeTexPath = rootDir.resolve(fileName + ".png");
         return new File(biomeTexPath.toUri());
     }

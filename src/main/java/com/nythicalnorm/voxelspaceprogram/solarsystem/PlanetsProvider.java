@@ -25,7 +25,6 @@ public class PlanetsProvider {
         this.allSpacecraftBodies = pAllSpacecraftBodies;
         this.planetDimensions = pPlanetDimensions;
         this.rootStar = rootStar;
-        rootStar.initCalcs();
     }
 
     public void UpdatePlanets(long currentTime) {
@@ -122,7 +121,4 @@ public class PlanetsProvider {
         return dim == SpaceDimension.SPACE_LEVEL_KEY;
     }
 
-    public boolean isDimensionPlanet(ResourceKey<Level> level) {
-        return planetDimensions.containsKey(level);
-    }
 }

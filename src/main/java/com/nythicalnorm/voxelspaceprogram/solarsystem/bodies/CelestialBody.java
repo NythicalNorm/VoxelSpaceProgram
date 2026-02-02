@@ -1,7 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.bodies;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
 import net.minecraft.network.chat.Component;
@@ -62,19 +61,6 @@ public abstract class CelestialBody extends OrbitalBody {
         }
     }
 
-    public void UpdateSOIs() {
-        if (childElements != null) {
-            for (OrbitalBody orbitBody : childElements.values()) {
-                if (orbitBody instanceof CelestialBody body && body.orbitalElements != null) {
-                    double soi = Math.pow(body.mass/this.mass, 0.4d);
-                    soi = soi * body.orbitalElements.SemiMajorAxis;
-                    body.setSphereOfInfluence(soi);
-                    body.UpdateSOIs();
-                }
-            }
-        }
-    }
-
     public double getRadius(){
         return radius;
     }
@@ -111,25 +97,18 @@ public abstract class CelestialBody extends OrbitalBody {
         return this.mass;
     }
 
-    protected void calculateOrbitalPeriod() {
-        if (childElements != null) {
-            for (OrbitalBody orbitBody : childElements.values()) {
-                if (orbitBody instanceof PlanetaryBody body) {
-                    if (orbitBody.getOrbitalElements() != null) {
-                        orbitBody.getOrbitalElements().setOrbitalPeriod(this.mass);
-                    }
-                    body.calculateOrbitalPeriod();
-                }
-            }
-        }
-    }
+    protected void initCalcs() {
+        for (OrbitalBody orbitBody : childElements.values()) {
+            if (orbitBody instanceof CelestialBody body && orbitBody.getOrbitalElements() != null) {
+                orbitBody.getOrbitalElements().setOrbitalPeriod(this.mass);
 
-    protected void setChildrenParents() {
-        if (childElements != null) {
-            for (OrbitalBody orbitBody : childElements.values()) {
-                orbitBody.setParent(this);
-                if (orbitBody instanceof PlanetaryBody planetaryBody) {
-                    planetaryBody.setChildrenParents();
+                double soi = Math.pow(body.mass/this.mass, 0.4d);
+                soi = soi * orbitBody.getOrbitalElements().SemiMajorAxis;
+                body.setSphereOfInfluence(soi);
+                body.initCalcs();
+
+                if (body instanceof ServerCelestialBody serverCelestialBody) {
+                    serverCelestialBody.initServerPlanet();
                 }
             }
         }

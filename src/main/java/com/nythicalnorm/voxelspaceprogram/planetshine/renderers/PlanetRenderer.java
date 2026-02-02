@@ -11,7 +11,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosp
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
 import com.nythicalnorm.voxelspaceprogram.planetshine.generators.QuadSphereModelGenerator;
-import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.ModShaders;
+import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.VSPShaders;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -19,26 +19,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 public class PlanetRenderer {
-    private static Supplier<ShaderInstance> planetShader;
+    private static ShaderInstance planetShader;
     private static Uniform sunDirUniform;
     private static Uniform AtmoFilterColorUniform;
 
     public static void setupShader() {
-        planetShader = ModShaders.getPlanetShaderInstance();
-        if (planetShader.get() != null) {
-            sunDirUniform = planetShader.get().getUniform("SunDirection");
-            AtmoFilterColorUniform = planetShader.get().getUniform("AtmoFilterColor");
+        planetShader = VSPShaders.getPlanetShader();
+        if (planetShader != null) {
+            sunDirUniform = planetShader.getUniform("SunDirection");
+            AtmoFilterColorUniform = planetShader.getUniform("AtmoFilterColor");
         }
         else {
             VoxelSpaceProgram.logError("Shader not loading");
@@ -47,43 +46,27 @@ public class PlanetRenderer {
 
     //for rendering in the map screen
     public static void render(CelestialBody planet, PoseStack poseStack, Matrix4f projectionMatrix) {
-        render(planet, Optional.empty(), poseStack, projectionMatrix, 0, 1.0f, null);
+        render(planet, Optional.empty(), poseStack, projectionMatrix, 1.0f, false, 1.0f);
     }
 
-    public static void render(CelestialBody planet, Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack,
-                              Matrix4f projectionMatrix, double distance, float currentAlbedo, @Nullable Vector3d differenceVector) {
-
-        if ((differenceVector != null) && (distance < (planet.getRadius() + 320))) {
-            return;
-        }
-
-        poseStack.pushPose();
+    public static void render(CelestialBody planet, Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack, Matrix4f projectionMatrix, float currentAlbedo, boolean isCurrentPlanetOn, float opacityEasing) {
         Quaternionf planetRot = planet.getRotation();
-        RenderSystem.enableBlend();
 
-        if (currentPlanetAtmosphere.isPresent()) {
+        if (currentPlanetAtmosphere.isPresent() && !isCurrentPlanetOn) {
                 //AtmosphereRenderer.render(obj,atmosphere, poseStack, projectionMatrix, partialTick);
             PlanetAtmosphere bodyAtmos = planet.getAtmosphere();
-            float renderOpacity = (currentAlbedo * (bodyAtmos.getAlphaNight() - bodyAtmos.getAlphaDay())) + bodyAtmos.getAlphaDay();
-            RenderSystem.setShaderColor(1.0f,1.0f,1.0f, renderOpacity);
+            opacityEasing = (currentAlbedo * (bodyAtmos.getAlphaNight() - bodyAtmos.getAlphaDay())) + bodyAtmos.getAlphaDay();
             Vec3 skyColor = PlanetShine.getLatestSkyColor();
             AtmoFilterColorUniform.set((float) skyColor.x,(float) skyColor.y,(float) skyColor.z, 1.0f);
         } else {
-            AtmoFilterColorUniform.set(0f,0f, 0f,1.0f);
+            AtmoFilterColorUniform.set(0f,0f, 0f, 1.0f);
         }
 
-        if (differenceVector != null) {
-            SpaceObjRenderer.PerspectiveShift(distance, differenceVector, planetRot,
-                    planet.getRadius(), poseStack);
-        }
+        RenderSystem.setShaderColor(1.0f,1.0f,1.0f, opacityEasing);
 
         QuadSphereModelGenerator.getSphereBuffer().bind();
         ResourceLocation planetTex = ((ClientCelestialBody) planet).getMainTexture();
-        if (planetTex != null) {
-            RenderSystem.setShaderTexture(0, planetTex);
-        } else {
-            RenderSystem.setShaderTexture(0, MissingTextureAtlasSprite.getLocation());
-        }
+        RenderSystem.setShaderTexture(0, Objects.requireNonNullElseGet(planetTex, MissingTextureAtlasSprite::getLocation));
 
         Vector3d absoluteDir = planet.getAbsolutePos().normalize();
         Vector3f lightDir = new Vector3f((float) absoluteDir.x,(float) absoluteDir.y,(float) absoluteDir.z);
@@ -91,16 +74,11 @@ public class PlanetRenderer {
         lightDir.normalize();
 
         sunDirUniform.set(lightDir);
-        ShaderInstance shad = planetShader.get();
-
-        if (planet instanceof StarBody) { // || obj.getBody() == css.getDimPlanet()) {
-            shad = GameRenderer.getPositionTexShader();
-        }
+        ShaderInstance shad = planet instanceof StarBody ? GameRenderer.getPositionTexShader() : planetShader;
 
         QuadSphereModelGenerator.getSphereBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, shad);
         VertexBuffer.unbind();
-        RenderSystem.disableBlend();
+
         RenderSystem.setShaderColor(1.0f,1.0f,1.0f,1.0f);
-        poseStack.popPose();
     }
 }

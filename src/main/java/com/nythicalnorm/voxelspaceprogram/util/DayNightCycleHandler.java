@@ -8,6 +8,7 @@ import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetaryBod
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -55,12 +56,20 @@ public class DayNightCycleHandler {
         }
     }
 
+    public static Optional<Boolean> isDay(double x, double y, double z, Level level) {
+        return isDay(BlockPos.containing(x, y, z), level);
+    }
+
+    public static Optional<Boolean> isDay(Vec3 pos, Level level) {
+        return isDay(BlockPos.containing(pos), level);
+    }
+
     public static Optional<Boolean> isDay(BlockPos pos, Level level) {
         Integer DarkenAmount = getDarknessLightLevel(pos,level);
         if (DarkenAmount == null) {
             return Optional.empty();
         } else {
-            return Optional.of(!level.dimensionType().hasFixedTime() && DarkenAmount < 4);
+            return Optional.of(DarkenAmount < 4);
         }
     }
 

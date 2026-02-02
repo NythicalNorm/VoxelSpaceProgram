@@ -7,7 +7,7 @@ import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundFocused
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSolarSystemState;
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundSolarSystemTimeUpdate;
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundTimeWarpUpdate;
-import com.nythicalnorm.voxelspaceprogram.planettexgen.lod_tex.LodColorHolder;
+import com.nythicalnorm.voxelspaceprogram.planettexgen.lod_tex.BiomeColorHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.EntityShipManager;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
@@ -45,14 +45,14 @@ public class SolarSystem extends Stage {
     private final MinecraftServer server;
     private PlanetTexHandler planetTexHandler;
     private EntityShipManager entityShipManager;
-    private long serverRunningTicks; // in VSPhysTicks
     private final SpacecraftDataStorage spacecraftDataStorage;
+    private long serverRunningTicks; // in VSPhysTicks
 
     public SolarSystem(MinecraftServer server, PlanetsProvider pPlanets) {
         super(pPlanets);
         instance = this;
         this.server = server;
-        LodColorHolder.init();
+        BiomeColorHolder.init();
         serverRunningTicks = 0;
         spacecraftDataStorage = new SpacecraftDataStorage(server, pPlanets);
     }
@@ -93,6 +93,7 @@ public class SolarSystem extends Stage {
     }
 
     public void serverStarted() {
+        planetsProvider.getRootStar().initCalcs();
         VSPCommonSaveData vspCommonSaveData = VSPDataPackManager.createOrLoadSaveData(server);
         setCurrentTime(vspCommonSaveData.getCurrentTime());
         setTimePassPerTick(vspCommonSaveData.getTimeWarp());

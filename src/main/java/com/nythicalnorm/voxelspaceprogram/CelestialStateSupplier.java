@@ -3,6 +3,7 @@ package com.nythicalnorm.voxelspaceprogram;
 import com.nythicalnorm.voxelspaceprogram.gui.ModScreenManager;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
 import com.nythicalnorm.voxelspaceprogram.network.time.ServerboundTimeWarpChange;
+import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBodyAccessor;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.ClientCelestialBody;
@@ -42,10 +43,11 @@ public class CelestialStateSupplier extends Stage {
         playerOrbit = playerDataFromServer;
         SpaceObjRenderer.PopulateRenderPlanets(planetProvider);
         this.screenManager = new ModScreenManager();
-        this.planetTexManager = new ClientTexManager();
+        this.planetTexManager = new ClientTexManager(this);
         if (minecraft.level != null) {
             onClientLevelLoad(minecraft.level);
         }
+        planetsProvider.getRootStar().initCalcs();
     }
 
     public static Optional<CelestialStateSupplier> getInstance() {
@@ -68,8 +70,12 @@ public class CelestialStateSupplier extends Stage {
     }
 
     public static void close() {
-        Stage.close();
-        instance = null;
+        if (instance != null) {
+            instance.getPlanetTexManager().close();
+            PlanetShine.close();
+            Stage.close();
+            instance = null;
+        }
     }
 
     public void tick() {

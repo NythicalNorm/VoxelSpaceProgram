@@ -153,15 +153,15 @@ public class OrbitalElements {
         eccentricityVector.sub(new Vector3d(position).normalize());
 
         Vector3d pointingAscendingNode = new Vector3d(momentumVectorH.z, 0, -momentumVectorH.x);
+        this.Eccentricity = eccentricityVector.length();
 
-        double trueAnomalyAcosVar = eccentricityVector.dot(position)/(eccentricityVector.length()*PosMagnitude);
+        double trueAnomalyAcosVar = eccentricityVector.dot(position)/(Eccentricity*PosMagnitude);
 
         double trueAnomoly = Math.acos(Mth.clamp(trueAnomalyAcosVar, -1, 1));
         trueAnomoly = position.dot(velocity) > 0 ? twoPI - trueAnomoly : trueAnomoly;
 
         this.Inclination = Math.acos(Mth.clamp(-momentumVectorH.y/momentumVectorH.length(), -1, 1));
 
-        this.Eccentricity = eccentricityVector.length();
 
         this.LongitudeOfAscendingNode = Math.acos(Mth.clamp(pointingAscendingNode.x/pointingAscendingNode.length(), -1, 1));
         this.LongitudeOfAscendingNode = pointingAscendingNode.z < 0 ? twoPI - LongitudeOfAscendingNode : LongitudeOfAscendingNode;

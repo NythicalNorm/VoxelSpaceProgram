@@ -1,5 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.planetshine.renderers;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.star.StarBody;
@@ -19,7 +20,6 @@ import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class SpaceObjRenderer {
-    private static final float InWorldPlanetsDistance = 384f;
     private static SpaceRenderable[] renderPlanets;
 
     public static void PopulateRenderPlanets(PlanetsProvider planets) {
@@ -45,7 +45,6 @@ public class SpaceObjRenderer {
 
         renderPlanets(renderPlanets, css, poseStack, projectionMatrix, partialTick);
 
-        LodTexRenderer.renderBiomeTex(css.getPlayerOrbit(), css.getPlanetTexManager(), poseStack, projectionMatrix);
         poseStack.popPose();
     }
 
@@ -53,9 +52,12 @@ public class SpaceObjRenderer {
         Optional<CelestialBody> planetOn = css.getCurrentPlanet();
         float currentAlbedo = 1.0f;
         float starAlpha = 1.0f;
+        CelestialBody currentPlanetIn = null;
         Optional<PlanetAtmosphere> atmosphere = Optional.empty();
 
         if (planetOn.isPresent()) {
+            currentPlanetIn = planetOn.get();
+
             if (planetOn.get().getAtmosphere().hasAtmosphere()) {
                 currentAlbedo = css.getPlayerOrbit().getSunAngle() * 2;
                 atmosphere = Optional.of(planetOn.get().getAtmosphere());
@@ -68,25 +70,57 @@ public class SpaceObjRenderer {
         PlanetShine.drawStarBuffer(poseStack, projectionMatrix, starAlpha);
 
         for (SpaceRenderable plnt : renderPlanets) {
-            plnt.render(atmosphere, poseStack, projectionMatrix, currentAlbedo);
-            //rendering only the sun's atmosphere for now
             if (plnt instanceof RenderablePlanet renPlanet) {
+                if (plnt.getDistance() < renPlanet.getBody().getRadius() + OPACITY_EASING_MIN) {
+                    break;
+                }
+
+                boolean isCurrentPlanetOn = Objects.equals(renPlanet.getBody(), currentPlanetIn);
+                poseStack.pushPose();
+                RenderSystem.enableBlend();
+                float opacityEasing = planetOnOpacity(renPlanet.getBody(), renPlanet.getDistance());
+
+                PerspectiveShift(renPlanet.getDistance(), renPlanet.getDifferenceVector(), renPlanet.getBody().getRotation(),
+                        renPlanet.getBody().getRadius(), poseStack);
+                plnt.render(atmosphere, poseStack, projectionMatrix, currentAlbedo, isCurrentPlanetOn, opacityEasing);
+
+                if (isCurrentPlanetOn) {
+                    LodTexRenderer.renderLODs(poseStack, projectionMatrix, css.getPlanetTexManager().getLodTexAtlasID(),
+                            opacityEasing, css.getPlanetTexManager().getLodTexBuffer());
+                }
+
+                RenderSystem.disableBlend();
+                poseStack.popPose();
+
+                //rendering only the sun's atmosphere for now
                 if (renPlanet.getBody() instanceof StarBody) {
                     AtmosphereRenderer.render(renPlanet.getBody(), renPlanet.getNormalizedDiffVectorf(), renPlanet.getDistance(), renPlanet.getBody().getAtmosphere(), poseStack, projectionMatrix);
                 }
             }
         }
-
-        //AtmosphereRenderer.renderAtmospheres(renderPlanets, poseStack, projectionMatrix, atmosphere);
     }
 
     public static void PerspectiveShift(double PlanetDistance, Vector3d PlanetPos, Quaternionf planetRot, double bodyRadius,PoseStack poseStack){
+        float inWorldPlanetsDistance = Minecraft.getInstance().gameRenderer.getDepthFar() * 0.5f;
         //tan amd atan cancel each other out.
-        float planetApparentSize = (float) (InWorldPlanetsDistance * 2 * bodyRadius/PlanetDistance);
+        float planetApparentSize = (float) (inWorldPlanetsDistance * 2 * bodyRadius/PlanetDistance);
         PlanetPos.normalize();
-        PlanetPos.mul(InWorldPlanetsDistance);
+        PlanetPos.mul(inWorldPlanetsDistance);
         poseStack.translate(PlanetPos.x,PlanetPos.y, PlanetPos.z);
         poseStack.scale(planetApparentSize, planetApparentSize, planetApparentSize);
         poseStack.mulPose(planetRot);
+    }
+
+    private static final float OPACITY_EASING_MIN = 320;
+    private static final float OPACITY_EASING_MAX = 576;
+
+    public static float planetOnOpacity(CelestialBody celestialBody, double distance) {
+        double altitude = distance - celestialBody.getRadius();
+        float opacity = 1f;
+        if (altitude <= OPACITY_EASING_MAX && altitude >= OPACITY_EASING_MIN) {
+            float diff = OPACITY_EASING_MAX - OPACITY_EASING_MIN;
+            opacity = ((float) altitude - OPACITY_EASING_MIN) / diff;
+        }
+        return opacity;
     }
 }

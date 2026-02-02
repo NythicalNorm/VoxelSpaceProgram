@@ -7,17 +7,16 @@ import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.planet.PlanetAtmosphere;
-import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.ModShaders;
+import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.VSPShaders;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.util.Mth;
 import org.joml.*;
 
 import java.lang.Math;
-import java.util.function.Supplier;
 
 public class AtmosphereRenderer {
-    private static Supplier<ShaderInstance> skyboxShader;
+    private static ShaderInstance skyboxShader;
     private static VertexBuffer skyboxBuffer;
     private static Uniform OverlayColor;
     private static Uniform AtmoColor;
@@ -25,13 +24,13 @@ public class AtmosphereRenderer {
     private static Uniform AtmoAngle;
 
     public static void setupShader(VertexBuffer skyBuffer) {
-        skyboxShader = ModShaders.getSkyboxShaderInstance();
+        skyboxShader = VSPShaders.getSkyboxShader();
         skyboxBuffer = skyBuffer;
-        if (skyboxShader.get() != null) {
-            OverlayColor = skyboxShader.get().getUniform("nspOverlayColor");
-            AtmoColor = skyboxShader.get().getUniform("nspAtmoColor");
-            OverlayAngle = skyboxShader.get().getUniform("nspOverlayAngle");
-            AtmoAngle = skyboxShader.get().getUniform("nspAtmoAngle");
+        if (skyboxShader != null) {
+            OverlayColor = skyboxShader.getUniform("nspOverlayColor");
+            AtmoColor = skyboxShader.getUniform("nspAtmoColor");
+            OverlayAngle = skyboxShader.getUniform("nspOverlayAngle");
+            AtmoAngle = skyboxShader.getUniform("nspAtmoAngle");
         }
         else {
             VoxelSpaceProgram.logError("Shader not loading");
@@ -60,7 +59,7 @@ public class AtmosphereRenderer {
         AtmoAngle.set(atmoAnglularSize);
 
         skyboxBuffer.bind();
-        skyboxBuffer.drawWithShader(poseStack.last().pose(), projectionMatrix, skyboxShader.get());
+        skyboxBuffer.drawWithShader(poseStack.last().pose(), projectionMatrix, skyboxShader);
         VertexBuffer.unbind();
         RenderSystem.disableBlend();
         poseStack.popPose();

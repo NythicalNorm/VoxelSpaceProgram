@@ -15,7 +15,6 @@ public class ServerStarBody extends StarBody implements ServerCelestialBody {
 
     public ServerStarBody(StarBuilder starBuilder) {
         super(starBuilder);
-        initServerPlanet();
     }
 
     @Override

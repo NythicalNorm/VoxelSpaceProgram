@@ -6,9 +6,10 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-public class LodColorHolder {
+public class BiomeColorHolder {
     private static final Map<ResourceKey<Biome>, Integer> biomeColorMap = new Object2IntOpenHashMap<>();
 
     public static void init() {
@@ -26,11 +27,11 @@ public class LodColorHolder {
 
         //Highlands
         biomeColorMap.put(Biomes.JAGGED_PEAKS, 0x8d9191);
-        biomeColorMap.put(Biomes.FROZEN_PEAKS, 0xbfbfbf);
+        biomeColorMap.put(Biomes.FROZEN_PEAKS, 0xedfafa);
         biomeColorMap.put(Biomes.STONY_PEAKS, 0x5d5d5d);
         biomeColorMap.put(Biomes.MEADOW, 0x506d4c);
         biomeColorMap.put(Biomes.CHERRY_GROVE, 0xa1567e);
-        biomeColorMap.put(Biomes.GROVE, 0x90667b);
+        biomeColorMap.put(Biomes.GROVE, 0xedfafa);
         biomeColorMap.put(Biomes.SNOWY_SLOPES, 0xe4eced);
         biomeColorMap.put(Biomes.WINDSWEPT_HILLS, 0x485f47);
         biomeColorMap.put(Biomes.WINDSWEPT_GRAVELLY_HILLS, 0x7e7978);
@@ -60,6 +61,7 @@ public class LodColorHolder {
 
         //Flatland biomes
         biomeColorMap.put(Biomes.PLAINS, 0x5d793c);
+        biomeColorMap.put(Biomes.SUNFLOWER_PLAINS, 0x5d793c);
         biomeColorMap.put(Biomes.SNOWY_PLAINS, 0xe7e9e8);
         biomeColorMap.put(Biomes.ICE_SPIKES, 0x6887bb);
 
@@ -74,9 +76,10 @@ public class LodColorHolder {
     }
 
     public static int getColorForBiome(Optional<ResourceKey<Biome>> biomeResourceKey) {
-        if (biomeResourceKey.isPresent() && biomeColorMap.containsKey(biomeResourceKey.get())) {
-            return biomeColorMap.get(biomeResourceKey.get());
+        if (biomeResourceKey.isPresent()) {
+            return Objects.requireNonNullElse(biomeColorMap.get(biomeResourceKey.get()), 0);
         }
+
         return 0;
     }
 }

@@ -25,12 +25,11 @@ public abstract class StarBody extends CelestialBody {
         this.simulatePropagate(currentTime, new Vector3d(0d, 0d, 0d), this.getMass());
     }
 
+    @Override
     public void initCalcs() {
         this.setSphereOfInfluence(Double.POSITIVE_INFINITY);
-        this.calculateOrbitalPeriod();
-        super.UpdateSOIs();
         this.parent = null;
-        this.setChildrenParents();
+        super.initCalcs();
     }
 
     public static class StarBuilder extends OrbitalBody.Builder<StarBody> {

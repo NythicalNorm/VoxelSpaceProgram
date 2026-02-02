@@ -39,14 +39,18 @@ public class Calcs {
                 QuadId = 5;
             }
         }
-        double radius = 1d;
+        double radius = 0.5d;
         if (!isNormalized) {
             radius = planetRadius + pos.y; // + 10000000
         }
-        Vector3d quadSpherePos =  getQuadPlanettoSquarePos(zWithinCell, xWithinCell, halfCellSize, QuadId, radius);
+        Vector3d quadSpherePos = getQuadPlanettoSquarePos(zWithinCell, xWithinCell, halfCellSize, QuadId, radius);
 
         quadSpherePos.rotate(new Quaterniond(planetRot.x, planetRot.y, planetRot.z, planetRot.w));
         return quadSpherePos;
+    }
+
+    public static Vector3d planetDimPosToNormalizedVector(double x, double y, double z, CelestialBody celestialBody, boolean isNormalized) {
+        return planetDimPosToNormalizedVector(new Vec3(x, y, z), celestialBody.getRadius(), celestialBody.getRotation(), isNormalized);
     }
 
     public static double getSquareCellSize(double planetRadius) {

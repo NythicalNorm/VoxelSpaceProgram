@@ -1,14 +1,11 @@
 package com.nythicalnorm.voxelspaceprogram.event;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.planetshine.generators.QuadSphereModelGenerator;
 import com.nythicalnorm.voxelspaceprogram.planetshine.PlanetShine;
-import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.ModShaders;
+import com.nythicalnorm.voxelspaceprogram.planetshine.shaders.VSPShaders;
 import com.nythicalnorm.voxelspaceprogram.util.KeyBindings;
 import net.minecraft.Util;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -51,11 +48,6 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException
     {
-        // Adds a shader to the list, the callback runs when loading is complete.
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(VoxelSpaceProgram.MODID,
-                "voxelspaceprogram_planet"), DefaultVertexFormat.POSITION_TEX), ModShaders::setPlanetShaderInstance);
-
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(VoxelSpaceProgram.MODID,
-                "voxelspaceprogram_skybox"), DefaultVertexFormat.POSITION_COLOR), ModShaders::setSkyboxShaderInstance);
+        VSPShaders.registerShaders(event);
     }
 }

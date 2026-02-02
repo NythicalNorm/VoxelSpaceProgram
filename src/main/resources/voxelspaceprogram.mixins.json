@@ -2,13 +2,28 @@
   "required": true,
   "package": "com.nythicalnorm.voxelspaceprogram.mixin",
   "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "mixins.voxelspaceprogram.refmap.json",
+  "injectors": {
+    "defaultRequire": 1
+  },
   "mixins": [
     "ClimateMixin",
     "daynightcycle.LevelMixin",
     "daynightcycle.LevelReaderMixin",
     "daynightcycle.LevelTimeAccessMixin",
     "daynightcycle.WorldGenRegionMixin",
+    "daynightcycle.isDay.DrownedMixin",
+    "daynightcycle.isDay.EnderManMixin",
+    "daynightcycle.isDay.FleeSunGoalMixin",
+    "daynightcycle.isDay.FoxMixin",
+    "daynightcycle.isDay.FoxSeekShelterGoalMixin",
+    "daynightcycle.isDay.FoxSleepGoalMixin",
     "daynightcycle.isDay.MobMixin",
+    "daynightcycle.isDay.MoveThroughVillageGoalMixin",
+    "daynightcycle.isDay.OfferFlowerGoalMixin",
+    "daynightcycle.isDay.RestrictSunGoalMixin",
+    "daynightcycle.isDay.StrollThroughVillageGoalMixin",
     "vs.PhysShipImplMixin"
   ],
   "client": [
@@ -17,10 +32,5 @@
     "daynightcycle.FogRendererMixin",
     "screen.ProgressScreenMixin",
     "screen.ReceivingLevelScreenMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "minVersion": "0.8",
-  "refmap": "mixins.voxelspaceprogram.refmap.json"
+  ]
 }

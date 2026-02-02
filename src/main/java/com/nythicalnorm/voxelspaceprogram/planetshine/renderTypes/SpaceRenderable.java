@@ -30,11 +30,15 @@ public abstract class SpaceRenderable {
         this.differenceVector = differenceVector;
     }
 
+    public Vector3d getDifferenceVector() {
+        return differenceVector;
+    }
+
     public Vector3f getNormalizedDiffVectorf() {
         return new Vector3f((float) differenceVector.x, (float)differenceVector.y, (float) differenceVector.z).normalize();
     }
 
     public abstract void calculatePos(OrbitalBody relativeTo);
 
-    public abstract void render(Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack, Matrix4f projectionMatrix, float currentAlbedo);
+    public abstract void render(Optional<PlanetAtmosphere> currentPlanetAtmosphere, PoseStack poseStack, Matrix4f projectionMatrix, float currentAlbedo, boolean isCurrentPlanetOn, float opacityEasing);
 }
