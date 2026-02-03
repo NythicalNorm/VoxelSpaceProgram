@@ -41,10 +41,10 @@ public class NSPTeleportCommand {
 
     private int TeleportToOrbit(CommandSourceStack pSource, Collection<? extends Entity> pTargets, String body,
                                 double semiMajorAxisInput, double eccentricity, double inclination) {
-        for(Entity entity : pTargets) {
-            if (entity instanceof ServerPlayer) {
-                SolarSystem.getInstance().ifPresent(solarSystem -> {
-                    CelestialBody planet = solarSystem.getPlanetsProvider().getPlanet(body);
+        SolarSystem.getInstance().ifPresent(solarSystem -> {
+            CelestialBody planet = solarSystem.getPlanetsProvider().getPlanet(body);
+            for(Entity entity : pTargets) {
+                if (entity instanceof ServerPlayer && planet != null) {
                     double semiMajorAxis = (semiMajorAxisInput*1000d) + planet.getRadius();
                     if (semiMajorAxisInput < 0) {
                         semiMajorAxis = (semiMajorAxisInput*1000d) - planet.getRadius();
@@ -52,13 +52,13 @@ public class NSPTeleportCommand {
                     }
                     long startingAnomaly = solarSystem.getCurrentTime();
                     OrbitalElements orbitalElement = new OrbitalElements(semiMajorAxis, eccentricity, startingAnomaly, inclination, 0d, 0d);
-                    solarSystem.playerJoinOrbit(planet, (ServerPlayer) entity, orbitalElement);
-                });
+                    solarSystem.playerTeleportOrbit(planet, (ServerPlayer) entity, orbitalElement);
+                }
             }
             pSource.sendSuccess(() -> {
                 return Component.translatable("voxelspaceprogram.commands.dimTeleport");
             }, true);
-        }
+        });
         return 1;
     }
 

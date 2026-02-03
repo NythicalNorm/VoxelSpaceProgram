@@ -95,7 +95,7 @@ public class ForgeClientEvents {
                 css.getPlayerOrbit().setPlayer(event.getNewPlayer());
 
                 if (event.getNewPlayer().level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
-                    css.getPlayerOrbit().removeYourself();
+                    css.orbitRemove(css.getPlayerOrbit().getOrbitId());
                 }
             }
         });

@@ -12,12 +12,12 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ClientboundFocusedOrbitUpdate {
+public class ClientboundOrbitSOIChange {
     private final OrbitId spacecraftID;
     private final OrbitId newParentID;
     private final OrbitalElements orbitalElements;
 
-    public ClientboundFocusedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements elements) {
+    public ClientboundOrbitSOIChange(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements elements) {
         this.spacecraftID = spacecraftID;
         this.newParentID = newParentID;
         this.orbitalElements = elements;
@@ -29,7 +29,7 @@ public class ClientboundFocusedOrbitUpdate {
         NetworkEncoders.writeOrbitalElements(friendlyByteBuf, orbitalElements);
     }
 
-    public ClientboundFocusedOrbitUpdate(FriendlyByteBuf friendlyByteBuf) {
+    public ClientboundOrbitSOIChange(FriendlyByteBuf friendlyByteBuf) {
         this.spacecraftID = new OrbitId(friendlyByteBuf);
         this.newParentID = new OrbitId(friendlyByteBuf);
         this.orbitalElements = NetworkEncoders.readOrbitalElements(friendlyByteBuf);
@@ -39,7 +39,7 @@ public class ClientboundFocusedOrbitUpdate {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT ) {
             NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                    ClientPacketHandler.FocusedOrbitUpdate(this.spacecraftID, this.newParentID, this.orbitalElements)));
+                    ClientPacketHandler.OrbitSOIChange(this.spacecraftID, this.newParentID, this.orbitalElements)));
             context.setPacketHandled(true);
         }
     }

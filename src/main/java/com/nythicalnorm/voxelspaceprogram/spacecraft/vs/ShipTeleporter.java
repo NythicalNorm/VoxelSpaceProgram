@@ -19,7 +19,7 @@ public class ShipTeleporter {
         this.spaceLevel = spaceLevel;
     }
 
-    public void teleportShipsAndEntities(LoadedServerShip ship, CelestialBody celestialBody) {
+    public void teleportShipsAndEntities(LoadedServerShip ship, CelestialBody celestialBody, List<LoadedServerShip> alreadyTeleported) {
         ServerLevel planetLevel = ((ServerCelestialBody) celestialBody).getLevel();
         AABBdc shipWorldAABB = ship.getWorldAABB();
         AABB mcAABB = new AABB(shipWorldAABB.minX(), shipWorldAABB.maxY(), shipWorldAABB.maxZ(), shipWorldAABB.maxX(), shipWorldAABB.maxY(), shipWorldAABB.maxZ());

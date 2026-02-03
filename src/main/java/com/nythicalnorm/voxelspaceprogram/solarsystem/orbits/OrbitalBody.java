@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.solarsystem.orbits;
 
 import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -124,12 +125,12 @@ public abstract class OrbitalBody {
         return false;
     }
 
-    public double getRelativePosDistance() {
-        return this.relativeOrbitalPos.length();
-    }
-
-    public void removeYourself() {
-        removeParent();
+    public double getAltitude() {
+        if (this.parent instanceof CelestialBody celestialBody) {
+            return this.relativeOrbitalPos.length() + 0.5d - celestialBody.getRadius();
+        } else {
+            return this.relativeOrbitalPos.length() + 0.5d;
+        }
     }
 
     public void removeParent() {

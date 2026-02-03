@@ -1,7 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundFocusedOrbitUpdate;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundOrbitRemove;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundOrbitSOIChange;
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSolarSystemState;
 import com.nythicalnorm.voxelspaceprogram.network.spacecraft.ServerboundSpacecraftMove;
 import com.nythicalnorm.voxelspaceprogram.network.textures.ClientboundLodTexturePacket;
@@ -39,10 +40,16 @@ public class PacketHandler {
                 .consumerMainThread(ClientboundSolarSystemTimeUpdate::handle)
                 .add();
 
-        INSTANCE.messageBuilder(ClientboundFocusedOrbitUpdate.class, ++id)
-                .encoder(ClientboundFocusedOrbitUpdate::encode)
-                .decoder(ClientboundFocusedOrbitUpdate::new)
-                .consumerMainThread(ClientboundFocusedOrbitUpdate::handle)
+        INSTANCE.messageBuilder(ClientboundOrbitSOIChange.class, ++id)
+                .encoder(ClientboundOrbitSOIChange::encode)
+                .decoder(ClientboundOrbitSOIChange::new)
+                .consumerMainThread(ClientboundOrbitSOIChange::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ClientboundOrbitRemove.class, ++id)
+                .encoder(ClientboundOrbitRemove::encode)
+                .decoder(ClientboundOrbitRemove::new)
+                .consumerMainThread(ClientboundOrbitRemove::handle)
                 .add();
 
         INSTANCE.messageBuilder(ClientboundTimeWarpUpdate.class, ++id)

@@ -41,6 +41,10 @@ public abstract class EntityOrbitBody extends OrbitalBody {
         }
     }
 
+    public boolean isHostOfItsSpace() {
+        return true; // temp always true return
+    }
+
     public Vector3f getAngularVelocity() {
         return new Vector3f(angularVelocity);
     }

@@ -58,9 +58,14 @@ public class ClientPacketHandler {
         css.setTimePassPerTick(timeWarp);
     }
 
-    public static void FocusedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {
+    public static void OrbitSOIChange(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {
         CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier ->
-                celestialStateSupplier.trackedOrbitUpdate(spacecraftID, newParentID, orbitalElements));
+                celestialStateSupplier.orbitSOIChange(spacecraftID, newParentID, orbitalElements));
+    }
+
+    public static void orbitRemove(OrbitId spacecraftID) {
+        CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier ->
+                celestialStateSupplier.orbitRemove(spacecraftID));
     }
 
     public static void incomingLodTexture(ResourceKey<Level> dimensionID, int textureID, int textureSize, byte[] biomeTexture) {

@@ -14,6 +14,7 @@ import com.nythicalnorm.voxelspaceprogram.planetshine.networking.ClientTimeHandl
 import com.nythicalnorm.voxelspaceprogram.planetshine.textures.ClientTexManager;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.PlanetsProvider;
 import com.nythicalnorm.voxelspaceprogram.planetshine.renderers.SpaceObjRenderer;
+import com.nythicalnorm.voxelspaceprogram.spacecraft.EntityOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.player.ClientPlayerOrbitBody;
 import com.nythicalnorm.voxelspaceprogram.util.Stage;
 import net.minecraft.client.Minecraft;
@@ -126,11 +127,24 @@ public class CelestialStateSupplier extends Stage {
         }
     }
 
-    public void trackedOrbitUpdate(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {
-        if (this.playerOrbit.getOrbitId().equals(spacecraftID)) {
+    public void orbitSOIChange(OrbitId spacecraftID, OrbitId newParentID, OrbitalElements orbitalElements) {
+        EntityOrbitBody entityOrbitBody = planetsProvider.getAllSpacecraftBodies().get(spacecraftID);
+
+        if (entityOrbitBody != null) {
+            planetsProvider.playerChangeOrbitalSOIs(entityOrbitBody, newParentID, orbitalElements);
+        } else if (this.playerOrbit.getOrbitId().equals(spacecraftID)) {
             //temporary setting the rotation to default
             this.playerOrbit.setRotation(new Quaternionf());
             planetsProvider.playerChangeOrbitalSOIs(this.playerOrbit, newParentID, orbitalElements);
+        }
+    }
+
+    public void orbitRemove(OrbitId spacecraftID) {
+        EntityOrbitBody entityOrbitBody = planetsProvider.getAllSpacecraftBodies().get(spacecraftID);
+        if (entityOrbitBody != null) {
+            planetsProvider.entityRemoveOrbital(entityOrbitBody);
+        } else if (this.playerOrbit.getOrbitId().equals(spacecraftID)) {
+            planetsProvider.entityRemoveOrbital(this.playerOrbit);
         }
     }
 

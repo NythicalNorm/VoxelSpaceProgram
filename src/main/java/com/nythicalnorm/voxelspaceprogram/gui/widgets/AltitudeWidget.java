@@ -1,7 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.gui.widgets;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.CelestialStateSupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,7 +12,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class AltitudeWidget extends AbstractWidget {
@@ -52,10 +50,9 @@ public class AltitudeWidget extends AbstractWidget {
     private void renderAltitudeNumbers(CelestialStateSupplier css, GuiGraphics pGuiGraphics, int xPos, int yPos) {
         //altitude = 100000000 - altitude;
         double altitude = 0;
-        Optional<CelestialBody> playerParent = css.getCurrentPlanetSOIin();
 
-        if (css.getPlayerOrbit() != null && playerParent.isPresent()) {
-            altitude = css.getPlayerOrbit().getRelativePosDistance() + 0.5d - playerParent.get().getRadius();
+        if (css.getPlayerOrbit() != null) {
+            altitude = css.getPlayerOrbit().getAltitude();
             altitude = Math.abs(altitude);
         }
 

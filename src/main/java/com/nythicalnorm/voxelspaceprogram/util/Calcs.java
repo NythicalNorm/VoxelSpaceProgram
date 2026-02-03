@@ -121,6 +121,48 @@ public class Calcs {
         return squarePos;
     }
 
+    public static Vector2d vectorToPlanetDimPos(Vector3d position, double planetRadius, Quaternionf rotation) {
+        int squareSide = 0;
+        position.normalize();
+        position.rotate(new Quaterniond().set(rotation.invert()));
+        //reversing the switch case in getSpherePos
+        double[] axisVals = new double[]{position.z, position.x, -position.z, -position.x, position.y, -position.y};
+        double searchedMax = 0;
+
+
+        for (int i = 0; i < axisVals.length; i++) {
+            if (axisVals[i] > searchedMax) {
+                searchedMax = axisVals[i];
+                squareSide = i;
+            }
+        }
+
+        Vector2d squarePos = switch (squareSide) {
+            case 0 -> new Vector2d(position.x/searchedMax, -position.y/searchedMax);
+            case 1 -> new Vector2d(-position.z/searchedMax, -position.y/searchedMax);
+            case 2 -> new Vector2d(-position.x/searchedMax, -position.y/searchedMax);
+            case 3 -> new Vector2d(position.z/searchedMax, -position.y/searchedMax);
+            case 4 -> new Vector2d(-position.z/searchedMax, position.x/searchedMax);
+            case 5 -> new Vector2d(-position.z/searchedMax, -position.x/searchedMax);
+            default -> new Vector2d();
+        };
+
+        double cellSize = getSquareCellSize(planetRadius);
+        squarePos.mul(cellSize * 0.5d);
+
+        Vector2d squareSideCenterPos = switch (squareSide) {
+            case 0 -> new Vector2d(-cellSize, 0d);
+            case 1 -> new Vector2d(0d, 0d);
+            case 2 -> new Vector2d(cellSize, 0d);
+            case 3 -> new Vector2d(2 * cellSize, 0d);
+            case 4 -> new Vector2d(0d, -cellSize);
+            case 5 -> new Vector2d(0d, cellSize);
+            default -> new Vector2d();
+        };
+
+        return squarePos.add(squareSideCenterPos);
+    }
+
     //client side only
     public static Vector3f getUpVectorForPlanetRot(Vector3f playerRelativePos, CelestialBody planet) {
         Vector3f upDir = new Vector3f(0f,-1f,0f);

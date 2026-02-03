@@ -61,7 +61,6 @@ public class PlanetsProvider {
     }
 
     public void playerChangeOrbitalSOIs(OrbitalBody spacecraftBody, CelestialBody newOrbitPlanet, OrbitalElements orbitalElementsNew) {
-
         orbitalElementsNew.setOrbitalPeriod(newOrbitPlanet.getMass());
         spacecraftBody.setOrbitalElements(orbitalElementsNew);
 
@@ -75,17 +74,24 @@ public class PlanetsProvider {
         playerJoinedOrbital(getPlanet(newParentID), OrbitalDataNew);
     }
 
-    public void playerJoinedOrbital(CelestialBody newOrbitPlanet, OrbitalBody OrbitalDataNew) {
+    public void playerJoinedOrbital(CelestialBody newOrbitPlanet, OrbitalBody orbitalDataNew) {
         if (newOrbitPlanet != null) {
-            OrbitalDataNew.getOrbitalElements().setOrbitalPeriod(newOrbitPlanet.getMass());
+            if (orbitalDataNew.getOrbitalElements() != null) {
+                orbitalDataNew.getOrbitalElements().setOrbitalPeriod(newOrbitPlanet.getMass());
+            }
             //temp default Rotation
-            OrbitalDataNew.setRotation(new Quaternionf());
-            newOrbitPlanet.addChildBody(OrbitalDataNew);
+            orbitalDataNew.setRotation(new Quaternionf());
+            newOrbitPlanet.addChildBody(orbitalDataNew);
 
-            if (OrbitalDataNew instanceof EntityOrbitBody entitySpacecraftBody) {
+            if (orbitalDataNew instanceof EntityOrbitBody entitySpacecraftBody) {
                 getAllSpacecraftBodies().putIfAbsent(entitySpacecraftBody.getOrbitId(), entitySpacecraftBody);
             }
         }
+    }
+
+    public void entityRemoveOrbital(EntityOrbitBody entityOrbitBody) {
+        entityOrbitBody.removeParent();
+        this.allSpacecraftBodies.remove(entityOrbitBody.getOrbitId());
     }
 
     public List<String> getAllPlanetNames() {
