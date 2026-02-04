@@ -15,6 +15,7 @@ import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ClientboundLoginSolarSystemState {
@@ -23,8 +24,9 @@ public class ClientboundLoginSolarSystemState {
     private final AbstractPlayerOrbitBody playerData;
     private final List<CelestialBody> allPlanetaryBodies;
     private final OrbitId playerParentOrbit;
+    private final Optional<OrbitId> playerHostOrbit;
 
-    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerOrbitBody playerData, List<CelestialBody> allPlanetaryBodies,
+    public ClientboundLoginSolarSystemState(@Nullable ServerPlayerOrbitBody playerData, Optional<OrbitId> playerHostOrbit, List<CelestialBody> allPlanetaryBodies,
                                             long currentTime, long timeWarp) {
         this.currentTime = currentTime;
         this.currentTimeWarp = timeWarp;
@@ -37,9 +39,9 @@ public class ClientboundLoginSolarSystemState {
             }
         }
         playerParentOrbit = parentID;
+        this.playerHostOrbit = playerHostOrbit;
         this.allPlanetaryBodies = allPlanetaryBodies;
     }
-
 
     public ClientboundLoginSolarSystemState(FriendlyByteBuf friendlyByteBuf) {
         currentTime = friendlyByteBuf.readLong();
@@ -59,6 +61,7 @@ public class ClientboundLoginSolarSystemState {
 
         this.playerData = playerSpacecraftBody;
         this.playerParentOrbit = playerParent;
+        this.playerHostOrbit = friendlyByteBuf.readOptional(OrbitId::new);
 
         allPlanetaryBodies = NetworkEncoders.readPlanetaryBodyList(friendlyByteBuf);
     }
@@ -78,13 +81,14 @@ public class ClientboundLoginSolarSystemState {
         } else {
             friendlyByteBuf.writeBoolean(false);
         }
+        friendlyByteBuf.writeOptional(playerHostOrbit, OrbitId::encodeToBuffer);
         NetworkEncoders.writePlanetaryBodyList(friendlyByteBuf, allPlanetaryBodies);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
             NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.StartClientPacket(currentTime, currentTimeWarp, playerData, playerParentOrbit, allPlanetaryBodies)));
+            context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.StartClientPacket(currentTime, currentTimeWarp, playerData, playerParentOrbit, playerHostOrbit, allPlanetaryBodies)));
             context.setPacketHandled(true);
         }
     }

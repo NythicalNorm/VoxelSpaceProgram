@@ -63,6 +63,11 @@ public class OrbitId {
         this.leastSignificantBits = byteBuf.readLong();
     }
 
+    public static void encodeToBuffer(FriendlyByteBuf friendlyByteBuf, OrbitId orbitId) {
+        friendlyByteBuf.writeLong(orbitId.mostSignificantBits);
+        friendlyByteBuf.writeLong(orbitId.leastSignificantBits);
+    }
+
     public void encodeToBuffer(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeLong(this.mostSignificantBits);
         friendlyByteBuf.writeLong(this.leastSignificantBits);

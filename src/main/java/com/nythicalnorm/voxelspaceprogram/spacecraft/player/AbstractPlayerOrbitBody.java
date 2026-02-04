@@ -24,6 +24,9 @@ public abstract class AbstractPlayerOrbitBody extends EntityOrbitBody {
     public AbstractPlayerOrbitBody(PlayerOrbitBuilder playerSpacecraftBuilder) {
         super(playerSpacecraftBuilder, playerSpacecraftBuilder.angularVelocity);
         this.player = playerSpacecraftBuilder.player;
+        if (this.player != null) {
+            ((PlayerOrbitAccessor)player).setOrbit(this);
+        }
     }
 
     @Override
@@ -44,6 +47,7 @@ public abstract class AbstractPlayerOrbitBody extends EntityOrbitBody {
 
     public void setPlayer(@NotNull Player player) {
         this.player = player;
+        ((PlayerOrbitAccessor)player).setOrbit(this);
     }
 
     public Player getPlayerEntity() {

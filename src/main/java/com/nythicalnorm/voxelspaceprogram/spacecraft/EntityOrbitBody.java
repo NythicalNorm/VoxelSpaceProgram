@@ -1,19 +1,25 @@
 package com.nythicalnorm.voxelspaceprogram.spacecraft;
 
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitId;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.spacecraft.physics.PhysicsContext;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+
+import java.util.Optional;
 
 public abstract class EntityOrbitBody extends OrbitalBody {
     protected Vector3f angularVelocity;
     protected boolean velocityChangedLastFrame;
     private static final float tolerance = 1e-8f;
+    private @Nullable OrbitId currentHostSpace;
 
     public EntityOrbitBody(OrbitalBody.Builder<?> orbitalBuilder, Vector3f angularVelocity) {
         super(orbitalBuilder);
         this.angularVelocity = angularVelocity;
+        this.currentHostSpace = null;
     }
 
     public void simulatePropagate(long TimeElapsed, Vector3d parentPos, double mass) {
@@ -41,8 +47,22 @@ public abstract class EntityOrbitBody extends OrbitalBody {
         }
     }
 
+    public void setHostSpace(OrbitId hostSpace) {
+        this.currentHostSpace = hostSpace;
+    }
+
+    public Optional<OrbitId> getCurrentHostSpace() {
+        if (currentHostSpace != null) {
+            return Optional.of(currentHostSpace);
+        } else {
+            return Optional.empty();
+        }
+    }
+
     public boolean isHostOfItsSpace() {
-        return true; // temp always true return
+        if (this.currentHostSpace == null) {
+            return false;
+        } else return this.currentHostSpace.equals(this.id);
     }
 
     public Vector3f getAngularVelocity() {

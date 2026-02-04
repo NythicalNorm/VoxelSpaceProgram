@@ -17,11 +17,12 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class ClientPacketHandler {
-    public static void StartClientPacket(long currentTime, long timeWarp, EntityOrbitBody playerData, OrbitId playerParentOrbit, List<CelestialBody> planetaryBodyList) {
+    public static void StartClientPacket(long currentTime, long timeWarp, EntityOrbitBody playerData, OrbitId playerParentOrbit, Optional<OrbitId> playerHostOrbit, List<CelestialBody> planetaryBodyList) {
         Map<OrbitId, CelestialBody> AllPlanetaryBodies = new Object2ObjectOpenHashMap<>();
         ConcurrentMap<OrbitId, EntityOrbitBody> AllSpacecraftBodies = new ConcurrentHashMap<>();
         Map<ResourceKey<Level>, CelestialBody> PlanetDimensions = new Object2ObjectOpenHashMap<>();
@@ -54,6 +55,7 @@ public class ClientPacketHandler {
             clientPlayerSpacecraftBody = (ClientPlayerOrbitBody) playerSpacecraftBuilder.buildClientSide();
         }
         CelestialStateSupplier css =  new CelestialStateSupplier(clientPlayerSpacecraftBody, planetsProvider);
+        playerHostOrbit.ifPresent(css::setHostOrbit);
         css.setCurrentTime(currentTime);
         css.setTimePassPerTick(timeWarp);
     }
@@ -86,5 +88,10 @@ public class ClientPacketHandler {
     public static void timeWarpSetFromServer(boolean successfullyChanged, long setTimeWarpSpeed) {
         CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier ->
                 celestialStateSupplier.timeWarpSetFromServer(successfullyChanged, setTimeWarpSpeed));
+    }
+
+    public static void hostOrbitSet(OrbitId spaceHostOrbitId) {
+        CelestialStateSupplier.getInstance().ifPresent(celestialStateSupplier ->
+                celestialStateSupplier.setHostOrbit(spaceHostOrbitId));
     }
 }

@@ -21,7 +21,8 @@ public abstract class Stage {
         }
     }
 
-    // Returns the server planets provider when on singleplayer & on Dedicated Server, and returns the client planets provider in multiplayer
+    // Returns the server planets provider when on Singleplayer & on Dedicated Server,
+    // and returns the client planets provider in Multiplayer client.
     public static PlanetsProvider getAnyPlanetsProvider() {
         return anyPlanetsProvider;
     }

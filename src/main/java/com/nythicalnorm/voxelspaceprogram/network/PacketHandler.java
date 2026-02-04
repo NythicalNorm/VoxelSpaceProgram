@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.network;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundHostOrbitSet;
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundOrbitRemove;
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundOrbitSOIChange;
 import com.nythicalnorm.voxelspaceprogram.network.orbitaldata.ClientboundLoginSolarSystemState;
@@ -50,6 +51,12 @@ public class PacketHandler {
                 .encoder(ClientboundOrbitRemove::encode)
                 .decoder(ClientboundOrbitRemove::new)
                 .consumerMainThread(ClientboundOrbitRemove::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ClientboundHostOrbitSet.class, ++id)
+                .encoder(ClientboundHostOrbitSet::encode)
+                .decoder(ClientboundHostOrbitSet::new)
+                .consumerMainThread(ClientboundHostOrbitSet::handle)
                 .add();
 
         INSTANCE.messageBuilder(ClientboundTimeWarpUpdate.class, ++id)

@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
 import java.util.Optional;
@@ -30,14 +31,14 @@ public class CelestialStateSupplier extends Stage {
     private static CelestialStateSupplier instance;
     private final Minecraft minecraft;
 
-    private final ClientPlayerOrbitBody playerOrbit;
+    private final @NotNull ClientPlayerOrbitBody playerOrbit;
     private CelestialBody currentPlanetOn;
     private ClientPlayerOrbitBody controllingBody;
 
     private final ModScreenManager screenManager;
     private final ClientTexManager planetTexManager;
 
-    public CelestialStateSupplier(ClientPlayerOrbitBody playerDataFromServer, PlanetsProvider planetProvider) {
+    public CelestialStateSupplier(@NotNull ClientPlayerOrbitBody playerDataFromServer, PlanetsProvider planetProvider) {
         super(planetProvider);
         instance = this;
         minecraft = Minecraft.getInstance();
@@ -64,6 +65,10 @@ public class CelestialStateSupplier extends Stage {
 
     public ClientCelestialBody getClientPlanet(OrbitId planetID) {
        return (ClientCelestialBody) this.planetsProvider.getPlanet(planetID);
+    }
+
+    public void setHostOrbit(OrbitId orbitId) {
+        this.getPlayerOrbit().setHostSpace(orbitId);
     }
 
     public float getSunAngle() {

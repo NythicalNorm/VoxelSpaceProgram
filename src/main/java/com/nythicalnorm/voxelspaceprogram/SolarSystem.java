@@ -8,6 +8,7 @@ import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundSolarSystemTim
 import com.nythicalnorm.voxelspaceprogram.network.time.ClientboundTimeWarpUpdate;
 import com.nythicalnorm.voxelspaceprogram.planettexgen.lod_tex.BiomeColorHolder;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.EntityShipManager;
+import com.nythicalnorm.voxelspaceprogram.solarsystem.OrbitHostSpace;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.bodies.CelestialBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalBody;
 import com.nythicalnorm.voxelspaceprogram.solarsystem.orbits.OrbitalElements;
@@ -23,6 +24,7 @@ import com.nythicalnorm.voxelspaceprogram.storage.VSPCommonSaveData;
 import com.nythicalnorm.voxelspaceprogram.storage.VSPDataPackManager;
 import com.nythicalnorm.voxelspaceprogram.util.Calcs;
 import com.nythicalnorm.voxelspaceprogram.util.Stage;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -54,7 +56,7 @@ public class SolarSystem extends Stage {
         BiomeColorHolder.init();
         serverRunningTicks = 0;
         spacecraftDataStorage = new SpacecraftDataStorage(server, pPlanets);
-        entityShipManager = new EntityShipManager(this);
+        entityShipManager = new EntityShipManager(this, new Object2ObjectOpenHashMap<>());
     }
 
     public static SolarSystem get() {
@@ -133,7 +135,7 @@ public class SolarSystem extends Stage {
             //entity.changeDimension(overworldLevel, new DimensionTeleporter());
         }
 
-        PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, allPlanetaryBodies, getCurrentTime(), getTimePassPerTick()), (ServerPlayer) entity);
+        PacketHandler.sendToPlayer(new ClientboundLoginSolarSystemState(playerSpacecraftBody, playerSpacecraftBody.getCurrentHostSpace(), allPlanetaryBodies, getCurrentTime(), getTimePassPerTick()), (ServerPlayer) entity);
 
         if (planetTexHandler != null) {
             planetTexHandler.sendAllTexToPlayer((ServerPlayer) entity, planetsProvider.getAllPlanetaryBodies());
@@ -144,18 +146,11 @@ public class SolarSystem extends Stage {
     // Called when the player changes SOIs or joins on orbit artificially like the teleport command
     public void playerTeleportOrbit(CelestialBody body, ServerPlayer player, OrbitalElements elements) {
         OrbitId PlayerID = new OrbitId(player.getUUID());
-        if (player.level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
-            entityShipManager.teleportEntity(player, server.getLevel(SpaceDimension.SPACE_LEVEL_KEY), 0d, 128d, 0d);
-            // player.changeDimension(server.getLevel(SpaceDimension.SPACE_LEVEL_KEY), new DimensionTeleporter(new Vec3(0d, 128d, 0d)));
-        }
+        AbstractPlayerOrbitBody playerOrbitBody = (AbstractPlayerOrbitBody) planetsProvider.getAllSpacecraftBodies().get(PlayerID);
 
-        if (planetsProvider.getAllSpacecraftBodies().containsKey(PlayerID)) {
-            OrbitalBody playerSpacecraftBody = planetsProvider.getAllSpacecraftBodies().get(PlayerID);
-            if (playerSpacecraftBody == null) {
-                return;
-            }
-
-            planetsProvider.playerChangeOrbitalSOIs(playerSpacecraftBody, body, elements);
+        if (playerOrbitBody != null) {
+            planetsProvider.playerChangeOrbitalSOIs(playerOrbitBody, body, elements);
+            playerOrbitBody.setPlayer(player);
             PacketHandler.sendToPlayer(new ClientboundOrbitSOIChange(PlayerID, body.getOrbitId(), elements), player);
         }
         else  {
@@ -165,10 +160,17 @@ public class SolarSystem extends Stage {
             builder.setStableOrbit(true);
             builder.setOrbitalElements(elements);
 
-            ServerPlayerOrbitBody newOrbitalData = (ServerPlayerOrbitBody) builder.build();
+            playerOrbitBody = builder.build();
 
-            planetsProvider.playerJoinedOrbital(body, newOrbitalData);
+            planetsProvider.playerJoinedOrbital(body, playerOrbitBody);
             PacketHandler.sendToPlayer(new ClientboundOrbitSOIChange(PlayerID, body.getOrbitId(), elements), player);
+        }
+
+        OrbitHostSpace playerHostSpace = entityShipManager.getOrCreateHostSpace(playerOrbitBody);
+        playerOrbitBody.setHostSpace(playerHostSpace.getOrbitIdOfHost());
+
+        if (player.level().dimension() != SpaceDimension.SPACE_LEVEL_KEY) {
+            entityShipManager.teleportEntity(player, server.getLevel(SpaceDimension.SPACE_LEVEL_KEY), playerHostSpace.getOriginPos());
         }
     }
 

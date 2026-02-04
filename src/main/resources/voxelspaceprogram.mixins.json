@@ -24,6 +24,12 @@
     "daynightcycle.isDay.OfferFlowerGoalMixin",
     "daynightcycle.isDay.RestrictSunGoalMixin",
     "daynightcycle.isDay.StrollThroughVillageGoalMixin",
+    "spaceentites.AbstractArrowSpaceMixin",
+    "spaceentites.EntitySpaceMixin",
+    "spaceentites.ItemEntitySpaceMixin",
+    "spaceentites.LivingEntitySpaceMixin",
+    "spaceentites.LocalPlayerSpaceMixin",
+    "spaceentites.PlayerSpaceMixin",
     "vs.PhysShipImplMixin"
   ],
   "client": [

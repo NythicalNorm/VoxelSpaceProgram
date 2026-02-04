@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.util;
+package com.nythicalnorm.voxelspaceprogram.event;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -10,17 +10,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = VoxelSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class EntityGravityHandler {
+public class EntityEvents {
     private static final UUID gravityUUID = UUID.fromString("a13033dd-12dc-456f-901f-54c63734ac71");
 
     @SubscribeEvent
@@ -69,10 +72,29 @@ public class EntityGravityHandler {
                     entityAttributes.removeAttributeModifiers(ogModifier);
                 }
 
-                if (applyGravityModifier || event.getLevel().dimension() == SpaceDimension.SPACE_LEVEL_KEY) {
+                if (applyGravityModifier) {
                     entityAttributes.getInstance(ForgeMod.ENTITY_GRAVITY.get()).addTransientModifier(gravityModifier);
                 }
             }
+        }
+    }
+
+    private static final double blockPushForce = 0.01d;
+
+    @SubscribeEvent
+    public static void onBlockUse(PlayerInteractEvent.RightClickBlock event) {
+        applyBlockUseVelocity(event.getEntity(), blockPushForce);
+    }
+
+    @SubscribeEvent
+    public static void onBlockUse(PlayerInteractEvent.LeftClickBlock event) {
+        applyBlockUseVelocity(event.getEntity(), -blockPushForce);
+    }
+
+    private static void applyBlockUseVelocity(Player player, double force) {
+        if (player.level().dimension().equals(SpaceDimension.SPACE_LEVEL_KEY) && player.level().isClientSide() && !player.isShiftKeyDown()) {
+            Vec3 lookAngle = player.getLookAngle().normalize();
+            player.addDeltaMovement(lookAngle.scale(force));
         }
     }
 }
