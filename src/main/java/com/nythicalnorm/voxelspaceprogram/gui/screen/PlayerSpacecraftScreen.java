@@ -3,13 +3,10 @@ package com.nythicalnorm.voxelspaceprogram.gui.screen;
 import com.nythicalnorm.planetshine.PSClient;
 import com.nythicalnorm.planetshine.gui.input.PlayerInputAxis;
 import com.nythicalnorm.planetshine.gui.input.PlayerInputDirection;
-import com.nythicalnorm.planetshine.gui.screen.ISpacecraftDataDisplay;
+import com.nythicalnorm.planetshine.gui.screen.ISpacecraftControlStateDisplay;
 import com.nythicalnorm.planetshine.gui.screen.MapSolarSystemScreen;
-import com.nythicalnorm.planetshine.gui.screen.MouseLookScreen;
-import com.nythicalnorm.planetshine.gui.widgets.AltitudeWidget;
+import com.nythicalnorm.planetshine.gui.screen.PSSpacecraftScreen;
 import com.nythicalnorm.planetshine.gui.widgets.LeftPanelWidget;
-import com.nythicalnorm.planetshine.gui.widgets.NavballWidget;
-import com.nythicalnorm.planetshine.gui.widgets.TimeWarpWidget;
 import com.nythicalnorm.planetshine.spacecraft.player.ClientPlayerOrbitBody;
 import com.nythicalnorm.planetshine.util.PSKeyBinds;
 import com.nythicalnorm.voxelspaceprogram.util.VSPKeyBinds;
@@ -27,10 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.Math;
 
 @OnlyIn(Dist.CLIENT)
-public class PlayerSpacecraftScreen extends MouseLookScreen implements ISpacecraftDataDisplay {
+public class PlayerSpacecraftScreen extends PSSpacecraftScreen implements ISpacecraftControlStateDisplay {
     private ItemStack jetpackItem;
     private final LocalPlayer player;
-    private final PSClient css;
+    private final PSClient psClient;
     private final Options minecraftOptions;
     private float initialYLookDir;
     private boolean SAS = false;
@@ -44,20 +41,17 @@ public class PlayerSpacecraftScreen extends MouseLookScreen implements ISpacecra
     private PlayerInputDirection CtrlShiftAxis;
     private PlayerInputAxis throttleAxis;
 
-    public PlayerSpacecraftScreen(ItemStack spacesuitItem, LocalPlayer player, PSClient css) {
-        super(Component.empty());
+    public PlayerSpacecraftScreen(ItemStack spacesuitItem, LocalPlayer player, PSClient psClient) {
+        super(Component.empty(), psClient.getControllingBody(), psClient.getScreenManager(), FacingDirection.North);
         this.jetpackItem = spacesuitItem;
         this.player = player;
-        this.css = css;
+        this.psClient = psClient;
         this.minecraftOptions = Minecraft.getInstance().options;
     }
 
     @Override
     protected void init() {
-        this.addRenderableWidget(new TimeWarpWidget(0,0, width, height, Component.empty()));
-        this.addRenderableWidget(new NavballWidget(width/2, height, width, height, Component.empty()));
         this.addRenderableWidget(new LeftPanelWidget(0, height, width, height, Component.empty()));
-        this.addRenderableWidget(new AltitudeWidget(width/2, 0, width, height, Component.empty()));
 
         minecraftOptions.setCameraType(CameraType.THIRD_PERSON_BACK);
         minecraftOptions.hideGui = true;
@@ -68,7 +62,6 @@ public class PlayerSpacecraftScreen extends MouseLookScreen implements ISpacecra
         cameraYrot = (float) -Math.toRadians(initialYLookDir);
         player.setYBodyRot(initialYLookDir);
 
-        css.getScreenManager().setOpenSpacecraftScreen(this);
         throttleAxis = new PlayerInputAxis(0.05f, 0f, 1f, 0.08f,0f,
                 VSPKeyBinds.DECREASE_THROTTLE_KEY, VSPKeyBinds.INCREASE_THROTTLE_KEY);
 
@@ -82,11 +75,11 @@ public class PlayerSpacecraftScreen extends MouseLookScreen implements ISpacecra
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         boolean keyPressed = false;
 
-        if (PSKeyBinds.USE_PLAYER_JETPACK_KEY.matches(pKeyCode, pScanCode)) {
+        if (PSKeyBinds.OPEN_SPACECRAFT_HUD_KEY.matches(pKeyCode, pScanCode)) {
             this.onClose();
             keyPressed = true;
         } else if (PSKeyBinds.OPEN_SOLAR_SYSTEM_MAP_KEY.matches(pKeyCode, pScanCode)) {
-            Minecraft.getInstance().setScreen(new MapSolarSystemScreen(true));
+            Minecraft.getInstance().setScreen(new MapSolarSystemScreen(true, psClient.getScreenManager().getMapState()));
             keyPressed = true;
         }  else if (VSPKeyBinds.RCS_TOGGLE_KEY.matches(pKeyCode, pScanCode)) {
             RCS = !RCS;
@@ -171,11 +164,6 @@ public class PlayerSpacecraftScreen extends MouseLookScreen implements ISpacecra
     @Override
     public boolean movePlayerCamera() {
         return true;
-    }
-
-    public void onClose() {
-        css.getScreenManager().closeSpacecraftScreen();
-        super.onClose();
     }
 
     @Override

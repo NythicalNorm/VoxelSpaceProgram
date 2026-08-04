@@ -56,7 +56,7 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
         return voxelShapes;
     }
 
-    private VoxelShape getShapeFromDirection(Direction direction, double halfWidth, double halfHeight) {
+    private static VoxelShape getShapeFromDirection(Direction direction, double halfWidth, double halfHeight) {
         Vector3d posA = new Vector3d(-halfWidth, -halfHeight + 16, -halfWidth);
         Vector3d posB = new Vector3d(halfWidth, halfHeight + 16, halfWidth);
         Quaterniond rotD = new Quaterniond();
