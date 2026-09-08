@@ -1,0 +1,32 @@
+{
+  "name": "sun",
+  "biome_groups": [
+    {
+      "name": "orangeHot",
+      "min": -0.5,
+      "max": 0.5,
+      "biome_gradients": [
+        {
+          "min": 0.0,
+          "max": 0.5,
+          "color": "#fbba39"
+        },
+        {
+          "min": 0.5,
+          "max": 0.6,
+          "color": "#fbd955"
+        },
+        {
+          "min": 0.6,
+          "max": 0.72,
+          "color": "#ffffa8"
+        },
+        {
+          "min": 0.70,
+          "max": 1.0,
+          "color": "#fffffe"
+        }
+      ]
+    }
+  ]
+}

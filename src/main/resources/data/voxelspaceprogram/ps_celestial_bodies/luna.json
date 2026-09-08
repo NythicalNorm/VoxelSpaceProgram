@@ -1,0 +1,39 @@
+{
+  "name": "luna",
+  "type": "planetshine:planet",
+  "radius": 200000,
+  "mass": 9.7599066E20,
+
+  "north_pole_dir": {
+    "right_ascension": 0.0,
+    "declination": 0.0
+  },
+
+  "starting_rotation": 3.1415926,
+  "rotation_period": 138984,
+
+  "orbital_elements": {
+    "semi_major_axis": 	12000000,
+    "inclination": 0.0,
+    "eccentricity": 0.0,
+    "argument_of_periapsis": 0.0,
+    "longitude_of_ascending_node": 0.0,
+    "periapsis_time": 15484.104
+  },
+
+  "atmospheric_data": {
+    "has_atmosphere": false,
+    "surface_color": "d0d0d0",
+    "alpha_night": 1.0,
+    "alpha_day": 0.1
+  },
+
+  "dimension_id": "voxelspaceprogram:luna",
+  "dimensional_properties": {
+    "render_custom_skybox": true,
+    "draw_sunrise_disk": false,
+    "default_sky_color": "000000",
+    "affect_entity_gravity": false,
+    "affect_vs_ship_gravity": true
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "sun",
+  "type": "planetshine:star",
+  "radius": 261600000,
+  "mass": 1.7565459E28,
+
+  "heat_affecting_radius": 2000000000,
+  "star_luminosity": 3.828e25,
+
+  "child_planets": [
+    "earth",
+    "mars"
+  ],
+
+  "atmospheric_data": {
+    "has_atmosphere": true,
+    "surface_color": "ffffa8",
+    "atmosphere_color": "ffe742",
+    "atmosphere_height": 250000000,
+    "atmosphere_pressure": 5.0,
+    "atmosphere_alpha": 0.5,
+    "alpha_night": 1.0,
+    "alpha_day": 1.0
+  }
+}

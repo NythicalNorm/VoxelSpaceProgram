@@ -35,7 +35,7 @@ public class EngineEntityRenderer implements BlockEntityRenderer<EngineEntity> {
             pPoseStack.translate(0f, 1.0f, 0f);
 
             model.getFixed().render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
-            pPoseStack.popPose();
         }
+        pPoseStack.popPose();
     }
 }

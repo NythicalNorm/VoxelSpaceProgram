@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.datagen;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.fluid.NSPFluids;
-import com.nythicalnorm.voxelspaceprogram.block.terrain.FootprintedType;
+import com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -15,7 +15,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-import static com.nythicalnorm.voxelspaceprogram.block.terrain.FootprintedRegolith.FOOTPRINTTYPE;
+import static com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedRegolith.FOOTPRINTTYPE;
 
 public class NSPBlockStateProvider extends BlockStateProvider {
     public NSPBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {

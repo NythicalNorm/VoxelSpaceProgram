@@ -9,7 +9,7 @@ import com.nythicalnorm.voxelspaceprogram.block.manufacturing.CryogenicAirSepara
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.BoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
-import com.nythicalnorm.voxelspaceprogram.block.terrain.FootprintedRegolith;
+import com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedRegolith;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.Magnetizer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

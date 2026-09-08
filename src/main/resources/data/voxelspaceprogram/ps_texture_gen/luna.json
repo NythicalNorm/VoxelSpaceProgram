@@ -1,0 +1,49 @@
+{
+  "name": "luna",
+  "biome_groups": [
+    {
+      "name": "mare",
+      "min": -0.5,
+      "max": -0.2,
+      "biome_gradients": [
+        {
+          "min": 0.0,
+          "max": 0.5,
+          "color": "#5d5d5d"
+        },
+        {
+          "min": 0.5,
+          "max": 0.9,
+          "color": "#3c3c3c"
+        },
+        {
+          "min": 0.9,
+          "max": 1.0,
+          "color": "#595959"
+        }
+      ]
+    },
+    {
+      "name": "land",
+      "min": -0.2,
+      "max": 0.5,
+      "biome_gradients": [
+        {
+          "min": 0.0,
+          "max": 0.15,
+          "color": "#959293"
+        },
+        {
+          "min": 0.15,
+          "max": 0.3,
+          "color": "#c3c1c2"
+        },
+        {
+          "min": 0.3,
+          "max": 1.0,
+          "color": "#d0d0d0"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "mars",
+  "type": "planetshine:planet",
+  "radius": 320000,
+  "mass": 	4.5154270e21,
+
+  "north_pole_dir": {
+    "right_ascension": 0.0,
+    "declination": 25.19
+  },
+
+  "starting_rotation": 0.0,
+  "rotation_period": 65517.859,
+
+  "orbital_elements": {
+    "semi_major_axis": 	20726155264,
+    "eccentricity": 0.051,
+    "periapsis_time": 8658000,
+
+    "inclination": 0.001047198,
+    "argument_of_periapsis": 0.0,
+    "longitude_of_ascending_node": 2.3649211
+  },
+
+  "atmospheric_data": {
+    "has_atmosphere": true,
+    "surface_color": "ff8860",
+    "atmosphere_color": "bdb5ab",
+    "atmosphere_height": 80000,
+    "atmosphere_pressure": 0.05,
+    "atmosphere_alpha": 0.08,
+    "alpha_night": 1.0,
+    "alpha_day": 0.3
+  },
+
+  "dimensional_properties": {
+    "render_custom_skybox": true,
+    "draw_sunrise_disk": false,
+    "default_sky_color": "bdb5ab",
+    "affect_entity_gravity": false,
+    "affect_vs_ship_gravity": true
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "mars",
+  "biome_groups": [
+    {
+      "name": "high_lands",
+      "min": -0.5,
+      "max": 0.2,
+      "biome_gradients": [
+        {
+          "min": 0.0,
+          "max": 0.5,
+          "color": "#fe844e"
+        },
+        {
+          "min": 0.5,
+          "max": 0.7,
+          "color": "#fa7241"
+        },
+        {
+          "min": 0.7,
+          "max": 1.0,
+          "color": "#f16a3d"
+        }
+      ]
+    },
+    {
+      "name": "low_lands",
+      "min": 0.2,
+      "max": 0.5,
+      "biome_gradients": [
+        {
+          "min": 0.0,
+          "max": 0.2,
+          "color": "#e46035"
+        },
+        {
+          "min": 0.2,
+          "max": 0.3,
+          "color": "#df623c"
+        },
+        {
+          "min": 0.3,
+          "max": 1.0,
+          "color": "#da633a"
+        }
+      ]
+    }
+  ]
+}

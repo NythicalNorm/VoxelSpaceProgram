@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.terrain;
+package com.nythicalnorm.voxelspaceprogram.block.terrain.luna;
 
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;

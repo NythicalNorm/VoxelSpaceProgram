@@ -1,16 +1,18 @@
-package com.nythicalnorm.voxelspaceprogram.block.terrain;
+package com.nythicalnorm.voxelspaceprogram.block.terrain.luna;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.NotNull;
 
-public class FootprintedRegolith extends Block {
+public class FootprintedRegolith extends FallingBlock {
     public static final EnumProperty<FootprintedType> FOOTPRINTTYPE = EnumProperty.create("footprinttype", FootprintedType.class);
 
 
@@ -67,5 +69,10 @@ public class FootprintedRegolith extends Block {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(FOOTPRINTTYPE);
         super.createBlockStateDefinition(pBuilder);
+    }
+
+    @Override
+    public int getDustColor(@NotNull BlockState p_53238_, @NotNull BlockGetter p_53239_, @NotNull BlockPos p_53240_) {
+        return 0xc0c0c0;
     }
 }
