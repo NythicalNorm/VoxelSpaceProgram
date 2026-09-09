@@ -17,7 +17,9 @@ public class VSPWorldGenProvider extends DatapackBuiltinEntriesProvider {
             .add(Registries.LEVEL_STEM, VSPDimensions::bootstrapStem)
             .add(Registries.NOISE_SETTINGS, VSPDimensions::bootstrapNoiseSettings)
             .add(Registries.NOISE, VSPDimensions::bootstrapNoiseParameters)
-            .add(Registries.BIOME, VSPDimensions::bootstrapBiomes);
+            .add(Registries.BIOME, VSPDimensions::bootstrapBiomes)
+            .add(Registries.CONFIGURED_FEATURE, VSPDimensions::bootstrapConfiguredFeature)
+            .add(Registries.PLACED_FEATURE, VSPDimensions::bootstrapPlacedFeatures);
 
 
     public VSPWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

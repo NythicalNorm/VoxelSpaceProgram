@@ -6,6 +6,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -14,139 +15,56 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 public class LunaNoiseRouterBuilder {
     public static final ResourceKey<NormalNoise.NoiseParameters> LARGE_TERRAIN =
-            ResourceKey.create(
-                    Registries.NOISE,
-                    VoxelSpaceProgram.rl("luna_large_terrain")
-            );
+            ResourceKey.create(Registries.NOISE, VoxelSpaceProgram.rl("luna_large_terrain"));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> MEDIUM_TERRAIN =
-            ResourceKey.create(
-                    Registries.NOISE,
-                    VoxelSpaceProgram.rl("luna_medium_terrain")
-            );
+            ResourceKey.create(Registries.NOISE, VoxelSpaceProgram.rl("luna_medium_terrain"));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> SMALL_TERRAIN =
-            ResourceKey.create(
-                    Registries.NOISE,
-                    VoxelSpaceProgram.rl("luna_small_terrain")
-            );
+            ResourceKey.create(Registries.NOISE, VoxelSpaceProgram.rl("luna_small_terrain"));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> LARGE_CRATER =
-            ResourceKey.create(
-                    Registries.NOISE,
-                    VoxelSpaceProgram.rl("luna_large_crater")
-            );
+            ResourceKey.create(Registries.NOISE, VoxelSpaceProgram.rl("luna_large_crater"));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> MEDIUM_CRATER =
-            ResourceKey.create(
-                    Registries.NOISE,
-                    VoxelSpaceProgram.rl("luna_medium_crater")
-            );
+            ResourceKey.create(Registries.NOISE, VoxelSpaceProgram.rl("luna_medium_crater"));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> SMALL_CRATER =
-            ResourceKey.create(
-                    Registries.NOISE,
-                    VoxelSpaceProgram.rl("luna_small_crater")
-            );
+            ResourceKey.create(Registries.NOISE, VoxelSpaceProgram.rl("luna_small_crater"));
 
     public static void bootstrapNoiseParameters(BootstapContext<NormalNoise.NoiseParameters> context) {
-        context.register(LARGE_TERRAIN,
-            new NormalNoise.NoiseParameters(
-                    -8,
-                    1.0
-            )
-        );
-
-        context.register(MEDIUM_TERRAIN,
-                new NormalNoise.NoiseParameters(
-                        -5,
-                        1.0
-                )
-        );
-
-        context.register(SMALL_TERRAIN,
-                new NormalNoise.NoiseParameters(
-                        -2,
-                        1.0
-                )
-        );
+        context.register(LARGE_TERRAIN, new NormalNoise.NoiseParameters(-8, 1.0));
+        context.register(MEDIUM_TERRAIN, new NormalNoise.NoiseParameters(-5,1.0));
+        context.register(SMALL_TERRAIN, new NormalNoise.NoiseParameters(-2, 1.0));
 
         //Craters
-        context.register(LARGE_CRATER,
-                new NormalNoise.NoiseParameters(
-                        -9,
-                        1.0
-                )
-        );
-
-        context.register(MEDIUM_CRATER,
-                new NormalNoise.NoiseParameters(
-                        -6,
-                        1.0
-                )
-        );
-
-        context.register(SMALL_CRATER,
-                new NormalNoise.NoiseParameters(
-                        -3,
-                        1.0
-                )
-        );
+        context.register(LARGE_CRATER, new NormalNoise.NoiseParameters(-9, 1.0));
+        context.register(MEDIUM_CRATER, new NormalNoise.NoiseParameters(-6, 1.0));
+        context.register(SMALL_CRATER, new NormalNoise.NoiseParameters(-3, 1.0));
     }
 
     /*
      * Main terrain density.
      */
     public static NoiseRouter create(BootstapContext<NoiseGeneratorSettings> context) {
-
         DensityFunction terrain = createLunarTerrain(context);
 
         return new NoiseRouter(
-
-                // barrier noise
-                DensityFunctions.zero(),
-
-                // fluid level floodedness
-                DensityFunctions.zero(),
-
-                // fluid level spread
-                DensityFunctions.zero(),
-
-                // lava
-                DensityFunctions.zero(),
-
-                // temperature
-                DensityFunctions.constant(0.0),
-
-                // vegetation
-                DensityFunctions.constant(0.0),
-
-                // continents
-                DensityFunctions.constant(0.0),
-
-                // erosion
-                DensityFunctions.constant(0.0),
-
-                // depth
-                DensityFunctions.constant(0.0),
-
-                // ridges
-                DensityFunctions.constant(0.0),
-
-                // initial density
-                terrain,
-
-                // final density
-                terrain,
-
-                // vein toggle
-                DensityFunctions.zero(),
-
-                // vein ridged
-                DensityFunctions.zero(),
-
-                // vein gap
-                DensityFunctions.zero()
+            DensityFunctions.zero(),// barrier noise
+            DensityFunctions.zero(),// fluid level floodedness
+            DensityFunctions.zero(),// fluid level spread
+            DensityFunctions.zero(),// lava
+            DensityFunctions.constant(0.0),// temperature
+            DensityFunctions.constant(0.0),// vegetation
+            DensityFunctions.constant(0.0),// continents
+            DensityFunctions.constant(0.0),// erosion
+            DensityFunctions.constant(0.0),// depth
+            DensityFunctions.constant(0.0),// ridges
+            terrain,// initial density
+            terrain,// final density
+            DensityFunctions.zero(),// vein toggle
+            DensityFunctions.zero(),// vein ridged
+            DensityFunctions.zero()// vein gap
         );
     }
 
@@ -157,57 +75,31 @@ public class LunaNoiseRouterBuilder {
         /*
          * Large-scale elevation.
          */
-        DensityFunction largeTerrain =
-                DensityFunctions.mul(
-                        DensityFunctions.noise(
-                                noises.getOrThrow(LARGE_TERRAIN),
-                                0.02d,
-                                0.15d
-                        ),
-                        DensityFunctions.constant(96.0)
-                );
-
+        DensityFunction largeTerrain = DensityFunctions.mul(
+            DensityFunctions.noise(noises.getOrThrow(LARGE_TERRAIN), 0.02d, 0.15d),
+            DensityFunctions.constant(96.0)
+        );
 
         /*
          * Medium terrain variation.
          */
-        DensityFunction mediumTerrain =
-                DensityFunctions.mul(
-                        DensityFunctions.noise(
-                                noises.getOrThrow(MEDIUM_TERRAIN),
-                                0.3d,
-                                0.8d
-                        ),
-                        DensityFunctions.constant(35.0)
-                );
-
+        DensityFunction mediumTerrain = DensityFunctions.mul(
+            DensityFunctions.noise(noises.getOrThrow(MEDIUM_TERRAIN), 0.3d, 0.8d),
+            DensityFunctions.constant(35.0)
+        );
 
         /*
          * Small surface variation.
          */
-        DensityFunction smallTerrain =
-                DensityFunctions.mul(
-                        DensityFunctions.noise(
-                                noises.getOrThrow(SMALL_TERRAIN),
-                                0.09d,
-                                0.35d
-                        ),
-                        DensityFunctions.constant(10.0)
-                );
-
+        DensityFunction smallTerrain = DensityFunctions.mul(
+            DensityFunctions.noise(noises.getOrThrow(SMALL_TERRAIN), 0.09d, 0.35d),
+            DensityFunctions.constant(10.0)
+        );
 
         /*
          * Combine normal lunar terrain.
          */
-        DensityFunction terrain =
-                DensityFunctions.add(
-                        largeTerrain,
-                        DensityFunctions.add(
-                                mediumTerrain,
-                                smallTerrain
-                        )
-                );
-
+        DensityFunction terrain = DensityFunctions.add(largeTerrain, DensityFunctions.add(mediumTerrain, smallTerrain));
 
         /*
          * Convert height into density.
@@ -217,12 +109,18 @@ public class LunaNoiseRouterBuilder {
          *
          * Surface is approximately Y=100.
          */
-        DensityFunction height =
-                DensityFunctions.add(
-                        DensityFunctions.constant(-64.0),
-                        terrain
-                );
+        DensityFunction height = DensityFunctions.add(DensityFunctions.constant(-64.0), terrain);
 
+        // Vanilla cave noise parameters
+        Holder<NormalNoise.NoiseParameters> spaghetti2D =
+            noises.getOrThrow(
+                ResourceKey.create(Registries.NOISE, ResourceLocation.fromNamespaceAndPath("minecraft", "spaghetti_2d"))
+            );
+
+        DensityFunction caveNoise = DensityFunctions.noise(spaghetti2D, 1.0, 1.0);
+
+        // Make it narrow
+        DensityFunction caves = DensityFunctions.add(caveNoise, DensityFunctions.constant(-0.65));
 
         /*
          * Convert Y into a density value.
@@ -239,31 +137,20 @@ public class LunaNoiseRouterBuilder {
          *
          *      negative
          */
-        DensityFunction baseDensity =
-                DensityFunctions.add(
-                        height,
-                        DensityFunctions.mul(
-                                DensityFunctions.yClampedGradient(
-                                        -64,
-                                        320,
-                                        1.0,
-                                        -1.0
-                                ),
-                                DensityFunctions.constant(384.0)
-                        )
-                );
-
+        DensityFunction baseDensity = DensityFunctions.add(
+            height,
+            DensityFunctions.mul(
+                DensityFunctions.yClampedGradient(-64, 320, 1.0, -1.0),
+                DensityFunctions.constant(384.0)
+            )
+        );
 
         /*
          * Impact craters.
          */
         DensityFunction craters = createCraters(noises);
 
-
-        return DensityFunctions.add(
-                baseDensity,
-                craters
-        );
+        return DensityFunctions.add(DensityFunctions.add(baseDensity, craters), caves);
     }
 
     private static DensityFunction createCraterField(
@@ -272,11 +159,7 @@ public class LunaNoiseRouterBuilder {
             double depth
     ) {
 
-        DensityFunction craterNoise =
-                DensityFunctions.noise(craterNoiseParams,
-                        frequency,
-                        frequency
-                );
+        DensityFunction craterNoise = DensityFunctions.noise(craterNoiseParams, frequency, frequency);
 
         /*
          * Convert noise into sharp crater-like depressions.
@@ -286,61 +169,38 @@ public class LunaNoiseRouterBuilder {
          *      positive noise -> 0
          *      negative noise -> negative
          */
-        DensityFunction depression =
-                DensityFunctions.min(
-                        craterNoise,
-                        DensityFunctions.constant(0.0)
-                );
-
+        DensityFunction depression = DensityFunctions.min(craterNoise, DensityFunctions.constant(0.0));
 
         /*
          * Increase contrast.
          */
-        depression =
-                DensityFunctions.mul(
-                        depression,
-                        DensityFunctions.constant(4.0)
-                );
-
+        depression = DensityFunctions.mul(depression, DensityFunctions.constant(4.0));
 
         /*
          * Make the crater depth.
          */
-        return DensityFunctions.mul(
-                depression,
-                DensityFunctions.constant(depth)
-        );
+        return DensityFunctions.mul(depression, DensityFunctions.constant(depth));
     }
 
     private static DensityFunction createCraters(HolderGetter<NormalNoise.NoiseParameters> noises) {
-
-        DensityFunction large =
-                createCraterField(
-                        noises.getOrThrow(LARGE_CRATER),
-                        0.07,
-                        36.0
-                );
-
-        DensityFunction medium =
-                createCraterField(
-                        noises.getOrThrow(MEDIUM_CRATER),
-                        0.2,
-                        16.0
-                );
-
-        DensityFunction small =
-                createCraterField(
-                        noises.getOrThrow(SMALL_CRATER),
-                        0.6,
-                        7.0
-                );
-
-        return DensityFunctions.add(
-                large,
-                DensityFunctions.add(
-                        medium,
-                        small
-                )
+        DensityFunction large = createCraterField(
+            noises.getOrThrow(LARGE_CRATER),
+            0.07,
+            36.0
         );
+
+        DensityFunction medium = createCraterField(
+            noises.getOrThrow(MEDIUM_CRATER),
+            0.2,
+            16.0
+        );
+
+        DensityFunction small = createCraterField(
+            noises.getOrThrow(SMALL_CRATER),
+            0.6,
+            7.0
+        );
+
+        return DensityFunctions.add(large, DensityFunctions.add(medium, small));
     }
 }

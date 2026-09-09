@@ -1,6 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.dimensions.luna;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.dimensions.luna.features.LunaPlacedFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -8,6 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class LunaBiomes {
     public static final ResourceKey<Biome> TERRAE_BIOME = ResourceKey.create(Registries.BIOME, VoxelSpaceProgram.rl("luna_terrae"));
@@ -31,6 +33,10 @@ public class LunaBiomes {
             )
             .generationSettings(
                 new BiomeGenerationSettings.PlainBuilder()
+                        .addFeature(
+                                GenerationStep.Decoration.LOCAL_MODIFICATIONS,
+                                context.lookup(Registries.PLACED_FEATURE).getOrThrow(LunaPlacedFeatures.LUNA_BOULDER_PLACED_FEATURE)
+                        )
                         .build()
             ).build()
         );

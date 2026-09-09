@@ -5,6 +5,8 @@ import com.nythicalnorm.voxelspaceprogram.dimensions.luna.LunaBiomes;
 import com.nythicalnorm.voxelspaceprogram.dimensions.luna.LunaDimension;
 import com.nythicalnorm.voxelspaceprogram.dimensions.luna.LunaNoiseRouterBuilder;
 import com.nythicalnorm.voxelspaceprogram.dimensions.luna.LunaNoiseSettings;
+import com.nythicalnorm.voxelspaceprogram.dimensions.luna.features.LunaConfiguredFeatures;
+import com.nythicalnorm.voxelspaceprogram.dimensions.luna.features.LunaPlacedFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +15,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 public class VSPDimensions {
@@ -43,5 +47,13 @@ public class VSPDimensions {
 
     public static void bootstrapBiomes(BootstapContext<Biome> context) {
         LunaBiomes.bootstrapBiomes(context);
+    }
+
+    public static void bootstrapConfiguredFeature(BootstapContext<ConfiguredFeature<?,?>> context) {
+        LunaConfiguredFeatures.bootstrapConfiguredFeatures(context);
+    }
+
+    public static void bootstrapPlacedFeatures(BootstapContext<PlacedFeature> context) {
+        LunaPlacedFeatures.bootstrapPlacedFeatures(context);
     }
 }

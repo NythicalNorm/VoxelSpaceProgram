@@ -2,6 +2,7 @@ package com.nythicalnorm.voxelspaceprogram;
 
 import com.mojang.logging.LogUtils;
 import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.dimensions.VSPFeatureTypes;
 import com.nythicalnorm.voxelspaceprogram.sound.NSPSounds;
 import com.nythicalnorm.voxelspaceprogram.util.NSPCreativeModeTab;
 import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
@@ -37,15 +38,19 @@ public class VoxelSpaceProgram
 
         NSPItems.register(modEventBus);
         NSPBlocks.register(modEventBus);
+
         NSPSounds.register(modEventBus);
         NSPBlockEntities.register(modEventBus);
-        NSPMenuTypes.register(modEventBus);
-        NSPRecipes.register(modEventBus);
+
+        VSPFeatureTypes.register(modEventBus);
+
         NSPFluids.FLUID_TYPES.register(modEventBus);
         NSPFluids.FLUIDS.register(modEventBus);
 
-        MinecraftForge.EVENT_BUS.register(this);
+        NSPMenuTypes.register(modEventBus);
+        NSPRecipes.register(modEventBus);
 
+        MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::commonSetup);
         NSPCreativeModeTab.register(modEventBus);
         //modEventBus.addListener(this::addCreative);

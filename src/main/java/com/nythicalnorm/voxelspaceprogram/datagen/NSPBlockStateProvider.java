@@ -78,10 +78,11 @@ public class NSPBlockStateProvider extends BlockStateProvider {
 
     protected void SetFootprintBlockState (RegistryObject<Block> block) {
         getVariantBuilder(block.get()).forAllStates(state -> {
-            FootprintedType myEnumval = state.getValue(FOOTPRINTTYPE);
-            if (myEnumval == FootprintedType.NOFOOTPRINTS) {
-               return new ConfiguredModel[]{new ConfiguredModel(models().cubeAll("lunar_regolith",
-                       VoxelSpaceProgram.rl( "block/lunar_regolith")))};
+            FootprintedType footprintType = state.getValue(FOOTPRINTTYPE);
+            ResourceLocation blockModel = VoxelSpaceProgram.rl( "block/lunar_regolith");
+
+            if (footprintType == FootprintedType.NOFOOTPRINTS) {
+               return ConfiguredModel.allYRotations(models().cubeAll("lunar_regolith", blockModel), 0, false);
            }
 
            else {

@@ -37,7 +37,7 @@
     "render_custom_skybox": true,
     "draw_sunrise_disk": false,
     "default_sky_color": "bdb5ab",
-    "affect_entity_gravity": false,
+    "affect_entity_gravity": true,
     "affect_vs_ship_gravity": true
   }
 }
