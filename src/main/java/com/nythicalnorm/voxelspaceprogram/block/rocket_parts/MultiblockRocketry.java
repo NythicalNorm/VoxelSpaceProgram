@@ -42,27 +42,33 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
 
     private VoxelShape[] generateShapesForAABB() {
         VoxelShape[] voxelShapes = new VoxelShape[6];
+        boolean isWidthEven = Math.floorDiv((int) pixelWidth, 16) % 2 == 0;
         double halfHeight = pixelHeight * 0.5d;
         double halfWidth = pixelWidth * 0.5d;
-//        voxelShapes[0] = Block.box(-(halfWidth - 8), 0, -(halfWidth - 8), halfWidth + 8, pPixelHeight, halfWidth + 8);
-//        voxelShapes[1] = Block.box(-(halfWidth - 8), -(pixelHeight + 16), -(halfWidth - 8), halfWidth + 8, 16, halfWidth + 8);
-        voxelShapes[0] = getShapeFromDirection(Direction.UP, halfWidth, halfHeight);
-        voxelShapes[1] = getShapeFromDirection(Direction.DOWN, halfWidth, halfHeight);
-        voxelShapes[2] = getShapeFromDirection(Direction.EAST, halfWidth, halfHeight);
-        voxelShapes[3] = getShapeFromDirection(Direction.WEST, halfWidth, halfHeight);
-        voxelShapes[4] = getShapeFromDirection(Direction.NORTH, halfWidth, halfHeight);
-        voxelShapes[5] = getShapeFromDirection(Direction.SOUTH, halfWidth, halfHeight);
+        voxelShapes[0] = getShapeFromDirection(Direction.UP, halfWidth, halfHeight, isWidthEven);
+        voxelShapes[1] = getShapeFromDirection(Direction.DOWN, halfWidth, halfHeight, isWidthEven);
+        voxelShapes[2] = getShapeFromDirection(Direction.EAST, halfWidth, halfHeight, isWidthEven);
+        voxelShapes[3] = getShapeFromDirection(Direction.WEST, halfWidth, halfHeight, isWidthEven);
+        voxelShapes[4] = getShapeFromDirection(Direction.NORTH, halfWidth, halfHeight, isWidthEven);
+        voxelShapes[5] = getShapeFromDirection(Direction.SOUTH, halfWidth, halfHeight, isWidthEven);
 
         return voxelShapes;
     }
 
-    private static VoxelShape getShapeFromDirection(Direction direction, double halfWidth, double halfHeight) {
+    private static VoxelShape getShapeFromDirection(Direction direction, double halfWidth, double halfHeight, boolean isWidthEven) {
         Vector3d posA = new Vector3d(-halfWidth, -halfHeight + 16, -halfWidth);
         Vector3d posB = new Vector3d(halfWidth, halfHeight + 16, halfWidth);
-        Quaterniond rotD = new Quaterniond();
-        direction.getRotation().get(rotD);
+
+        Quaterniond rotD = direction.getRotation().get(new Quaterniond());
         posA.rotate(rotD);
         posB.rotate(rotD);
+
+        if (!isWidthEven) {
+            Vector3d oddExtraPos = new Vector3d(8.0d, -8.0d, 8.0d);
+            oddExtraPos.rotate(rotD);
+            posA.add(oddExtraPos);
+            posB.add(oddExtraPos);
+        }
 
         Vector3d minPos = new Vector3d(Math.min(posA.x, posB.x), Math.min(posA.y, posB.y), Math.min(posA.z, posB.z));
         Vector3d maxPos = new Vector3d(Math.max(posA.x, posB.x), Math.max(posA.y, posB.y), Math.max(posA.z, posB.z));
@@ -97,7 +103,16 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
     }
 
     private BlockState getAnyPlacementDirection(BlockPlaceContext pContext, Direction[] directions) {
+        Direction actualDirection = pContext.getNearestLookingDirection().getOpposite();
+        if (checkCanBePlaced(pContext, actualDirection)) {
+            return this.defaultBlockState().setValue(FACING, actualDirection);
+        }
+
         for (Direction dir : directions) {
+            if (dir.equals(actualDirection)) {
+                continue;
+            }
+
             if (checkCanBePlaced(pContext, dir)) {
                 return this.defaultBlockState().setValue(FACING, dir);
             }
@@ -147,15 +162,56 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
         });
     }
 
-    public Stream<BlockPos> getPositions(BlockPos pPos,  Direction placeDir) {
+    public Stream<BlockPos> getPositions(BlockPos pPos, Direction placeDir) {
+        if (isEvenBlockSize()) {
+            return getEvenPositions(pPos, placeDir);
+        } else {
+            return getOddPositions(pPos, placeDir);
+        }
+    }
+
+    public Stream<BlockPos> getEvenPositions(BlockPos pPos, Direction placeDir) {
         Stream.Builder<BlockPos> builder = Stream.builder();
-        BlockPos cubeCenter = pPos.offset(placeDir.getNormal());
         int minBlockSearch = -(blockSize - 1) / 2;
         int maxBlockSearch = blockSize / 2;
 
-        for (int x = minBlockSearch; x <= maxBlockSearch; x++) {
-            for (int y = minBlockSearch; y <= maxBlockSearch; y++) {
-                for (int z = minBlockSearch; z <= maxBlockSearch; z++) {
+        BlockPos leftBottomPos = new BlockPos(minBlockSearch, 0, minBlockSearch);
+        BlockPos RightTopPos = new BlockPos(maxBlockSearch, maxBlockSearch, maxBlockSearch);
+        leftBottomPos = rotateBlockPos(leftBottomPos, placeDir);
+        RightTopPos = rotateBlockPos(RightTopPos, placeDir);
+
+        int minX = Math.min(leftBottomPos.getX(), RightTopPos.getX());
+        int minY = Math.min(leftBottomPos.getY(), RightTopPos.getY());
+        int minZ = Math.min(leftBottomPos.getZ(), RightTopPos.getZ());
+
+        int maxX = Math.max(leftBottomPos.getX(), RightTopPos.getX());
+        int maxY = Math.max(leftBottomPos.getY(), RightTopPos.getY());
+        int maxZ = Math.max(leftBottomPos.getZ(), RightTopPos.getZ());
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    BlockPos searchPos = new BlockPos(pPos.getX() + x,pPos.getY() + y, pPos.getZ() + z);
+                    if (!searchPos.equals(pPos)) {
+                        builder.add(searchPos);
+                    }
+                }
+            }
+        }
+
+        return builder.build();
+    }
+
+    public Stream<BlockPos> getOddPositions(BlockPos pPos, Direction placeDir) {
+        Stream.Builder<BlockPos> builder = Stream.builder();
+        int blockCenter = (this.blockSize - 1) / 2;
+        BlockPos cubeCenter = pPos.offset(placeDir.getNormal().multiply(blockCenter));
+
+        int blockSearch = (blockSize / 2);
+
+        for (int x = -blockSearch; x <= blockSearch; x++) {
+            for (int y = -blockSearch; y <= blockSearch; y++) {
+                for (int z = -blockSearch; z <= blockSearch; z++) {
                     BlockPos searchPos = new BlockPos(cubeCenter.getX() + x,cubeCenter.getY() + y, cubeCenter.getZ() + z);
                     if (!searchPos.equals(pPos)) {
                         builder.add(searchPos);
@@ -165,6 +221,23 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
         }
 
         return builder.build();
+    }
+
+    public boolean isEvenBlockSize() {
+        return this.blockSize % 2 == 0;
+    }
+
+    public static BlockPos rotateBlockPos(BlockPos pos, Direction direction) {
+        return switch (direction) {
+            case UP    -> new BlockPos(pos.getX(),  pos.getY(),  pos.getZ());  // Identity
+            case DOWN  -> new BlockPos(pos.getX(), -pos.getY(), -pos.getZ());
+
+            case NORTH -> new BlockPos(-pos.getX(),  -pos.getZ(), -pos.getY());
+            case SOUTH -> new BlockPos(pos.getX(), -pos.getZ(),  pos.getY());
+
+            case EAST  -> new BlockPos(pos.getZ(),  -pos.getY(), -pos.getX());
+            case WEST  -> new BlockPos(-pos.getZ(),  -pos.getY(),  pos.getX());
+        };
     }
 
     @Override
@@ -180,22 +253,9 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
 
     @Override
     protected void spawnDestroyParticles(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState) {
-        int minBlockPos = -(blockSize - 1) / 2;
-        int maxBlockPos = blockSize / 2;
-        BlockPos correctedBlockPos = new BlockPos(pPos.getX() + maxBlockPos, pPos.getY() + maxBlockPos, pPos.getZ() + maxBlockPos);
-
-        for (int x = minBlockPos; x <= maxBlockPos; x++) {
-            for (int y = minBlockPos; y <= maxBlockPos; y++) {
-                for (int z = minBlockPos; z <= maxBlockPos; z++) {
-                    BlockPos newPos = new BlockPos(correctedBlockPos.getX() + x, correctedBlockPos.getY()+y, correctedBlockPos.getZ() + z);
-                    super.spawnDestroyParticles(pLevel, pPlayer, newPos, pState);
-                }
-            }
-        }
-
-//        getPositions(pPos, pState).forEach(boundingLocation -> {
-//            super.spawnDestroyParticles(pLevel, pPlayer, boundingLocation, pState);
-//        });
+        this.getPositions(pPos, pState.getValue(FACING)).forEach(blockPos ->
+                super.spawnDestroyParticles(pLevel, pPlayer, blockPos, pState)
+        );
     }
 
     public abstract Block getBoundingBlock();

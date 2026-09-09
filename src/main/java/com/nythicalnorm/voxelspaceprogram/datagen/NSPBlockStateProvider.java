@@ -42,16 +42,16 @@ public class NSPBlockStateProvider extends BlockStateProvider {
         fluidBlock(NSPFluids.LIQUID_OXYGEN.block);
         connectedBlock(NSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART);
 
-        rocketryEntityBlock(NSPBlocks.THREE_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f, 4f);
-        rocketryEntityBlock(NSPBlocks.TWO_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/3f, 8f);
+        rocketryEntityBlock(NSPBlocks.THREE_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f);
+        rocketryEntityBlock(NSPBlocks.TWO_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/3f);
         particleOnlyBlock(NSPBlocks.BOUNDING_BLOCK, NSPBlocks.MAGNETIZED_IRON_BLOCK);
     }
 
-    protected void rocketryEntityBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock, float scale, float yHeight) {
+    protected void rocketryEntityBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock, float scale) {
         particleOnlyBlock(block, particleBlock);
 
         Vector3f rot = new Vector3f(-90f, 0f, 0f);
-        Vector3f pos = new Vector3f(0f, yHeight, 0f);
+        Vector3f pos = new Vector3f(0f, 4f, 0f);
         itemModels().getBuilder(block.getId().getPath()).parent(new ModelFile.UncheckedModelFile("builtin/entity"))
                 .texture("particle", blockTexture(particleBlock.get()))
                 .transforms().transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).scale(scale).translation(pos.x, pos.y, pos.z).rotation(rot.x, rot.y, rot.z).end()

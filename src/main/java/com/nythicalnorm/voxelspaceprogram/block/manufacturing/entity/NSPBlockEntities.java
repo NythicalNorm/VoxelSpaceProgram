@@ -15,8 +15,6 @@ public class NSPBlockEntities {
      public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister
              .create(ForgeRegistries.BLOCK_ENTITY_TYPES, VoxelSpaceProgram.MODID);
 
-    //public static final BlockEntityType<EngineEntity> EngineEntityType = ;
-
     public static final RegistryObject<BlockEntityType<MagnetizerEntity>> MAGNETIZER_BE =
              BLOCK_ENTITIES.register("magnetizer_be", () ->
                      BlockEntityType.Builder.of(MagnetizerEntity::new, NSPBlocks.MAGNETIZER.get()).build(null));
@@ -30,7 +28,11 @@ public class NSPBlockEntities {
                     BlockEntityType.Builder.of(VehicleAssemblerEntity::new, NSPBlocks.VEHICLE_ASSEMBLER.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<EngineEntity>> ENGINE_BE =
-            BLOCK_ENTITIES.register("engine_be", () -> BlockEntityType.Builder.of(EngineEntity::new, NSPBlocks.THREE_KEROLOX.get(), NSPBlocks.TWO_KEROLOX.get()).build(null));
+            BLOCK_ENTITIES.register("engine_be", () -> BlockEntityType.Builder.of(EngineEntity::new,
+                    NSPBlocks.THREE_KEROLOX.get(),
+                    NSPBlocks.TWO_KEROLOX.get())
+                    .build(null)
+            );
 
     public static final RegistryObject<BlockEntityType<BoundingBlockEntity>> BOUNDING_BLOCK_BE =
             BLOCK_ENTITIES.register("bounding_block_be", () -> BlockEntityType.Builder.of(BoundingBlockEntity::new, NSPBlocks.BOUNDING_BLOCK.get()).build(null));

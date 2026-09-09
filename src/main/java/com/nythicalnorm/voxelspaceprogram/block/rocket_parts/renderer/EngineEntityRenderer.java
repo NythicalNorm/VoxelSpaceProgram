@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.MultiblockRocketry;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModel;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -25,14 +27,20 @@ public class EngineEntityRenderer implements BlockEntityRenderer<EngineEntity> {
     }
 
     @Override
-    public void render(EngineEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
+    public void render(EngineEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
+                       @NotNull MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
         pPoseStack.pushPose();
         EngineModel model = engineModelMap.get(pBlockEntity.getBlockState().getBlock());
         if (model != null) {
             VertexConsumer vertexconsumer = model.getTexture_Location().buffer(pBuffer, RenderType::entitySolid);
             pPoseStack.translate(0.5f, 0.5f, 0.5f);
             pPoseStack.mulPose(pBlockEntity.getFacingRot());
-            pPoseStack.translate(0f, 1.0f, 0f);
+
+            if (pBlockEntity.getBlockState().getBlock() instanceof MultiblockRocketry multiblockRocketry && multiblockRocketry.isEvenBlockSize()) {
+                pPoseStack.translate(0.5f, 0.0f, 0.5f);
+            } else {
+                pPoseStack.translate(0f, 1.0f, 0f);
+            }
 
             model.getFixed().render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
         }
