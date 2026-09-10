@@ -6,7 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.VehicleAssembler;
 import com.nythicalnorm.voxelspaceprogram.block.gse.PlatformAssembly;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.CryogenicAirSeparator;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.BoundingBlock;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
 import com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedRegolith;

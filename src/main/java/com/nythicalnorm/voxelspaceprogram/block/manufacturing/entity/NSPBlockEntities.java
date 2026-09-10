@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.BoundingBlockEntity;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlockEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;

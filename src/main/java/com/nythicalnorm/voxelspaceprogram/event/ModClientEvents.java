@@ -5,7 +5,7 @@ import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEnt
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.models.MagnetizerModels;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer.MagnetizerBlockEntityRenderer;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.renderer.EngineEntityRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers.EngineEntityRenderer;
 import com.nythicalnorm.voxelspaceprogram.util.VSPKeyBinds;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,11 +43,5 @@ public class ModClientEvents {
         event.register(VSPKeyBinds.DOCKING_MODE_TOGGLE_KEY);
         event.register(VSPKeyBinds.CLOCKWISE_SPIN_KEY);
         event.register(VSPKeyBinds.ANTI_CLOCKWISE_SPIN_KEY);
-    }
-
-    @SubscribeEvent
-    public static void shaderRegistry(RegisterShadersEvent event) throws IOException
-    {
-
     }
 }

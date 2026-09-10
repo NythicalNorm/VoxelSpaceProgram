@@ -252,11 +252,11 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
-//mixin {
-//    // MixinGradle Settings
-//    add sourceSets.main, 'mixins.voxelspaceprogram.refmap.json'
-//    config 'voxelspaceprogram.mixins.json'
-//}
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'mixins.voxelspaceprogram.refmap.json'
+    config 'voxelspaceprogram.mixins.json'
+}
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
 // tasks.named('publish').configure {

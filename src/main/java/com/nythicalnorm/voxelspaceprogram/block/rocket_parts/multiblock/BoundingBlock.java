@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPClientBlockExtensions;

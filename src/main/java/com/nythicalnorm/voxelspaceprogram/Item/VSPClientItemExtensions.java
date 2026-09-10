@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.Item;
 
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.BEItemRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.BEItemRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 

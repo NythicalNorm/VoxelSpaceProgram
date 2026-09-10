@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.core.BlockPos;
@@ -249,6 +249,12 @@ public abstract class MultiblockRocketry extends BaseEntityBlock {
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext pContext) {
         Direction[] nearestLookingDirections = pContext.getNearestLookingDirections();
         return getAnyPlacementDirection(pContext, nearestLookingDirections);
+    }
+
+    //for preview drawing purposes
+    public BlockState getUncheckedStateForPlacement(BlockPlaceContext pContext) {
+        Direction actualDirection = pContext.getNearestLookingDirection().getOpposite();
+        return this.defaultBlockState().setValue(FACING, actualDirection);
     }
 
     @Override

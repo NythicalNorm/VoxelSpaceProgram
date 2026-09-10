@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.block;
 
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.BoundingBlock;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlock;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.TerrainParticle;

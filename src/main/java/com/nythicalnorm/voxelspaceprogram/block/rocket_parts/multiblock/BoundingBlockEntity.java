@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
@@ -82,7 +82,7 @@ public class BoundingBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         return saveWithoutMetadata();
     }
 

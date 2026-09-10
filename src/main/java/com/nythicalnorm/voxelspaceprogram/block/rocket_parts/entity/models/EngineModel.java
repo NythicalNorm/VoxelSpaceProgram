@@ -10,13 +10,15 @@ import net.minecraft.world.inventory.InventoryMenu;
 public class EngineModel {
     private final ModelPart gimbaling;
     private final ModelPart fixed;
-    private final Material Texture_Location;
+    private final Material material;
+    private final Material previewMaterial;
 
     public EngineModel(BlockEntityRendererProvider.Context context, ModelLayerLocation layerLocation, ResourceLocation textureLocation) {
         ModelPart modelpart = context.bakeLayer(layerLocation);
         this.fixed = modelpart.getChild("fixed");
         this.gimbaling = this.fixed.getChild("gimbaling");
-        Texture_Location = new Material(InventoryMenu.BLOCK_ATLAS, textureLocation);
+        this.material = new Material(InventoryMenu.BLOCK_ATLAS, textureLocation);
+        this.previewMaterial = new Material(InventoryMenu.BLOCK_ATLAS, textureLocation);
     }
 
     public ModelPart getGimbaling() {
@@ -27,7 +29,11 @@ public class EngineModel {
         return fixed;
     }
 
-    public Material getTexture_Location() {
-        return Texture_Location;
+    public Material getMaterial() {
+        return material;
+    }
+
+    public Material getPreviewMaterial() {
+        return previewMaterial;
     }
 }

@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;

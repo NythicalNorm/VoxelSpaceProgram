@@ -1,12 +1,17 @@
 package com.nythicalnorm.voxelspaceprogram.event;
 
 import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.rendering.BlockPreviewRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +28,23 @@ public class ForgeClientEvents {
             playerModel.rightArm.visible = false;
             playerModel.leftSleeve.visible = false;
             playerModel.rightSleeve.visible = false;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES)
+            return;
+
+        Minecraft mc = Minecraft.getInstance();
+
+        if (mc.player == null || mc.level == null)
+            return;
+
+        ItemStack stack = mc.player.getMainHandItem();
+
+        if ((stack.getItem() instanceof RocketryBlockItem rocketryBlockItem) && rocketryBlockItem.renderBlockPreview()) {
+            BlockPreviewRenderer.renderBlockItemPreview(event.getPoseStack(), mc, rocketryBlockItem, rocketryBlockItem.getMultiblockRocketry());
         }
     }
 

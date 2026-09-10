@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
