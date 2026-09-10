@@ -3,19 +3,27 @@
   "loader": "fusion:model",
   "type": "connecting",
   "textures": {
-    "sides": "voxelspaceprogram:block/cryogenic_air_separator_side_tiles",
-    "top": "voxelspaceprogram:block/cryogenic_air_separator_top_tiles",
-    "particle": "voxelspaceprogram:block/cryogenic_air_separator_side_tiles"
+    "sides": "voxelspaceprogram:block/hypergolic_steel_tank_side_tiles",
+    "top": "voxelspaceprogram:block/hypergolic_steel_tank_top_tiles",
+    "particle": "voxelspaceprogram:block/hypergolic_steel_tank_side_tiles"
   },
   "connections": {
     "sides": [
       {
-        "type": "is_same_block"
+        "type": "match_state",
+        "block": "voxelspaceprogram:hypergolic_steel_tank",
+        "properties": {
+          "enabled": ["true"]
+        }
       }
     ],
     "top": [
       {
-        "type": "is_same_block"
+        "type": "match_state",
+        "block": "voxelspaceprogram:hypergolic_steel_tank",
+        "properties": {
+          "enabled": ["true"]
+        }
       }
     ]
   },

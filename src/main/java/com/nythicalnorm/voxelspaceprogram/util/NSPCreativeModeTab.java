@@ -28,7 +28,7 @@ public class NSPCreativeModeTab {
                         output.accept(NSPItems.SPACESUIT_LEGGINGS.get());
                         output.accept(NSPItems.SPACESUIT_BOOTS.get());
 
-                        output.accept(NSPBlocks.OXYGEN_PROPELLANT_TANK.get());
+                        output.accept(NSPBlocks.HYPERGOLIC_STEEL_TANK.get());
                         output.accept(NSPBlocks.MAGNETIZED_IRON_BLOCK.get());
                         output.accept(NSPBlocks.LUNAR_REGOLITH.get());
                         output.accept(NSPBlocks.CRYOGENIC_AIR_SEPARATOR.get());

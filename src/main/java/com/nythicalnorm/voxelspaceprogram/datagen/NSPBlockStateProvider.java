@@ -24,10 +24,7 @@ public class NSPBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-
-        simpleBlockWithItem(NSPBlocks.OXYGEN_PROPELLANT_TANK.get(), getColumnCubeModel(NSPBlocks.OXYGEN_PROPELLANT_TANK,
-                VoxelSpaceProgram.rl( "block/oxygen_propellant_tank_side"),
-                VoxelSpaceProgram.rl( "block/oxygen_propellant_tank_end")));
+        connectedBlock(NSPBlocks.HYPERGOLIC_STEEL_TANK);
 
         simpleBlockWithItem(NSPBlocks.MAGNETIZED_IRON_BLOCK.get(), cubeAll(NSPBlocks.MAGNETIZED_IRON_BLOCK.get()));
         SetFootprintBlockState(NSPBlocks.LUNAR_REGOLITH);
@@ -46,6 +43,7 @@ public class NSPBlockStateProvider extends BlockStateProvider {
         rocketryEntityBlock(NSPBlocks.TWO_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/3f);
         particleOnlyBlock(NSPBlocks.BOUNDING_BLOCK, NSPBlocks.MAGNETIZED_IRON_BLOCK);
     }
+
 
     protected void rocketryEntityBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock, float scale) {
         particleOnlyBlock(block, particleBlock);

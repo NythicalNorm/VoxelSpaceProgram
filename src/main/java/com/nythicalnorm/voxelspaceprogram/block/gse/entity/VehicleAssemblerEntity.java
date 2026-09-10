@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.block.gse.entity;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.BlockFindingStorage;
 import com.nythicalnorm.voxelspaceprogram.block.gse.AssemblerState;
-import com.nythicalnorm.voxelspaceprogram.block.gse.AssemblerUtil;
+import com.nythicalnorm.voxelspaceprogram.util.AssemblerUtil;
 import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.screen.VehicleAssemblerMenu;
 import com.nythicalnorm.voxelspaceprogram.block.gse.warnings.ProblemsMgr;
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 
 public class VehicleAssemblerEntity extends BlockEntity implements MenuProvider {
     private AssemblerState state = AssemblerState.JUST_PLACED;
-    private ProblemsMgr problemsMgr;
+    private final ProblemsMgr problemsMgr;
     private Player menuOpenedPlayer;
 
     BoundingBox assemblyBoundingBox = null;

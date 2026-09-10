@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.gse;
+package com.nythicalnorm.voxelspaceprogram.util;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.warnings.ProblemsMgr;
@@ -30,7 +30,6 @@ public class AssemblerUtil {
         }
         return null;
     }
-
 
     public static BoundingBox calculateBoundingBox(Block platformBlock, Block scaffoldBlock, BlockPos startingPos, Level level, ProblemsMgr problemsMgr) {
         int yHeight = startingPos.getY();

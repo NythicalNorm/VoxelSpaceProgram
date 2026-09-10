@@ -3,6 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.PropellantTankEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlockEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,6 +32,12 @@ public class NSPBlockEntities {
             BLOCK_ENTITIES.register("engine_be", () -> BlockEntityType.Builder.of(EngineEntity::new,
                     NSPBlocks.THREE_KEROLOX.get(),
                     NSPBlocks.TWO_KEROLOX.get())
+                    .build(null)
+            );
+
+    public static final RegistryObject<BlockEntityType<PropellantTankEntity>> PROPELLANT_TANK_BE =
+            BLOCK_ENTITIES.register("propellant_tank_be", () -> BlockEntityType.Builder.of(PropellantTankEntity::new,
+                    NSPBlocks.HYPERGOLIC_STEEL_TANK.get())
                     .build(null)
             );
 

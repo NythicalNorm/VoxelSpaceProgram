@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.block;
 
-import com.nythicalnorm.voxelspaceprogram.block.gse.AssemblerUtil;
+import com.nythicalnorm.voxelspaceprogram.util.AssemblerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;

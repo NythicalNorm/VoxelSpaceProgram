@@ -27,11 +27,11 @@ public class NSPBlockTagGenerator extends BlockTagsProvider {
                 NSPBlocks.MAGNETIZED_IRON_BLOCK.get(), NSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get(), NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(),
                 NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get());
 
-        this.tag(BlockTags.NEEDS_IRON_TOOL).add(NSPBlocks.OXYGEN_PROPELLANT_TANK.get(), NSPBlocks.LUNAR_REGOLITH.get(), NSPBlocks.VEHICLE_ASSEMBLER.get(),
+        this.tag(BlockTags.NEEDS_IRON_TOOL).add(NSPBlocks.HYPERGOLIC_STEEL_TANK.get(), NSPBlocks.LUNAR_REGOLITH.get(), NSPBlocks.VEHICLE_ASSEMBLER.get(),
                 NSPBlocks.THREE_KEROLOX.get(), NSPBlocks.TWO_KEROLOX.get(), NSPBlocks.BOUNDING_BLOCK.get());
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(NSPBlocks.OXYGEN_PROPELLANT_TANK.get())
+                .add(NSPBlocks.HYPERGOLIC_STEEL_TANK.get())
                 .add(NSPBlocks.LUNAR_REGOLITH.get())
                 .add(NSPBlocks.CRYOGENIC_AIR_SEPARATOR.get())
                 .add(NSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get())

@@ -7,6 +7,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class NSPBlockLootTables extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        this.dropSelf(NSPBlocks.OXYGEN_PROPELLANT_TANK.get());
+        this.dropSelf(NSPBlocks.HYPERGOLIC_STEEL_TANK.get());
         this.dropSelf(NSPBlocks.LUNAR_REGOLITH.get());
         this.dropSelf(NSPBlocks.MAGNETIZED_IRON_BLOCK.get());
         this.dropSelf(NSPBlocks.CRYOGENIC_AIR_SEPARATOR.get());
@@ -35,7 +36,7 @@ public class NSPBlockLootTables extends BlockLootSubProvider {
     }
 
     @Override
-    protected  Iterable<Block> getKnownBlocks() {
+    protected @NotNull Iterable<Block> getKnownBlocks() {
         return NSPBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
     }
 }

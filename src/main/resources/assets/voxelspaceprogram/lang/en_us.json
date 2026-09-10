@@ -9,7 +9,6 @@
   "item.voxelspaceprogram.liquid_oxygen_fluid_bucket": "Liquid Oxygen Bucket",
 
   "creativetab.Main_VSP": "Voxel Space Program",
-  "block.voxelspaceprogram.oxygen_propellant_tank": "Oxygen Propellant Tank",
   "block.voxelspaceprogram.lunar_regolith": "Lunar Regolith",
   "block.voxelspaceprogram.cryogenic_air_separator": "Cryogenic Air Separator",
   "block.voxelspaceprogram.cryogenic_air_separator_part": "Cryogenic Air Separator Machine Block",
@@ -19,6 +18,8 @@
   "block.voxelspaceprogram.vehicle_assembly_platform": "Vehicle Assembly Platform",
   "block.voxelspaceprogram.vehicle_assembly_scaffold": "Vehicle Assembly Scaffold",
   "block.voxelspaceprogram.vehicle_assembler": "Vehicle Assembler",
+
+  "block.voxelspaceprogram.hypergolic_steel_tank": "Hypergolic Steel Tank",
 
   "block.voxelspaceprogram.three_kerolox": "F1 Engine",
   "block.voxelspaceprogram.two_kerolox": "RD-180 Engine",
@@ -38,6 +39,8 @@
   "key.voxelspaceprogram.anti_clockwise_spin":  "Decrease the Roll (Spinning Anti-Clockwise)",
 
   "voxelspaceprogram.vehicle_assembler.create_assembly_area": "Prepare Vehicle Assembly Area",
+
+  "propellant_tank.voxelspaceprogram.assembly_unable": "Can't Assemble propellant tank it doesn't enclose a hollow space or is in an non-cuboid shape.",
 
   "assembler_warnings.voxelspaceprogram.no_platform": "No Vehicle Assembly Platform blocks are found placed next to the Vehicle Assembler.",
   "assembler_warnings.voxelspaceprogram.small_platform": "Vehicle Assembly Platform is Smaller than the minimum size allowed",

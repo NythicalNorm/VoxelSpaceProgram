@@ -17,7 +17,7 @@ public class NSPRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(@NotNull Consumer<FinishedRecipe> pWriter) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NSPBlocks.OXYGEN_PROPELLANT_TANK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NSPBlocks.HYPERGOLIC_STEEL_TANK.get())
                 .pattern("XRX")
                 .pattern("X#X")
                 .pattern("XRX")

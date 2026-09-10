@@ -6,6 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.VehicleAssembler;
 import com.nythicalnorm.voxelspaceprogram.block.gse.PlatformAssembly;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.CryogenicAirSeparator;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.PropellantTankBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
@@ -25,8 +26,8 @@ import java.util.function.Supplier;
 public class NSPBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, VoxelSpaceProgram.MODID);
 
-    public static final RegistryObject<Block> OXYGEN_PROPELLANT_TANK = registerBlock("oxygen_propellant_tank",
-            () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
+    public static final RegistryObject<Block> HYPERGOLIC_STEEL_TANK = registerBlock("hypergolic_steel_tank",
+            () -> new PropellantTankBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
 
     public static final RegistryObject<Block> MAGNETIZED_IRON_BLOCK = registerBlock("magnetized_iron_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.GOLD_BLOCK).sound(SoundType.NETHERITE_BLOCK)));
