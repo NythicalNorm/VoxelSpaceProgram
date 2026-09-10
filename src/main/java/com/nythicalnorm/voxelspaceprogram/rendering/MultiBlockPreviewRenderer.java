@@ -7,11 +7,13 @@ import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRe
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRendererDispatcher;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -20,9 +22,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BlockPreviewRenderer {
-    public static void renderBlockItemPreview(PoseStack poseStack, Minecraft mc,
-                                              RocketryBlockItem rocketryBlockItem, MultiblockRocketry rocketryBlock
+public class MultiBlockPreviewRenderer {
+    private Block lastRenderedBlock;
+    private Material lastRenderedMaterial;
+
+    public MultiBlockPreviewRenderer() {
+        this.lastRenderedBlock = null;
+        this.lastRenderedMaterial = null;
+    }
+
+    public void renderBlockItemPreview(PoseStack poseStack, Minecraft mc,
+                                       RocketryBlockItem rocketryBlockItem, MultiblockRocketry rocketryBlock
     ) {
         if (mc.hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType().equals(HitResult.Type.BLOCK)) {
             UseOnContext useOnContext = new UseOnContext(mc.player, InteractionHand.MAIN_HAND, blockHitResult);
@@ -40,11 +50,17 @@ public class BlockPreviewRenderer {
         }
    }
 
-    public static void renderBlockPreview(Minecraft mc, PoseStack poseStack, BlockState state, BlockPos pos, boolean success) {
+    public void renderBlockPreview(Minecraft mc, PoseStack poseStack, BlockState state, BlockPos pos, boolean success) {
         if (state.getBlock() instanceof BaseEntityBlock) {
-            PreviewRenderer renderer = ((PreviewRendererDispatcher)mc.getBlockEntityRenderDispatcher()).vsp$getPreviewRenderer(state.getBlock());
+            PreviewRenderer renderer = ((PreviewRendererDispatcher)mc.getBlockEntityRenderDispatcher()).vsp$getBEPreviewRenderer(state.getBlock());
             if (renderer == null) {
                 return;
+            }
+
+            if (!state.getBlock().equals(this.lastRenderedBlock) || this.lastRenderedMaterial == null) {
+                this.lastRenderedBlock = state.getBlock();
+                Material actualMaterial = renderer.getMaterial(this.lastRenderedBlock);
+                this.lastRenderedMaterial = new Material(actualMaterial.atlasLocation(), actualMaterial.texture());
             }
 
             Camera camera = mc.gameRenderer.getMainCamera();
@@ -55,7 +71,7 @@ public class BlockPreviewRenderer {
             float[] green = {0.0f, 1.0f, 0.0f, 0.25f};
             float[] red = {1.0f, 0.0f, 0.0f, 0.25f};
 
-            renderer.renderPreview(state, 0.0f, poseStack, mc.renderBuffers().bufferSource(), success ? green : red);
+            renderer.renderPreview(state, 0.0f, poseStack, mc.renderBuffers().bufferSource(), lastRenderedMaterial, success ? green : red);
             poseStack.popPose();
         }
     }

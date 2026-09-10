@@ -10,4 +10,12 @@ public class EngineEntity extends MultiblockRocketryEntity {
     public EngineEntity(BlockPos pPos, BlockState pBlockState) {
         super(NSPBlockEntities.ENGINE_BE.get(), pPos, pBlockState);
     }
+
+    public float getGimbalXrot() {
+        return 0.0f;
+    }
+
+    public float getGimbalYrot() {
+        return 0.0f;
+    }
 }

@@ -3,7 +3,8 @@ package com.nythicalnorm.voxelspaceprogram.event;
 import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
 import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.rendering.BlockPreviewRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRendererDispatcher;
+import com.nythicalnorm.voxelspaceprogram.rendering.MultiBlockPreviewRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -44,7 +45,10 @@ public class ForgeClientEvents {
         ItemStack stack = mc.player.getMainHandItem();
 
         if ((stack.getItem() instanceof RocketryBlockItem rocketryBlockItem) && rocketryBlockItem.renderBlockPreview()) {
-            BlockPreviewRenderer.renderBlockItemPreview(event.getPoseStack(), mc, rocketryBlockItem, rocketryBlockItem.getMultiblockRocketry());
+            MultiBlockPreviewRenderer previewRenderer =
+                    ((PreviewRendererDispatcher)mc.getBlockEntityRenderDispatcher()).vsp$multiBlockPreviewRenderer();
+
+            previewRenderer.renderBlockItemPreview(event.getPoseStack(), mc, rocketryBlockItem, rocketryBlockItem.getMultiblockRocketry());
         }
     }
 
