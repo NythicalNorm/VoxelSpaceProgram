@@ -17,7 +17,7 @@ public class LunaBiomes {
     public static void bootstrapBiomes(BootstapContext<Biome> context) {
         context.register(TERRAE_BIOME, new Biome.BiomeBuilder()
             .hasPrecipitation(false)
-            .temperature(0.0F)
+            .temperature(2.0F)
             .downfall(0.0F)
             .specialEffects(
                 new BiomeSpecialEffects.Builder()

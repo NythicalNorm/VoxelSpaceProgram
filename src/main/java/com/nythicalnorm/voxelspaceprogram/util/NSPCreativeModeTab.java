@@ -28,12 +28,21 @@ public class NSPCreativeModeTab {
                         output.accept(NSPItems.SPACESUIT_LEGGINGS.get());
                         output.accept(NSPItems.SPACESUIT_BOOTS.get());
 
-                        output.accept(NSPBlocks.HYPERGOLIC_STEEL_TANK.get());
                         output.accept(NSPBlocks.MAGNETIZED_IRON_BLOCK.get());
+
+                        output.accept(NSPItems.RAW_ALUMINUM.get());
+                        output.accept(NSPItems.ALUMINUM_INGOT.get());
+                        output.accept(NSPBlocks.ALUMINIUM_ORE.get());
+                        output.accept(NSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get());
+                        output.accept(NSPBlocks.ALUMINIUM_BLOCK.get());
+                        output.accept(NSPBlocks.RAW_ALUMINIUM_BLOCK.get());
+
                         output.accept(NSPBlocks.LUNAR_REGOLITH.get());
                         output.accept(NSPBlocks.CRYOGENIC_AIR_SEPARATOR.get());
                         output.accept(NSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get());
                         output.accept(NSPBlocks.MAGNETIZER.get());
+
+                        output.accept(NSPBlocks.HYPERGOLIC_STEEL_TANK.get());
 
                         output.accept(NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get());
                         output.accept(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get());

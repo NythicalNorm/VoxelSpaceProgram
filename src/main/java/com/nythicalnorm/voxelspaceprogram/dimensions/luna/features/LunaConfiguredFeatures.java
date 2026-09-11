@@ -1,8 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.dimensions.luna.features;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.dimensions.VSPFeatureTypes;
-import net.minecraft.core.registries.Registries;
+import com.nythicalnorm.voxelspaceprogram.dimensions.VSPWorldGenUtils;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
@@ -11,8 +10,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 public class LunaConfiguredFeatures {
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LUNA_BOULDER =
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, VoxelSpaceProgram.rl("luna_boulder"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LUNA_BOULDER = VSPWorldGenUtils.registerConfiguredFeature("luna_boulder");
 
     public static void bootstrapConfiguredFeatures(BootstapContext<ConfiguredFeature<?, ?>> context) {
         FeatureUtils.register(

@@ -1,4 +1,7 @@
 {
+  "item.voxelspaceprogram.raw_aluminum": "Raw Aluminum",
+  "item.voxelspaceprogram.aluminum_ingot": "Aluminum Ingot",
+
   "item.voxelspaceprogram.handheld_propeller": "Handheld Propeller",
   "item.voxelspaceprogram.magnet_boots": "Magnetic Boots",
   "item.voxelspaceprogram.spacesuit_helmet": "Spacesuit Visor",
@@ -9,11 +12,16 @@
   "item.voxelspaceprogram.liquid_oxygen_fluid_bucket": "Liquid Oxygen Bucket",
 
   "creativetab.Main_VSP": "Voxel Space Program",
+  "block.voxelspaceprogram.magnetizer": "Magnetizer",
+  "block.voxelspaceprogram.magnetized_iron_block": "Block of Magnetized Iron",
+  "block.voxelspaceprogram.aluminum_ore": "Aluminum Ore",
+  "block.voxelspaceprogram.deepslate_aluminum_ore": "Deepslate Aluminum Ore",
+  "block.voxelspaceprogram.raw_aluminum_block": "Block of Raw Aluminum",
+  "block.voxelspaceprogram.aluminum_block": "Block of Aluminum",
+
   "block.voxelspaceprogram.lunar_regolith": "Lunar Regolith",
   "block.voxelspaceprogram.cryogenic_air_separator": "Cryogenic Air Separator",
   "block.voxelspaceprogram.cryogenic_air_separator_part": "Cryogenic Air Separator Machine Block",
-  "block.voxelspaceprogram.magnetizer": "Magnetizer",
-  "block.voxelspaceprogram.magnetized_iron_block": "Block of Magnetized Iron",
 
   "block.voxelspaceprogram.vehicle_assembly_platform": "Vehicle Assembly Platform",
   "block.voxelspaceprogram.vehicle_assembly_scaffold": "Vehicle Assembly Scaffold",

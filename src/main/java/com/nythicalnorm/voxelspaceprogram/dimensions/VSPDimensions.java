@@ -7,6 +7,8 @@ import com.nythicalnorm.voxelspaceprogram.dimensions.luna.LunaNoiseRouterBuilder
 import com.nythicalnorm.voxelspaceprogram.dimensions.luna.LunaNoiseSettings;
 import com.nythicalnorm.voxelspaceprogram.dimensions.luna.features.LunaConfiguredFeatures;
 import com.nythicalnorm.voxelspaceprogram.dimensions.luna.features.LunaPlacedFeatures;
+import com.nythicalnorm.voxelspaceprogram.dimensions.vanilla.VanillaConfiguredFeatures;
+import com.nythicalnorm.voxelspaceprogram.dimensions.vanilla.VanillaPlacedFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -50,10 +52,12 @@ public class VSPDimensions {
     }
 
     public static void bootstrapConfiguredFeature(BootstapContext<ConfiguredFeature<?,?>> context) {
+        VanillaConfiguredFeatures.bootstrapConfiguredFeatures(context);
         LunaConfiguredFeatures.bootstrapConfiguredFeatures(context);
     }
 
     public static void bootstrapPlacedFeatures(BootstapContext<PlacedFeature> context) {
+        VanillaPlacedFeatures.bootstrapPlacedFeatures(context);
         LunaPlacedFeatures.bootstrapPlacedFeatures(context);
     }
 }

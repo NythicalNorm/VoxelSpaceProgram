@@ -26,15 +26,24 @@ import java.util.function.Supplier;
 public class NSPBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, VoxelSpaceProgram.MODID);
 
-    public static final RegistryObject<Block> HYPERGOLIC_STEEL_TANK = registerBlock("hypergolic_steel_tank",
-            () -> new PropellantTankBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
-
     public static final RegistryObject<Block> MAGNETIZED_IRON_BLOCK = registerBlock("magnetized_iron_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.GOLD_BLOCK).sound(SoundType.NETHERITE_BLOCK)));
 
+    //World Gen
+    public static final RegistryObject<Block> ALUMINIUM_ORE = registerBlock("aluminum_ore",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)));
+
+    public static final RegistryObject<Block> DEEPSLATE_ALUMINIUM_ORE = registerBlock("deepslate_aluminum_ore",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_IRON_ORE)));
+
+    public static final RegistryObject<Block> ALUMINIUM_BLOCK = registerBlock("aluminum_block",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.RAW_IRON_BLOCK)));
+
+    public static final RegistryObject<Block> RAW_ALUMINIUM_BLOCK = registerBlock("raw_aluminum_block",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
+
     public static final RegistryObject<Block> LUNAR_REGOLITH = registerBlock("lunar_regolith",
             () -> new FootprintedRegolith(BlockBehaviour.Properties.copy(Blocks.NETHERRACK).sound(SoundType.POWDER_SNOW).destroyTime(2f)));
-
 
     //Manufacturing Blocks
     public static final RegistryObject<Block> CRYOGENIC_AIR_SEPARATOR = registerBlock("cryogenic_air_separator",
@@ -52,10 +61,14 @@ public class NSPBlocks {
 
     public static final RegistryObject<Block> VEHICLE_ASSEMBLY_SCAFFOLD = registerBlock("vehicle_assembly_scaffold",
             () -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.GLASS).sound(SoundType.COPPER).destroyTime(2f)
-                    .explosionResistance(10f).noOcclusion()));
+                    .explosionResistance(10f)));
 
     public static final RegistryObject<Block> VEHICLE_ASSEMBLER = registerBlock("vehicle_assembler",
             () -> new VehicleAssembler(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
+
+    // Rocketry Parts
+    public static final RegistryObject<Block> HYPERGOLIC_STEEL_TANK = registerBlock("hypergolic_steel_tank",
+            () -> new PropellantTankBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
 
     // Engines
     public static final RegistryObject<Block> THREE_KEROLOX = registerRocketryBlock("three_kerolox",

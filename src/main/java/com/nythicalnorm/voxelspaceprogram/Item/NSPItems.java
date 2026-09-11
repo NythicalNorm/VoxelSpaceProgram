@@ -15,12 +15,17 @@ import net.minecraftforge.registries.RegistryObject;
 public class NSPItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, VoxelSpaceProgram.MODID);
 
+    public static final RegistryObject<Item> RAW_ALUMINUM = ITEMS.register("raw_aluminum", () ->
+            new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> ALUMINUM_INGOT = ITEMS.register("aluminum_ingot", () ->
+            new Item(new Item.Properties()));
+
     public static final RegistryObject<Item> HANDHELD_PROPELLER = ITEMS.register("handheld_propeller",
             () -> new HandheldPropellerItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> MAGNET_BOOTS = ITEMS.register("magnet_boots", () ->
             new MagneticBoots(NSPArmorMaterial.MAGNETIC, ArmorItem.Type.BOOTS,  new Item.Properties()));
-
 
     public static final RegistryObject<Item> SPACESUIT_HELMET =  ITEMS.register("spacesuit_helmet", () ->
             new ArmorItem(NSPArmorMaterial.SPACESUIT, ArmorItem.Type.HELMET, new Item.Properties()));

@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.dimensions.luna.features;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
+import com.nythicalnorm.voxelspaceprogram.dimensions.VSPWorldGenUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class LunaPlacedFeatures {
     public static final ResourceKey<PlacedFeature> LUNA_BOULDER_PLACED_FEATURE =
-            ResourceKey.create(Registries.PLACED_FEATURE, VoxelSpaceProgram.rl("luna_boulder"));
+            VSPWorldGenUtils.registerPlacedFeature("luna_boulder");
 
     public static void bootstrapPlacedFeatures(BootstapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> features =

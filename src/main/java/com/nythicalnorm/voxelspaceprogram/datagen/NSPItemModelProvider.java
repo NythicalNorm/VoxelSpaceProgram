@@ -17,6 +17,9 @@ public class NSPItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        simpleItem(NSPItems.RAW_ALUMINUM);
+        simpleItem(NSPItems.ALUMINUM_INGOT);
+
         item3dOnlyinHand(NSPItems.HANDHELD_PROPELLER);
         simpleItem(NSPItems.MAGNET_BOOTS);
         simpleItem(NSPItems.MAGNETIZED_IRON_INGOT);

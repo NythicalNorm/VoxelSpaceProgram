@@ -24,7 +24,10 @@ public class NSPBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        connectedBlock(NSPBlocks.HYPERGOLIC_STEEL_TANK);
+        simpleBlockWithItem(NSPBlocks.ALUMINIUM_ORE.get(), cubeAll(NSPBlocks.ALUMINIUM_ORE.get()));
+        simpleBlockWithItem(NSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(), cubeAll(NSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get()));
+        simpleBlockWithItem(NSPBlocks.ALUMINIUM_BLOCK.get(), cubeAll(NSPBlocks.ALUMINIUM_BLOCK.get()));
+        simpleBlockWithItem(NSPBlocks.RAW_ALUMINIUM_BLOCK.get(), cubeAll(NSPBlocks.RAW_ALUMINIUM_BLOCK.get()));
 
         simpleBlockWithItem(NSPBlocks.MAGNETIZED_IRON_BLOCK.get(), cubeAll(NSPBlocks.MAGNETIZED_IRON_BLOCK.get()));
         SetFootprintBlockState(NSPBlocks.LUNAR_REGOLITH);
@@ -32,8 +35,10 @@ public class NSPBlockStateProvider extends BlockStateProvider {
         modelBlockWithItem(NSPBlocks.MAGNETIZER.get(), new ModelFile.UncheckedModelFile(
                 VoxelSpaceProgram.rl( "block/magnetizer")));
 
+        connectedBlock(NSPBlocks.HYPERGOLIC_STEEL_TANK);
+
         simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(), cubeAll(NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get()));
-        simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), cubeAll(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get()));
+        simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), cubeAllCutout(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD));
         simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLER.get(), cubeAll(NSPBlocks.VEHICLE_ASSEMBLER.get()));
 
         fluidBlock(NSPFluids.LIQUID_OXYGEN.block);
@@ -72,6 +77,10 @@ public class NSPBlockStateProvider extends BlockStateProvider {
     protected void modelBlockWithItem(Block block, ModelFile model) {
         horizontalBlock(block, model);
         simpleBlockItem(block, model);
+    }
+
+    public ModelFile cubeAllCutout(RegistryObject<Block> block) {
+        return models().cubeAll(block.getId().getPath(), blockTexture(block.get())).renderType("minecraft:cutout");
     }
 
     protected void SetFootprintBlockState (RegistryObject<Block> block) {
