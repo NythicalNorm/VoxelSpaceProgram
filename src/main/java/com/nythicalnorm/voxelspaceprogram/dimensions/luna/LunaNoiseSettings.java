@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.dimensions.luna;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -52,7 +52,7 @@ public class LunaNoiseSettings {
                         SurfaceRules.ifTrue(
                                 SurfaceRules.ON_FLOOR,
                                 SurfaceRules.state(
-                                        NSPBlocks.LUNAR_REGOLITH.get().defaultBlockState()
+                                        VSPBlocks.LUNAR_REGOLITH.get().defaultBlockState()
                                 )
                         ),
 
@@ -60,7 +60,7 @@ public class LunaNoiseSettings {
                         SurfaceRules.ifTrue(
                                 SurfaceRules.UNDER_FLOOR,
                                 SurfaceRules.state(
-                                        NSPBlocks.LUNAR_REGOLITH.get().defaultBlockState()
+                                        VSPBlocks.LUNAR_REGOLITH.get().defaultBlockState()
                                 )
                         ),
 
@@ -81,7 +81,7 @@ public class LunaNoiseSettings {
                         noiseSettings,
 
                         // Default solid block
-                        NSPBlocks.LUNAR_REGOLITH.get().defaultBlockState(),
+                        VSPBlocks.LUNAR_REGOLITH.get().defaultBlockState(),
 
                         // Default fluid
                         Blocks.AIR.defaultBlockState(),

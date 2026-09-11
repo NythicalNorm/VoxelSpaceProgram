@@ -4,11 +4,11 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.BlockFindingStorage;
 import com.nythicalnorm.voxelspaceprogram.block.gse.AssemblerState;
 import com.nythicalnorm.voxelspaceprogram.util.AssemblerUtil;
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.screen.VehicleAssemblerMenu;
 import com.nythicalnorm.voxelspaceprogram.block.gse.warnings.ProblemsMgr;
 import com.nythicalnorm.voxelspaceprogram.block.gse.warnings.ProblemsStorage;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +40,7 @@ public class VehicleAssemblerEntity extends BlockEntity implements MenuProvider 
     BoundingBox assemblyBoundingBox = null;
 
     public VehicleAssemblerEntity( BlockPos pPos, BlockState pBlockState) {
-        super(NSPBlockEntities.VEHICLE_ASSEMBLER_BE.get(), pPos, pBlockState);
+        super(VSPBlockEntities.VEHICLE_ASSEMBLER_BE.get(), pPos, pBlockState);
         problemsMgr = new ProblemsMgr();
     }
 
@@ -126,13 +126,13 @@ public class VehicleAssemblerEntity extends BlockEntity implements MenuProvider 
             return;
         }
         problemsMgr.clearProblems();
-        BlockPos startingPos = AssemblerUtil.getBlockAroundMeHorizontal(getBlockPos(), NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(), level);
+        BlockPos startingPos = AssemblerUtil.getBlockAroundMeHorizontal(getBlockPos(), VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(), level);
         if (startingPos != null) {
             long beforeTimes = Util.getNanos();
             problemsMgr.setProblem(ProblemsStorage.Prepare_No_Platform, false);
 
             BlockState blockState = level.getBlockState(startingPos);
-            this.assemblyBoundingBox = AssemblerUtil.calculateBoundingBox(blockState.getBlock(), NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), startingPos, getLevel(), this.problemsMgr);
+            this.assemblyBoundingBox = AssemblerUtil.calculateBoundingBox(blockState.getBlock(), VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), startingPos, getLevel(), this.problemsMgr);
 
             long diff = Util.getNanos() - beforeTimes;
             VoxelSpaceProgram.log("flood fill time: " + diff);

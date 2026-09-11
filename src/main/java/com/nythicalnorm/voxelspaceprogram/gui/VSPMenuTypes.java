@@ -17,7 +17,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class NSPMenuTypes {
+public class VSPMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(ForgeRegistries.MENU_TYPES, VoxelSpaceProgram.MODID);
 
@@ -40,8 +40,8 @@ public class NSPMenuTypes {
     }
 
     public static void registerMenus() {
-        MenuScreens.register(NSPMenuTypes.MAGNETIZER_MENU.get(), MagnetizerScreen::new);
-        MenuScreens.register(NSPMenuTypes.CRYOGENIC_AIR_SEPARATOR_MENU.get(), CryogenicAirSeparatorScreen::new);
-        MenuScreens.register(NSPMenuTypes.VEHICLE_ASSEMBLER_MENU.get(), VehicleAssemblerScreen::new);
+        MenuScreens.register(VSPMenuTypes.MAGNETIZER_MENU.get(), MagnetizerScreen::new);
+        MenuScreens.register(VSPMenuTypes.CRYOGENIC_AIR_SEPARATOR_MENU.get(), CryogenicAirSeparatorScreen::new);
+        MenuScreens.register(VSPMenuTypes.VEHICLE_ASSEMBLER_MENU.get(), VehicleAssemblerScreen::new);
     }
 }

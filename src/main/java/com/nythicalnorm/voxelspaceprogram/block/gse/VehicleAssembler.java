@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.block.gse;
 
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -47,7 +47,7 @@ public class VehicleAssembler extends BaseEntityBlock {
         if (level.isClientSide) {
             return null;
         }
-        return createTickerHelper(pBlockEntityType, NSPBlockEntities.VEHICLE_ASSEMBLER_BE.get(),
+        return createTickerHelper(pBlockEntityType, VSPBlockEntities.VEHICLE_ASSEMBLER_BE.get(),
                 (pLevel, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel, pPos, pState1));
     }
 

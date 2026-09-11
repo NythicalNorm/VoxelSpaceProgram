@@ -2,7 +2,7 @@ package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -41,7 +41,7 @@ public class BEItemRenderer extends BlockEntityWithoutLevelRenderer {
 
     private void populateBlockEntitesToRender() {
         blockEntityRelation = new Object2ObjectOpenHashMap<>();
-        blockEntityRelation.put(NSPBlocks.THREE_KEROLOX.get(), new EngineEntity(BlockPos.ZERO, NSPBlocks.THREE_KEROLOX.get().defaultBlockState()));
-        blockEntityRelation.put(NSPBlocks.TWO_KEROLOX.get(), new EngineEntity(BlockPos.ZERO, NSPBlocks.TWO_KEROLOX.get().defaultBlockState()));
+        blockEntityRelation.put(VSPBlocks.THREE_KEROLOX.get(), new EngineEntity(BlockPos.ZERO, VSPBlocks.THREE_KEROLOX.get().defaultBlockState()));
+        blockEntityRelation.put(VSPBlocks.TWO_KEROLOX.get(), new EngineEntity(BlockPos.ZERO, VSPBlocks.TWO_KEROLOX.get().defaultBlockState()));
     }
 }

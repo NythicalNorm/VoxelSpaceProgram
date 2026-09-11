@@ -76,7 +76,7 @@ public class MagnetizerEntity extends BlockEntity implements MenuProvider {
     private float magnetTableYrot = 0f;
 
     public MagnetizerEntity(BlockPos pPos, BlockState pBlockState) {
-        super(NSPBlockEntities.MAGNETIZER_BE.get(), pPos, pBlockState);
+        super(VSPBlockEntities.MAGNETIZER_BE.get(), pPos, pBlockState);
         Facing = pBlockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
         this.data = new ContainerData() {

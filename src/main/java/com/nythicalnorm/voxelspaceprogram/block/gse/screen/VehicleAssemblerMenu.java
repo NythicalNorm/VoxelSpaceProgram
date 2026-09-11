@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.block.gse.screen;
 
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
-import com.nythicalnorm.voxelspaceprogram.gui.NSPMenuTypes;
+import com.nythicalnorm.voxelspaceprogram.gui.VSPMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,7 +29,7 @@ public class VehicleAssemblerMenu extends AbstractContainerMenu {
     }
 
     public VehicleAssemblerMenu(int pContainerId, BlockEntity blockEntity, Player player) {
-        super(NSPMenuTypes.VEHICLE_ASSEMBLER_MENU.get(), pContainerId);
+        super(VSPMenuTypes.VEHICLE_ASSEMBLER_MENU.get(), pContainerId);
         this.player = player;
 
         if (blockEntity instanceof VehicleAssemblerEntity vehicleAssembler) {
@@ -60,7 +60,7 @@ public class VehicleAssemblerMenu extends AbstractContainerMenu {
     public boolean stillValid(Player pPlayer) {
         if (vehicleAssemblerBE.getLevel() != null) {
             return stillValid(ContainerLevelAccess.create(vehicleAssemblerBE.getLevel(), vehicleAssemblerBE.getBlockPos()),
-                    pPlayer, NSPBlocks.VEHICLE_ASSEMBLER.get());
+                    pPlayer, VSPBlocks.VEHICLE_ASSEMBLER.get());
         }
         return false;
     }

@@ -1,17 +1,17 @@
 package com.nythicalnorm.voxelspaceprogram;
 
 import com.mojang.logging.LogUtils;
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 import com.nythicalnorm.voxelspaceprogram.dimensions.VSPFeatureTypes;
-import com.nythicalnorm.voxelspaceprogram.sound.NSPSounds;
-import com.nythicalnorm.voxelspaceprogram.util.NSPCreativeModeTab;
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
-import com.nythicalnorm.voxelspaceprogram.fluid.NSPFluids;
-import com.nythicalnorm.voxelspaceprogram.recipe.NSPRecipes;
-import com.nythicalnorm.voxelspaceprogram.gui.NSPMenuTypes;
+import com.nythicalnorm.voxelspaceprogram.sound.VSPSounds;
+import com.nythicalnorm.voxelspaceprogram.util.VSPCreativeModeTab;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.fluid.VSPFluids;
+import com.nythicalnorm.voxelspaceprogram.recipe.VSPRecipes;
+import com.nythicalnorm.voxelspaceprogram.gui.VSPMenuTypes;
 import com.nythicalnorm.voxelspaceprogram.network.PacketHandler;
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItemProperties;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,23 +36,23 @@ public class VoxelSpaceProgram
     {
         IEventBus modEventBus = context.getModEventBus();
 
-        NSPItems.register(modEventBus);
-        NSPBlocks.register(modEventBus);
+        VSPItems.register(modEventBus);
+        VSPBlocks.register(modEventBus);
 
-        NSPSounds.register(modEventBus);
-        NSPBlockEntities.register(modEventBus);
+        VSPSounds.register(modEventBus);
+        VSPBlockEntities.register(modEventBus);
 
         VSPFeatureTypes.register(modEventBus);
 
-        NSPFluids.FLUID_TYPES.register(modEventBus);
-        NSPFluids.FLUIDS.register(modEventBus);
+        VSPFluids.FLUID_TYPES.register(modEventBus);
+        VSPFluids.FLUIDS.register(modEventBus);
 
-        NSPMenuTypes.register(modEventBus);
-        NSPRecipes.register(modEventBus);
+        VSPMenuTypes.register(modEventBus);
+        VSPRecipes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::commonSetup);
-        NSPCreativeModeTab.register(modEventBus);
+        VSPCreativeModeTab.register(modEventBus);
         //modEventBus.addListener(this::addCreative);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
@@ -88,8 +88,8 @@ public class VoxelSpaceProgram
         public static void onClientSetup(FMLClientSetupEvent event)
         {
             // Some client setup code
-            NSPItemProperties.addCustomItemProperties();
-            NSPMenuTypes.registerMenus();
+            VSPItemProperties.addCustomItemProperties();
+            VSPMenuTypes.registerMenus();
         }
     }
 }

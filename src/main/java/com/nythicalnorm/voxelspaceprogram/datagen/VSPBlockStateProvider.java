@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.datagen;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
-import com.nythicalnorm.voxelspaceprogram.fluid.NSPFluids;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.fluid.VSPFluids;
 import com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -17,36 +17,36 @@ import org.joml.Vector3f;
 
 import static com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedRegolith.FOOTPRINTTYPE;
 
-public class NSPBlockStateProvider extends BlockStateProvider {
-    public NSPBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+public class VSPBlockStateProvider extends BlockStateProvider {
+    public VSPBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, VoxelSpaceProgram.MODID, exFileHelper);
     }
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockWithItem(NSPBlocks.ALUMINIUM_ORE.get(), cubeAll(NSPBlocks.ALUMINIUM_ORE.get()));
-        simpleBlockWithItem(NSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(), cubeAll(NSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get()));
-        simpleBlockWithItem(NSPBlocks.ALUMINIUM_BLOCK.get(), cubeAll(NSPBlocks.ALUMINIUM_BLOCK.get()));
-        simpleBlockWithItem(NSPBlocks.RAW_ALUMINIUM_BLOCK.get(), cubeAll(NSPBlocks.RAW_ALUMINIUM_BLOCK.get()));
+        simpleBlockWithItem(VSPBlocks.ALUMINIUM_ORE.get(), cubeAll(VSPBlocks.ALUMINIUM_ORE.get()));
+        simpleBlockWithItem(VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(), cubeAll(VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get()));
+        simpleBlockWithItem(VSPBlocks.ALUMINIUM_BLOCK.get(), cubeAll(VSPBlocks.ALUMINIUM_BLOCK.get()));
+        simpleBlockWithItem(VSPBlocks.RAW_ALUMINIUM_BLOCK.get(), cubeAll(VSPBlocks.RAW_ALUMINIUM_BLOCK.get()));
 
-        simpleBlockWithItem(NSPBlocks.MAGNETIZED_IRON_BLOCK.get(), cubeAll(NSPBlocks.MAGNETIZED_IRON_BLOCK.get()));
-        SetFootprintBlockState(NSPBlocks.LUNAR_REGOLITH);
-        simpleBlockWithItem(NSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(), cubeAll(NSPBlocks.CRYOGENIC_AIR_SEPARATOR.get()));
-        modelBlockWithItem(NSPBlocks.MAGNETIZER.get(), new ModelFile.UncheckedModelFile(
+        simpleBlockWithItem(VSPBlocks.MAGNETIZED_IRON_BLOCK.get(), cubeAll(VSPBlocks.MAGNETIZED_IRON_BLOCK.get()));
+        SetFootprintBlockState(VSPBlocks.LUNAR_REGOLITH);
+        simpleBlockWithItem(VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(), cubeAll(VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get()));
+        modelBlockWithItem(VSPBlocks.MAGNETIZER.get(), new ModelFile.UncheckedModelFile(
                 VoxelSpaceProgram.rl( "block/magnetizer")));
 
-        connectedBlock(NSPBlocks.HYPERGOLIC_STEEL_TANK);
+        connectedBlock(VSPBlocks.HYPERGOLIC_STEEL_TANK);
 
-        simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(), cubeAll(NSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get()));
-        simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), cubeAllCutout(NSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD));
-        simpleBlockWithItem(NSPBlocks.VEHICLE_ASSEMBLER.get(), cubeAll(NSPBlocks.VEHICLE_ASSEMBLER.get()));
+        simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(), cubeAll(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get()));
+        simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), cubeAllCutout(VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD));
+        simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLER.get(), cubeAll(VSPBlocks.VEHICLE_ASSEMBLER.get()));
 
-        fluidBlock(NSPFluids.LIQUID_OXYGEN.block);
-        connectedBlock(NSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART);
+        fluidBlock(VSPFluids.LIQUID_OXYGEN.block);
+        connectedBlock(VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART);
 
-        rocketryEntityBlock(NSPBlocks.THREE_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f);
-        rocketryEntityBlock(NSPBlocks.TWO_KEROLOX, NSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/3f);
-        particleOnlyBlock(NSPBlocks.BOUNDING_BLOCK, NSPBlocks.MAGNETIZED_IRON_BLOCK);
+        rocketryEntityBlock(VSPBlocks.THREE_KEROLOX, VSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f);
+        rocketryEntityBlock(VSPBlocks.TWO_KEROLOX, VSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/3f);
+        particleOnlyBlock(VSPBlocks.BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
     }
 
 

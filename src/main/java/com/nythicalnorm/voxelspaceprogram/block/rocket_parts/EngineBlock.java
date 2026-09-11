@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
 
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.MultiblockRocketry;
@@ -25,6 +25,6 @@ public class EngineBlock extends MultiblockRocketry {
 
     @Override
     public Block getBoundingBlock() {
-        return NSPBlocks.BOUNDING_BLOCK.get();
+        return VSPBlocks.BOUNDING_BLOCK.get();
     }
 }

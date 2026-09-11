@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.Item.armor;
 
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
-import com.nythicalnorm.voxelspaceprogram.util.NSPTags;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
+import com.nythicalnorm.voxelspaceprogram.util.VSPTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +22,7 @@ public class MagneticBoots extends ArmorItem {
         ItemStack boots = player.getInventory().getArmor(0);
 
         if (!level.isClientSide() && !boots.isEmpty()) {
-            if (boots.getItem() == NSPItems.MAGNET_BOOTS.get() && !player.isSpectator() && !player.getAbilities().flying
+            if (boots.getItem() == VSPItems.MAGNET_BOOTS.get() && !player.isSpectator() && !player.getAbilities().flying
                     && !player.noPhysics && !player.onGround()) {
 
                 if (isBlockMagneticClose(player.position(), player.blockPosition(), level)) {
@@ -45,7 +45,7 @@ public class MagneticBoots extends ArmorItem {
                         continue;
                     }
 
-                    if (level.getBlockState(searchingBlock).is(NSPTags.Blocks.MAGNETIC_METALS)) {
+                    if (level.getBlockState(searchingBlock).is(VSPTags.Blocks.MAGNETIC_METALS)) {
                         return true;
                     }
                 }

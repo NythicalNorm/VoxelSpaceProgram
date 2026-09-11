@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.block.manufacturing;
 
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.MagnetizerEntity;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -80,7 +80,7 @@ public class Magnetizer extends BaseEntityBlock  {
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, NSPBlockEntities.MAGNETIZER_BE.get(),
+        return createTickerHelper(pBlockEntityType, VSPBlockEntities.MAGNETIZER_BE.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 

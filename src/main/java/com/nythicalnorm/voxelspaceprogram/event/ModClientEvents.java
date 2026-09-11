@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.event;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.models.MagnetizerModels;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer.MagnetizerBlockEntityRenderer;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
@@ -10,20 +10,17 @@ import com.nythicalnorm.voxelspaceprogram.util.VSPKeyBinds;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = VoxelSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModClientEvents {
     @SubscribeEvent
     public static void RegisterBER(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(NSPBlockEntities.MAGNETIZER_BE.get(), MagnetizerBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(NSPBlockEntities.ENGINE_BE.get(), EngineEntityRenderer::new);
+        event.registerBlockEntityRenderer(VSPBlockEntities.MAGNETIZER_BE.get(), MagnetizerBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(VSPBlockEntities.ENGINE_BE.get(), EngineEntityRenderer::new);
     }
 
     @SubscribeEvent

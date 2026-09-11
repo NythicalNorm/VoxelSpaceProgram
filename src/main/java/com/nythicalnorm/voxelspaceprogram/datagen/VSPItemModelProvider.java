@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.datagen;
 
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -10,24 +10,24 @@ import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
-public class NSPItemModelProvider extends ItemModelProvider {
-    public NSPItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+public class VSPItemModelProvider extends ItemModelProvider {
+    public VSPItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, VoxelSpaceProgram.MODID, existingFileHelper);
     }
 
     @Override
     protected void registerModels() {
-        simpleItem(NSPItems.RAW_ALUMINUM);
-        simpleItem(NSPItems.ALUMINUM_INGOT);
+        simpleItem(VSPItems.RAW_ALUMINUM);
+        simpleItem(VSPItems.ALUMINUM_INGOT);
 
-        item3dOnlyinHand(NSPItems.HANDHELD_PROPELLER);
-        simpleItem(NSPItems.MAGNET_BOOTS);
-        simpleItem(NSPItems.MAGNETIZED_IRON_INGOT);
+        item3dOnlyinHand(VSPItems.HANDHELD_PROPELLER);
+        simpleItem(VSPItems.MAGNET_BOOTS);
+        simpleItem(VSPItems.MAGNETIZED_IRON_INGOT);
 
-        simpleItem(NSPItems.SPACESUIT_HELMET);
-        simpleItem(NSPItems.CREATIVE_SPACESUIT_CHESTPLATE);
-        simpleItem(NSPItems.SPACESUIT_LEGGINGS);
-        simpleItem(NSPItems.SPACESUIT_BOOTS);
+        simpleItem(VSPItems.SPACESUIT_HELMET);
+        simpleItem(VSPItems.CREATIVE_SPACESUIT_CHESTPLATE);
+        simpleItem(VSPItems.SPACESUIT_LEGGINGS);
+        simpleItem(VSPItems.SPACESUIT_BOOTS);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

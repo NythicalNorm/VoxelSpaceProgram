@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -19,7 +19,7 @@ public class BoundingBlockEntity extends BlockEntity {
     private boolean receivedCoords;
 
     public BoundingBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(NSPBlockEntities.BOUNDING_BLOCK_BE.get(), pPos, pBlockState);
+        super(VSPBlockEntities.BOUNDING_BLOCK_BE.get(), pPos, pBlockState);
     }
 
     public void setMainLocation(BlockPos pos) {

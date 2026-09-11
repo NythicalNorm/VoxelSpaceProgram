@@ -1,8 +1,8 @@
 package com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.screen;
 
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.MagnetizerEntity;
-import com.nythicalnorm.voxelspaceprogram.gui.NSPMenuTypes;
+import com.nythicalnorm.voxelspaceprogram.gui.VSPMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +24,7 @@ public class MagnetizerMenu extends AbstractContainerMenu {
         this(pContainerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(4));
     }
     public MagnetizerMenu(int pContainerId, Inventory inventory, BlockEntity entity, ContainerData simpleContainerData) {
-        super(NSPMenuTypes.MAGNETIZER_MENU.get(), pContainerId);
+        super(VSPMenuTypes.MAGNETIZER_MENU.get(), pContainerId);
         checkContainerSize(inventory, 2);
         blockEntity = ((MagnetizerEntity) entity);
         this.level = inventory.player.level();
@@ -127,7 +127,7 @@ public class MagnetizerMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                pPlayer, NSPBlocks.MAGNETIZER.get());
+                pPlayer, VSPBlocks.MAGNETIZER.get());
     }
 
     public void addPlayerInventory(Inventory playerInventory) {

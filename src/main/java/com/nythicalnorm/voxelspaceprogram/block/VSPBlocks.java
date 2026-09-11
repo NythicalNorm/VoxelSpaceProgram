@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.block;
 
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.VehicleAssembler;
@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-public class NSPBlocks {
+public class VSPBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, VoxelSpaceProgram.MODID);
 
     public static final RegistryObject<Block> MAGNETIZED_IRON_BLOCK = registerBlock("magnetized_iron_block",
@@ -101,12 +101,12 @@ public class NSPBlocks {
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
-        return NSPItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        return VSPItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
     private static <T extends Block> RegistryObject<T> registerRocketryBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = registerBlockOnly(name,block);
-        NSPItems.ITEMS.register(name, () -> new RocketryBlockItem(toReturn.get(), new Item.Properties()));
+        VSPItems.ITEMS.register(name, () -> new RocketryBlockItem(toReturn.get(), new Item.Properties()));
 
         return toReturn;
     }

@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity;
 
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.NSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -10,7 +10,7 @@ public class PropellantTankEntity extends TankMultiBlockEntity{
     private static final Vector3i maxTankSize = new Vector3i(32, 120, 32);
 
     public PropellantTankEntity(BlockPos pPos, BlockState pBlockState) {
-        super(NSPBlockEntities.PROPELLANT_TANK_BE.get(), pPos, pBlockState);
+        super(VSPBlockEntities.PROPELLANT_TANK_BE.get(), pPos, pBlockState);
     }
 
     @Override

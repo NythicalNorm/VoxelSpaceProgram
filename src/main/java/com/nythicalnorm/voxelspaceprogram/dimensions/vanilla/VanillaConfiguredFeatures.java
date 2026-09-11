@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.dimensions.vanilla;
 
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.dimensions.VSPWorldGenUtils;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -23,8 +23,8 @@ public class VanillaConfiguredFeatures {
         RuleTest deepslateReplaceable = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
 
         List<OreConfiguration.TargetBlockState> overworldAluminumOres = List.of(
-                OreConfiguration.target(stoneReplaceable, NSPBlocks.ALUMINIUM_ORE.get().defaultBlockState()),
-                OreConfiguration.target(deepslateReplaceable, NSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get().defaultBlockState())
+                OreConfiguration.target(stoneReplaceable, VSPBlocks.ALUMINIUM_ORE.get().defaultBlockState()),
+                OreConfiguration.target(deepslateReplaceable, VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get().defaultBlockState())
         );
 
         FeatureUtils.register(context, OVERWORLD_ALUMINUM_ORE, Feature.ORE, new OreConfiguration(overworldAluminumOres, 11));

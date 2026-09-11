@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.event;
 
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRendererDispatcher;
@@ -24,7 +24,7 @@ public class ForgeClientEvents {
     public static void postPlayerRender(RenderPlayerEvent.Pre event) {
         PlayerModel<AbstractClientPlayer> playerModel = event.getRenderer().getModel();
 
-        if (event.getEntity().getSlot(102).get().is(NSPItems.CREATIVE_SPACESUIT_CHESTPLATE.get())) {
+        if (event.getEntity().getSlot(102).get().is(VSPItems.CREATIVE_SPACESUIT_CHESTPLATE.get())) {
             playerModel.leftArm.visible = false;
             playerModel.rightArm.visible = false;
             playerModel.leftSleeve.visible = false;

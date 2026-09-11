@@ -48,7 +48,7 @@ public class CryogenicAirSeparatorEntity extends BlockEntity implements MenuProv
     private AirSeparatedFromPlanets.ManufacturingFluid[] manufacturingFluids = new AirSeparatedFromPlanets.ManufacturingFluid[3];
 
     public CryogenicAirSeparatorEntity(BlockPos pPos, BlockState pBlockState) {
-        super(NSPBlockEntities.CRYOGENIC_AIR_SEPARATOR_BE.get(), pPos, pBlockState);
+        super(VSPBlockEntities.CRYOGENIC_AIR_SEPARATOR_BE.get(), pPos, pBlockState);
 
         this.data = new ContainerData() {
             @Override

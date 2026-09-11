@@ -1,6 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.Item.armor;
 
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.sounds.SoundEvent;
@@ -12,9 +12,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-public enum NSPArmorMaterial implements ArmorMaterial {
+public enum VSPArmorMaterial implements ArmorMaterial {
     MAGNETIC("magnet", 18, new int[]{2,5,6,2}, 10, SoundEvents.ARMOR_EQUIP_IRON,
-            0.2f, 0.5f, () -> Ingredient.of(NSPItems.MAGNETIZED_IRON_INGOT.get())),
+            0.2f, 0.5f, () -> Ingredient.of(VSPItems.MAGNETIZED_IRON_INGOT.get())),
 
     SPACESUIT("spacesuit", 18, new int[]{2,5,6,2}, 10, SoundEvents.ARMOR_EQUIP_GOLD,
             0.2f, 0.0f, () -> Ingredient.of(Items.GOLD_INGOT));
@@ -30,7 +30,7 @@ public enum NSPArmorMaterial implements ArmorMaterial {
 
     private static final int[] BASE_DURABILITY = {11, 16, 15, 13};
 
-    NSPArmorMaterial(String name, int durabilityMultiplier, int[] protectionAmount, int enchantmentValue, SoundEvent equipSound,
+    VSPArmorMaterial(String name, int durabilityMultiplier, int[] protectionAmount, int enchantmentValue, SoundEvent equipSound,
                      float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
         this.name = name;
         this.durabilityMultiplier = durabilityMultiplier;

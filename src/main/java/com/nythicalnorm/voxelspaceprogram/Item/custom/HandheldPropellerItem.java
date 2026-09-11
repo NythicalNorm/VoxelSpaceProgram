@@ -1,7 +1,7 @@
 package com.nythicalnorm.voxelspaceprogram.Item.custom;
 
-import com.nythicalnorm.voxelspaceprogram.Item.NSPItems;
-import com.nythicalnorm.voxelspaceprogram.sound.NSPSounds;
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
+import com.nythicalnorm.voxelspaceprogram.sound.VSPSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -22,13 +22,13 @@ public class HandheldPropellerItem extends Item {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         pPlayer.startUsingItem(pUsedHand);
         pLevel.playSeededSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(),
-                NSPSounds.HANDHELD_PROPELLER_START.get(), SoundSource.AMBIENT, 1f, 1f,0);
+                VSPSounds.HANDHELD_PROPELLER_START.get(), SoundSource.AMBIENT, 1f, 1f,0);
        return InteractionResultHolder.sidedSuccess(itemstack, false);
     }
 
     @Override
     public int getUseDuration(ItemStack pStack) {
-        if (pStack.getItem() == NSPItems.HANDHELD_PROPELLER.get()) {
+        if (pStack.getItem() == VSPItems.HANDHELD_PROPELLER.get()) {
             return 1000;
         }
         return super.getUseDuration(pStack);
@@ -36,7 +36,7 @@ public class HandheldPropellerItem extends Item {
 
     @Override
     public @NotNull UseAnim getUseAnimation(ItemStack pStack) {
-        if (pStack.getItem() == NSPItems.HANDHELD_PROPELLER.get()) {
+        if (pStack.getItem() == VSPItems.HANDHELD_PROPELLER.get()) {
             return UseAnim.BOW;
         }
         else {

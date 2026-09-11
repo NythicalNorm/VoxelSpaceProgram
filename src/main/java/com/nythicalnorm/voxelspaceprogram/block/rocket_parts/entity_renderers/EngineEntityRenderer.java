@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.block.NSPBlocks;
+import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.MultiblockRocketry;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModel;
@@ -35,9 +35,9 @@ public class EngineEntityRenderer implements BlockEntityRenderer<EngineEntity>, 
     private static final Map<Block, EngineModel> engineModelMap = new Object2ObjectOpenHashMap<>();
 
     public EngineEntityRenderer(BlockEntityRendererProvider.Context context) {
-        engineModelMap.put(NSPBlocks.THREE_KEROLOX.get(), new EngineModel(context, EngineModelData.ThreeKeroloxLayerLoc, VoxelSpaceProgram.rl( "block/three_kerolox"))) ;
-        engineModelMap.put(NSPBlocks.TWO_KEROLOX.get(), new EngineModel(context, EngineModelData.TwoKeroloxLayerLoc, VoxelSpaceProgram.rl( "block/two_kerolox"))) ;
-        this.registerPreviewRenderer(context, NSPBlocks.THREE_KEROLOX.get(), NSPBlocks.TWO_KEROLOX.get());
+        engineModelMap.put(VSPBlocks.THREE_KEROLOX.get(), new EngineModel(context, EngineModelData.ThreeKeroloxLayerLoc, VoxelSpaceProgram.rl( "block/three_kerolox"))) ;
+        engineModelMap.put(VSPBlocks.TWO_KEROLOX.get(), new EngineModel(context, EngineModelData.TwoKeroloxLayerLoc, VoxelSpaceProgram.rl( "block/two_kerolox"))) ;
+        this.registerPreviewRenderer(context, VSPBlocks.THREE_KEROLOX.get(), VSPBlocks.TWO_KEROLOX.get());
     }
 
     @Override
