@@ -2,7 +2,7 @@
   "item.voxelspaceprogram.raw_aluminum": "Raw Aluminum",
   "item.voxelspaceprogram.aluminum_ingot": "Aluminum Ingot",
 
-  "item.voxelspaceprogram.handheld_propeller": "Handheld Propeller",
+  "item.voxelspaceprogram.handheld_thruster": "Handheld Thruster",
   "item.voxelspaceprogram.magnet_boots": "Magnetic Boots",
   "item.voxelspaceprogram.spacesuit_helmet": "Spacesuit Visor",
   "item.voxelspaceprogram.creative_spacesuit_chestplate": "Creative Spacesuit Torso",
@@ -33,6 +33,8 @@
   "block.voxelspaceprogram.two_kerolox": "RD-180 Engine",
 
   "fluid_type.voxelspaceprogram.liquid_oxygen_fluid": "Liquid Oxygen",
+  "fluid_type.voxelspaceprogram.nitrogen_fluid": "Nitrogen",
+
   "sounds.voxelspaceprogram.propeller_start": "The Handheld Propeller clatters on.",
 
   "key.category.voxelspaceprogram.spacecraft_control": "VSP Spacecraft Controls",

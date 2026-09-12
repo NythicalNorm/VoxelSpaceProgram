@@ -42,6 +42,7 @@ public class VSPBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLER.get(), cubeAll(VSPBlocks.VEHICLE_ASSEMBLER.get()));
 
         fluidBlock(VSPFluids.LIQUID_OXYGEN.block);
+        fluidBlock(VSPFluids.NITROGEN.block);
         connectedBlock(VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART);
 
         rocketryEntityBlock(VSPBlocks.THREE_KEROLOX, VSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f);
@@ -111,7 +112,7 @@ public class VSPBlockStateProvider extends BlockStateProvider {
     }
 
     protected void fluidBlock(RegistryObject<LiquidBlock> block) {
-        simpleBlockWithItem(block.get(), cubeAll(block.get()));
+        simpleBlock(block.get(), cubeAll(block.get()));
     }
 
     protected void connectedBlock(RegistryObject<Block> block) {

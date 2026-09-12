@@ -4,6 +4,7 @@ import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.fluid.VSPFluids;
+import com.nythicalnorm.voxelspaceprogram.fluid.containers.HandheldThrusterFluidHandler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -19,7 +20,11 @@ public class VSPCreativeModeTab {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(VSPItems.SPACESUIT_HELMET.get()))
                     .title(Component.translatable("creativetab.Main_VSP"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        output.accept(VSPItems.HANDHELD_PROPELLER.get());
+                        output.accept(VSPItems.HANDHELD_THRUSTER.get());
+                        output.accept(HandheldThrusterFluidHandler.getFullFilledItemStack(VSPItems.HANDHELD_THRUSTER.get()),
+                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS
+                        );
+
                         output.accept(VSPItems.MAGNET_BOOTS.get());
                         output.accept(VSPItems.MAGNETIZED_IRON_INGOT.get());
 

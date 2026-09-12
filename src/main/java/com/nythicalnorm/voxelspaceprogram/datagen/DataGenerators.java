@@ -25,9 +25,9 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new VSPBlockStateProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new VSPItemModelProvider(packOutput, existingFileHelper));
 
-        VSPBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
-                new VSPBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
+        VSPBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(), new VSPBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new VSPItemTagGenerator(packOutput, lookupProvider, blockTagGenerator.contentsGetter(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new VSPFluidTagGenerator(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new VSPWorldGenProvider(packOutput, lookupProvider));
     }
 }

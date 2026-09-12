@@ -66,7 +66,7 @@ public class VSPRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(Items.COPPER_INGOT), has(Items.COPPER_INGOT))
                 .save(pWriter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, VSPItems.HANDHELD_PROPELLER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, VSPItems.HANDHELD_THRUSTER.get())
                 .pattern("XRX")
                 .pattern("R#R")
                 .pattern("XRX")

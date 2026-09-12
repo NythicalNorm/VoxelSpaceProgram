@@ -15,11 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 
 public class CryogenicFluid extends LiquidBlock {
-
-    public CryogenicFluid(FlowingFluid pFluid, Properties pProperties) {
-        super(pFluid, pProperties);
-    }
-
     public CryogenicFluid(java.util.function.Supplier<? extends FlowingFluid> pFluid, BlockBehaviour.Properties pProperties) {
         super(pFluid, pProperties);
     }

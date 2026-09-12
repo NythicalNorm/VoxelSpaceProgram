@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.Item;
 import com.nythicalnorm.voxelspaceprogram.Item.armor.jetpack.CreativeJetpack;
 import com.nythicalnorm.voxelspaceprogram.Item.armor.MagneticBoots;
 import com.nythicalnorm.voxelspaceprogram.Item.armor.VSPArmorMaterial;
-import com.nythicalnorm.voxelspaceprogram.Item.custom.HandheldPropellerItem;
+import com.nythicalnorm.voxelspaceprogram.Item.custom.HandheldThrusterItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -21,8 +21,8 @@ public class VSPItems {
     public static final RegistryObject<Item> ALUMINUM_INGOT = ITEMS.register("aluminum_ingot", () ->
             new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> HANDHELD_PROPELLER = ITEMS.register("handheld_propeller",
-            () -> new HandheldPropellerItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> HANDHELD_THRUSTER = ITEMS.register("handheld_thruster",
+            () -> new HandheldThrusterItem(new Item.Properties()));
 
     public static final RegistryObject<Item> MAGNET_BOOTS = ITEMS.register("magnet_boots", () ->
             new MagneticBoots(VSPArmorMaterial.MAGNETIC, ArmorItem.Type.BOOTS,  new Item.Properties()));

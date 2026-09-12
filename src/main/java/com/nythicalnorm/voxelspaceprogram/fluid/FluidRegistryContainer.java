@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.fluid;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
-import com.nythicalnorm.voxelspaceprogram.Item.custom.CryogenicBucketItem;
+import com.nythicalnorm.voxelspaceprogram.fluid.containers.CryogenicBucketItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import net.minecraft.client.Camera;
@@ -15,8 +15,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -44,12 +47,35 @@ public class FluidRegistryContainer {
                                   Supplier<IClientFluidTypeExtensions> clientExtensions, @Nullable AdditionalProperties additionalProperties,
                                   BlockBehaviour.Properties blockProperties, Item.Properties itemProperties, boolean isCryogenic, boolean isGaseous) {
         this.typeProperties = typeProperties;
-        this.type = VSPFluids.FLUID_TYPES.register(name, () -> new FluidType(this.typeProperties) {
-            @Override
-            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(clientExtensions.get());
-            }
-        });
+        if (!isGaseous) {
+            this.type = VSPFluids.FLUID_TYPES.register(name, () -> new FluidType(this.typeProperties) {
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(clientExtensions.get());
+                }
+            });
+        } else {
+            this.type = VSPFluids.FLUID_TYPES.register(name, () -> new FluidType(this.typeProperties) {
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(clientExtensions.get());
+                }
+
+                @Override
+                public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
+                    return Blocks.AIR.defaultBlockState();
+                }
+
+                @Override
+                public boolean isVaporizedOnPlacement(
+                        Level level,
+                        BlockPos pos,
+                        FluidStack stack
+                ) {
+                    return true;
+                }
+            });
+        }
 
         this.source = VSPFluids.FLUIDS.register(name + "_source", () -> new ForgeFlowingFluid.Source(this.properties));
         this.flowing = VSPFluids.FLUIDS.register(name + "_flowing",
@@ -62,22 +88,20 @@ public class FluidRegistryContainer {
                     .slopeFindDistance(additionalProperties.slopeFindDistance).tickRate(additionalProperties.tickRate);
         }
 
-        //LiquidBlock blockType = ;
-        if (isCryogenic && !isGaseous) {
-            this.block = VSPBlocks.BLOCKS.register(name, () -> new CryogenicFluid(this.source, blockProperties));
-            this.fluidContainer = VSPItems.ITEMS.register(name + "_bucket", () -> new CryogenicBucketItem(this.source, itemProperties));
-        }
-        else if (!isGaseous) {
+        if (!isGaseous) {
+            if (isCryogenic) {
+                this.block = VSPBlocks.BLOCKS.register(name, () -> new CryogenicFluid(this.source, blockProperties));
+                this.fluidContainer = VSPItems.ITEMS.register(name + "_bucket", () -> new CryogenicBucketItem(this.source, itemProperties));
+            } else {
+                this.block = VSPBlocks.BLOCKS.register(name, () -> new LiquidBlock(this.source, blockProperties));
+                this.fluidContainer = VSPItems.ITEMS.register(name + "_bucket", () -> new BucketItem(this.source, itemProperties));
+            }
+            this.properties.bucket(this.fluidContainer);
+        } else {
             this.block = VSPBlocks.BLOCKS.register(name, () -> new LiquidBlock(this.source, blockProperties));
-            this.fluidContainer = VSPItems.ITEMS.register(name + "_bucket", () -> new BucketItem(this.source, itemProperties));
-        }
-        else {
-            this.block = VSPBlocks.BLOCKS.register(name, () -> new LiquidBlock(this.source, blockProperties));
-            this.fluidContainer = VSPItems.ITEMS.register(name + "_canister", () -> new BucketItem(this.source, itemProperties));
+            this.fluidContainer = null;//VSPItems.ITEMS.register(name + "_canister", () -> new GasContainerItem(this.source, itemProperties));
         }
         this.properties.block(this.block);
-
-        this.properties.bucket(this.fluidContainer);
     }
 
     public FluidRegistryContainer(String name, FluidType.Properties typeProperties,

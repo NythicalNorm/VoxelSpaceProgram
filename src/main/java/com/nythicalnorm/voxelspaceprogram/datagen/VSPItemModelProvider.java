@@ -20,7 +20,7 @@ public class VSPItemModelProvider extends ItemModelProvider {
         simpleItem(VSPItems.RAW_ALUMINUM);
         simpleItem(VSPItems.ALUMINUM_INGOT);
 
-        item3dOnlyinHand(VSPItems.HANDHELD_PROPELLER);
+        //item3dOnlyinHand(VSPItems.HANDHELD_THRUSTER);
         simpleItem(VSPItems.MAGNET_BOOTS);
         simpleItem(VSPItems.MAGNETIZED_IRON_INGOT);
 
@@ -38,17 +38,9 @@ public class VSPItemModelProvider extends ItemModelProvider {
     }
 
     private void item3dOnlyinHand(RegistryObject<Item> item) {
-        withExistingParent(item.getId().getPath() + "_2d",
+        withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("item/handheld")).texture("layer0",
-                VoxelSpaceProgram.rl( "item/" + item.getId().getPath()));
-
-//        ModelFile.ExistingModelFile val = getExistingFile(NythicalSpaceProgram.rl( "item/" + item.getId().getPath() + "_3d"));
-//
-//        withExistingParent(item.getId().getPath(), ResourceLocation.parse("item/handheld"))
-//                .customLoader(SeparateTransformsModelBuilder::begin)
-//                .base()
-//                .perspective(ItemDisplayContext.GUI, getBuilder("item/" + item.getId().getPath() + "_2d"))
-//                .perspective(ItemDisplayContext.GROUND, getBuilder("item/" + item.getId().getPath() + "_2d"))
-//                .perspective(ItemDisplayContext.FIXED, getBuilder("item/" + item.getId().getPath() + "_2d"));
+                VoxelSpaceProgram.rl( "item/" + item.getId().getPath())
+        );
     }
 }

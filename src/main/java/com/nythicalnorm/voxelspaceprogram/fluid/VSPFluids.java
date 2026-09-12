@@ -18,7 +18,10 @@ public class VSPFluids {
                     .canDrown(true)
                     .canSwim(false)
                     .canPushEntity(true)
-                    .canExtinguish(true),
+                    .canExtinguish(true)
+                    .density(1_141)
+                    .temperature(54)
+            ,
             () -> FluidRegistryContainer.createExtension(
                     new FluidRegistryContainer.ClientExtensions(VoxelSpaceProgram.MODID, "liquid_oxygen_fluid")
                     .fogColor(0f,0f,1f)
@@ -27,4 +30,21 @@ public class VSPFluids {
                     .still("cryogenic_fluid")
                     .overlay("cryogenic_fluid")),
             BlockBehaviour.Properties.copy(Blocks.WATER), new Item.Properties(), true, false);
+
+    public static final FluidRegistryContainer NITROGEN = new FluidRegistryContainer("nitrogen_fluid",
+            FluidType.Properties.create()
+                    .canDrown(true)
+                    .canSwim(false)
+                    .canPushEntity(true)
+                    .canExtinguish(true)
+                    .density(2)
+            ,
+            () -> FluidRegistryContainer.createExtension(
+                    new FluidRegistryContainer.ClientExtensions(VoxelSpaceProgram.MODID, "nitrogen_fluid")
+                            .fogColor(0f,0f,1f)
+                            .tint(0x80F5FFED)
+                            .flowing("cryogenic_fluid")
+                            .still("cryogenic_fluid")
+                            .overlay("cryogenic_fluid")),
+            BlockBehaviour.Properties.copy(Blocks.WATER), new Item.Properties(), true, true);
 }

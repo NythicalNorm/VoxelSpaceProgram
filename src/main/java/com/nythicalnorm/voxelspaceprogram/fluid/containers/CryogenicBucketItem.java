@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.Item.custom;
+package com.nythicalnorm.voxelspaceprogram.fluid.containers;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -8,8 +8,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 
+import java.util.function.Supplier;
+
 public class CryogenicBucketItem extends BucketItem {
-    public CryogenicBucketItem(java.util.function.Supplier<? extends Fluid> supplier, Item.Properties builder) {
+    public CryogenicBucketItem(Supplier<? extends Fluid> supplier, Item.Properties builder) {
         super(supplier, builder);
     }
 

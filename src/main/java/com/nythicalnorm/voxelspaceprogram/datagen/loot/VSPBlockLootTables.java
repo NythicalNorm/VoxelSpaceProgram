@@ -36,6 +36,7 @@ public class VSPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get());
         this.dropSelf(VSPBlocks.MAGNETIZER.get());
         this.dropOther(VSPFluids.LIQUID_OXYGEN.block.get(), Blocks.AIR);
+        this.dropOther(VSPFluids.NITROGEN.block.get(), Blocks.AIR);
         this.dropSelf(VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get());
 
         this.dropSelf(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get());

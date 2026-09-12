@@ -1,0 +1,42 @@
+[
+  {
+    "block": "voxelspaceprogram:aluminum_ore",
+    "mass": 2700.0,
+    "friction": 0.6
+  },
+  {
+    "block": "voxelspaceprogram:deepslate_aluminum_ore",
+    "mass": 3200.0,
+    "friction": 0.6
+  },
+  {
+    "block": "voxelspaceprogram:aluminum_block",
+    "mass": 2700.0,
+    "friction": 0.2
+  },
+  {
+    "block": "voxelspaceprogram:raw_aluminum_block",
+    "mass": 2700.0,
+    "friction": 0.8
+  },
+  {
+    "block": "voxelspaceprogram:vehicle_assembly_platform",
+    "mass": 800.0,
+    "friction": 0.2
+  },
+  {
+    "block": "voxelspaceprogram:vehicle_assembly_scaffold",
+    "mass": 400.0,
+    "friction": 0.5
+  },
+  {
+    "block": "voxelspaceprogram:vehicle_assembler",
+    "mass": 12000.0,
+    "friction": 0.7
+  },
+  {
+    "block": "voxelspaceprogram:hypergolic_steel_tank",
+    "mass": 81.0,
+    "friction": 0.2
+  }
+]
