@@ -1,13 +1,14 @@
 package com.nythicalnorm.voxelspaceprogram.block;
 
 import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
-import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
+import com.nythicalnorm.voxelspaceprogram.Item.MultiBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.VehicleAssembler;
 import com.nythicalnorm.voxelspaceprogram.block.gse.PlatformAssembly;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.CryogenicAirSeparator;
+import com.nythicalnorm.voxelspaceprogram.block.manufacturing.SheetMetalRollerBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.PropellantTankBlock;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlock;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
 import com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedRegolith;
@@ -46,6 +47,9 @@ public class VSPBlocks {
             () -> new FootprintedRegolith(BlockBehaviour.Properties.copy(Blocks.NETHERRACK).sound(SoundType.POWDER_SNOW).destroyTime(2f)));
 
     //Manufacturing Blocks
+    public static final RegistryObject<Block> SHEET_METAL_ROLLER = registerMultiBlock("sheet_metal_roller",
+            () -> new SheetMetalRollerBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
+
     public static final RegistryObject<Block> CRYOGENIC_AIR_SEPARATOR = registerBlock("cryogenic_air_separator",
             () -> new CryogenicAirSeparator(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
 
@@ -71,7 +75,7 @@ public class VSPBlocks {
             () -> new PropellantTankBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
 
     // Engines
-    public static final RegistryObject<Block> THREE_KEROLOX = registerRocketryBlock("three_kerolox",
+    public static final RegistryObject<Block> THREE_KEROLOX = registerMultiBlock("three_kerolox",
             () -> new EngineBlock(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK).sound(SoundType.NETHERITE_BLOCK).noOcclusion(),
                     new EngineProperties.Builder()
                             .BlockSize(3)
@@ -79,7 +83,7 @@ public class VSPBlocks {
                             .PixelWidth(38)
                             .build()));
 
-    public static final RegistryObject<Block> TWO_KEROLOX = registerRocketryBlock("two_kerolox",
+    public static final RegistryObject<Block> TWO_KEROLOX = registerMultiBlock("two_kerolox",
             () -> new EngineBlock(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK).sound(SoundType.NETHERITE_BLOCK).noOcclusion(),
             new EngineProperties.Builder()
                     .BlockSize(2)
@@ -104,9 +108,9 @@ public class VSPBlocks {
         return VSPItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    private static <T extends Block> RegistryObject<T> registerRocketryBlock(String name, Supplier<T> block) {
+    private static <T extends Block> RegistryObject<T> registerMultiBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = registerBlockOnly(name,block);
-        VSPItems.ITEMS.register(name, () -> new RocketryBlockItem(toReturn.get(), new Item.Properties()));
+        VSPItems.ITEMS.register(name, () -> new MultiBlockItem(toReturn.get(), new Item.Properties()));
 
         return toReturn;
     }

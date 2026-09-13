@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MagnetizerModels {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(VoxelSpaceProgram.rl( "magnetizer_model"), "main");
-    public static final Material TEXTURE_LOCATION = new Material(InventoryMenu.BLOCK_ATLAS, VoxelSpaceProgram.rl( "block/magnetizer_rotating_table"));
+    public static final Material MATERIAL_LOCATION = new Material(InventoryMenu.BLOCK_ATLAS, VoxelSpaceProgram.rl( "block/magnetizer_rotating_table"));
     private final ModelPart magnet_table;
     private final ModelPart magnet;
 
@@ -58,7 +58,7 @@ public class MagnetizerModels {
         poseStack.pushPose();
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         poseStack.translate(0f,-1.5f,0f);
-        VertexConsumer vertexconsumer = TEXTURE_LOCATION.buffer(pBuffer, RenderType::entitySolid);
+        VertexConsumer vertexconsumer = MATERIAL_LOCATION.buffer(pBuffer, RenderType::entitySolid);
         //this.magnet_table.yRot = (float) (2*Math.PI/magnetAnim);
         if (magnetAnim) {
             this.magnet.zRot = -0.785398f;

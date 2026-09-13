@@ -23,9 +23,15 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         this.tag(VSPTags.Blocks.MAGNETIC_METALS).add(Blocks.IRON_BLOCK, Blocks.COPPER_BLOCK, Blocks.GOLD_BLOCK, Blocks.REDSTONE_BLOCK);
 
-        this.tag(BlockTags.NEEDS_STONE_TOOL).add(VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(), VSPBlocks.MAGNETIZER.get(),
-                VSPBlocks.MAGNETIZED_IRON_BLOCK.get(), VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get(), VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(),
-                VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get());
+        this.tag(BlockTags.NEEDS_STONE_TOOL).add(
+                VSPBlocks.SHEET_METAL_ROLLER.get(),
+                VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(),
+                VSPBlocks.MAGNETIZER.get(),
+                VSPBlocks.MAGNETIZED_IRON_BLOCK.get(),
+                VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get(),
+                VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(),
+                VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get()
+        );
 
         this.tag(BlockTags.NEEDS_IRON_TOOL).add(
                 VSPBlocks.HYPERGOLIC_STEEL_TANK.get(),
@@ -41,6 +47,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
         );
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                VSPBlocks.SHEET_METAL_ROLLER.get(),
                 VSPBlocks.HYPERGOLIC_STEEL_TANK.get(),
                 VSPBlocks.LUNAR_REGOLITH.get(),
                 VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(),

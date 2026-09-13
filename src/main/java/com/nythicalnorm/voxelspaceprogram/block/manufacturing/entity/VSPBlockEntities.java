@@ -4,7 +4,7 @@ import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.PropellantTankEntity;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.BoundingBlockEntity;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlockEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,6 +15,10 @@ import net.minecraftforge.registries.RegistryObject;
 public class VSPBlockEntities {
      public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister
              .create(ForgeRegistries.BLOCK_ENTITY_TYPES, VoxelSpaceProgram.MODID);
+
+    public static final RegistryObject<BlockEntityType<SheetMetalRollerEntity>> SHEET_METAL_ROLLER_BE =
+            BLOCK_ENTITIES.register("sheet_metal_roller_be", () ->
+                    BlockEntityType.Builder.of(SheetMetalRollerEntity::new, VSPBlocks.SHEET_METAL_ROLLER.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<MagnetizerEntity>> MAGNETIZER_BE =
              BLOCK_ENTITIES.register("magnetizer_be", () ->

@@ -43,9 +43,11 @@ public class VSPCreativeModeTab {
                         output.accept(VSPBlocks.RAW_ALUMINIUM_BLOCK.get());
 
                         output.accept(VSPBlocks.LUNAR_REGOLITH.get());
+
+                        output.accept(VSPBlocks.SHEET_METAL_ROLLER.get());
+                        output.accept(VSPBlocks.MAGNETIZER.get());
                         output.accept(VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get());
                         output.accept(VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get());
-                        output.accept(VSPBlocks.MAGNETIZER.get());
 
                         output.accept(VSPBlocks.HYPERGOLIC_STEEL_TANK.get());
 

@@ -1,10 +1,10 @@
 package com.nythicalnorm.voxelspaceprogram.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nythicalnorm.voxelspaceprogram.Item.RocketryBlockItem;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.MultiblockRocketry;
+import com.nythicalnorm.voxelspaceprogram.Item.MultiBlockItem;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.VSPMultiblock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRenderer;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRendererDispatcher;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.Material;
@@ -14,6 +14,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -21,29 +22,39 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Map;
+
 @OnlyIn(Dist.CLIENT)
 public class MultiBlockPreviewRenderer {
     private Block lastRenderedBlock;
     private Material lastRenderedMaterial;
+    private final Map<BaseEntityBlock, BlockEntity> blockEntityCache;
 
     public MultiBlockPreviewRenderer() {
         this.lastRenderedBlock = null;
         this.lastRenderedMaterial = null;
+        this.blockEntityCache = new Object2ObjectOpenHashMap<>();
+    }
+
+    public BlockEntity getOrCreateBlockEntity(BaseEntityBlock entityBlock) {
+        return blockEntityCache.computeIfAbsent(entityBlock, block ->
+                block.newBlockEntity(BlockPos.ZERO, block.defaultBlockState())
+        );
     }
 
     public void renderBlockItemPreview(PoseStack poseStack, Minecraft mc,
-                                       RocketryBlockItem rocketryBlockItem, MultiblockRocketry rocketryBlock
+                                       MultiBlockItem multiBlockItem, VSPMultiblock multiblock
     ) {
         if (mc.hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType().equals(HitResult.Type.BLOCK)) {
             UseOnContext useOnContext = new UseOnContext(mc.player, InteractionHand.MAIN_HAND, blockHitResult);
             BlockPlaceContext blockPlaceContext = new BlockPlaceContext(useOnContext);
-            BlockState blockstate = rocketryBlock.getStateForPlacement(blockPlaceContext);
+            BlockState blockstate = multiblock.getStateForPlacement(blockPlaceContext);
             if (blockstate != null) {
                 renderBlockPreview(mc, poseStack, blockstate, blockPlaceContext.getClickedPos(),
-                        rocketryBlockItem.canBePlacedWithPlayer(blockPlaceContext, blockstate));
+                        multiBlockItem.canBePlacedWithPlayer(blockPlaceContext, blockstate));
                 return;
             }
-            BlockState defaultStateForPlacement = rocketryBlock.getUncheckedStateForPlacement(blockPlaceContext);
+            BlockState defaultStateForPlacement = multiblock.getUncheckedStateForPlacement(blockPlaceContext);
             if (defaultStateForPlacement != null) {
                 renderBlockPreview(mc, poseStack, defaultStateForPlacement, blockPlaceContext.getClickedPos(), false);
             }
@@ -51,14 +62,14 @@ public class MultiBlockPreviewRenderer {
    }
 
     public void renderBlockPreview(Minecraft mc, PoseStack poseStack, BlockState state, BlockPos pos, boolean success) {
-        if (state.getBlock() instanceof BaseEntityBlock) {
-            PreviewRenderer renderer = ((PreviewRendererDispatcher)mc.getBlockEntityRenderDispatcher()).vsp$getBEPreviewRenderer(state.getBlock());
+        if (state.getBlock() instanceof BaseEntityBlock entityBlock) {
+            PreviewRenderer renderer = (PreviewRenderer) mc.getBlockEntityRenderDispatcher().getRenderer(getOrCreateBlockEntity(entityBlock));
             if (renderer == null) {
                 return;
             }
 
-            if (!state.getBlock().equals(this.lastRenderedBlock) || this.lastRenderedMaterial == null) {
-                this.lastRenderedBlock = state.getBlock();
+            if (!entityBlock.equals(this.lastRenderedBlock) || this.lastRenderedMaterial == null) {
+                this.lastRenderedBlock = entityBlock;
                 Material actualMaterial = renderer.getMaterial(this.lastRenderedBlock);
                 this.lastRenderedMaterial = new Material(actualMaterial.atlasLocation(), actualMaterial.texture());
             }

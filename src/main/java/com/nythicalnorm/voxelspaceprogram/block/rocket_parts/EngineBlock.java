@@ -3,14 +3,14 @@ package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock.MultiblockRocketry;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.RocketryMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class EngineBlock extends MultiblockRocketry {
+public class EngineBlock extends RocketryMultiblock {
     private final EngineProperties engineProperties;
 
     public EngineBlock(Properties pProperties, EngineProperties pEngineProperties) {

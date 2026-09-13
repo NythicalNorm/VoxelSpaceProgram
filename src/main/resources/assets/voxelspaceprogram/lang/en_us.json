@@ -12,6 +12,8 @@
   "item.voxelspaceprogram.liquid_oxygen_fluid_bucket": "Liquid Oxygen Bucket",
 
   "creativetab.Main_VSP": "Voxel Space Program",
+
+  "block.voxelspaceprogram.sheet_metal_roller": "Sheet Metal Roller",
   "block.voxelspaceprogram.magnetizer": "Magnetizer",
   "block.voxelspaceprogram.magnetized_iron_block": "Block of Magnetized Iron",
   "block.voxelspaceprogram.aluminum_ore": "Aluminum Ore",

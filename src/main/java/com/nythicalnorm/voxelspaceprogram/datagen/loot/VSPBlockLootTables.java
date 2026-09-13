@@ -31,6 +31,7 @@ public class VSPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(VSPBlocks.ALUMINIUM_BLOCK.get());
         this.dropSelf(VSPBlocks.RAW_ALUMINIUM_BLOCK.get());
 
+        this.dropSelf(VSPBlocks.SHEET_METAL_ROLLER.get());
         this.dropSelf(VSPBlocks.HYPERGOLIC_STEEL_TANK.get());
         this.dropSelf(VSPBlocks.LUNAR_REGOLITH.get());
         this.dropSelf(VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get());

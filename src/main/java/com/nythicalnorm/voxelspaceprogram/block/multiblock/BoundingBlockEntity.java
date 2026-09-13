@@ -1,6 +1,5 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.multiblock;
+package com.nythicalnorm.voxelspaceprogram.block.multiblock;
 
-import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +23,7 @@ public class BoundingBlockEntity extends BlockEntity {
 
     public void setMainLocation(BlockPos pos) {
         receivedCoords = pos != null;
-        if (!level.isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             mainPos = pos;
             updateBlock();
         }
@@ -46,19 +45,18 @@ public class BoundingBlockEntity extends BlockEntity {
         return receivedCoords ? level.getBlockEntity(getMainPos()) : null;
     }
 
-    @Nullable
-    private MultiblockRocketryEntity getMain() {
-        // Return the main tile; note that it's possible, esp. when chunks are
-        // loading that the main tile has not yet loaded and thus is null.
-        BlockEntity tile = getMainTile();
-        if (!(tile instanceof MultiblockRocketryEntity)) {
-            // On the off chance that another block got placed there (which seems only likely with corruption, go ahead and log what we found.)
-            VoxelSpaceProgram.logError("Found tile " + tile + " instead of an IBoundingBlock, at " +  getMainPos() + " Multiblock cannot function");
-            return null;
-        }
-        return (MultiblockRocketryEntity) tile;
-    }
-
+//    @Nullable
+//    private RocketryMultiblockEntity getMain() {
+//        // Return the main tile; note that it's possible, esp. when chunks are
+//        // loading that the main tile has not yet loaded and thus is null.
+//        BlockEntity tile = getMainTile();
+//        if (!(tile instanceof RocketryMultiblockEntity)) {
+//            // On the off chance that another block got placed there (which seems only likely with corruption, go ahead and log what we found.)
+//            VoxelSpaceProgram.logError("Found tile " + tile + " instead of an IBoundingBlock, at " +  getMainPos() + " Multiblock cannot function");
+//            return null;
+//        }
+//        return (RocketryMultiblockEntity) tile;
+//    }
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
