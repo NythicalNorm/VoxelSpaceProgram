@@ -62,7 +62,7 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
             BlockState boundingState = level.getBlockState(p);
             if (!boundingState.isAir()) {
                 //The state might be air if we broke a bounding block first
-                if (boundingState.is(getBoundingBlock())) {
+                if (boundingState.getBlock() instanceof BoundingBlock) {
                     level.removeBlock(p, false);
                 } else {
                     VoxelSpaceProgram.logWarn("Skipping removing block, expected bounding block but the block at "+ p + " in " + level.dimension().location());
@@ -175,6 +175,10 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
     @Override
     public boolean isPossibleToRespawnInThis(BlockState pState) {
         return false;
+    }
+
+    public int getMaxBlockSize() {
+        return this.blockLength(Math.max(this.pixelHeight, Math.max(this.pixelXWidth, this.pixelZWidth)));
     }
 
     protected abstract Stream<BlockPos> getBoundingPositions(BlockPos pPos, BlockState blockState);

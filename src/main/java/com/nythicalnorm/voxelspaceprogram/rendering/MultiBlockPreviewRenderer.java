@@ -21,6 +21,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
+import org.valkyrienskies.core.api.ships.Ship;
+import org.valkyrienskies.mod.api.ValkyrienSkies;
 
 import java.util.Map;
 
@@ -78,7 +82,15 @@ public class MultiBlockPreviewRenderer {
             Vec3 cameraPos = camera.getPosition();
 
             poseStack.pushPose();
-            poseStack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
+            Ship ship = ValkyrienSkies.getShipManagingBlock(mc.level, pos);
+             if (ship != null) {
+                Vector3d worldPos = ship.getTransform().getShipToWorld().transformPosition(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
+                poseStack.translate(worldPos.x() - cameraPos.x, worldPos.y() - cameraPos.y, worldPos.z() - cameraPos.z);
+                poseStack.mulPose(new Quaternionf(ship.getTransform().getRotation()));
+             } else {
+                poseStack.translate(pos.getX() - cameraPos.x, pos.getY() - cameraPos.y, pos.getZ() - cameraPos.z);
+            }
+
             float[] green = {0.0f, 1.0f, 0.0f, 0.25f};
             float[] red = {1.0f, 0.0f, 0.0f, 0.25f};
 

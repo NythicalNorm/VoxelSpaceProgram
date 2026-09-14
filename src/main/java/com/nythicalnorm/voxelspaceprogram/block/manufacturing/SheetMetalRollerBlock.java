@@ -16,7 +16,7 @@ public class SheetMetalRollerBlock extends MachineryMultiblock {
 
     @Override
     public Block getBoundingBlock() {
-        return VSPBlocks.BOUNDING_BLOCK.get();
+        return VSPBlocks.MACHINERY_BOUNDING_BLOCK.get();
     }
 
     @Override

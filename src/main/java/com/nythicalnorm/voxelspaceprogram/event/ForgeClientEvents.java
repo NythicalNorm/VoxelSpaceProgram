@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.event;
 import com.nythicalnorm.voxelspaceprogram.Item.VSPItems;
 import com.nythicalnorm.voxelspaceprogram.Item.MultiBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.PreviewRendererDispatcher;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.VSPClientStage;
 import com.nythicalnorm.voxelspaceprogram.rendering.MultiBlockPreviewRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
@@ -45,8 +45,7 @@ public class ForgeClientEvents {
         ItemStack stack = mc.player.getMainHandItem();
 
         if ((stack.getItem() instanceof MultiBlockItem multiBlockItem) && multiBlockItem.renderBlockPreview()) {
-            MultiBlockPreviewRenderer previewRenderer =
-                    ((PreviewRendererDispatcher)mc.getBlockEntityRenderDispatcher()).vsp$multiBlockPreviewRenderer();
+            MultiBlockPreviewRenderer previewRenderer = ((VSPClientStage)mc).vsp$multiBlockPreviewRenderer();
 
             previewRenderer.renderBlockItemPreview(event.getPoseStack(), mc, multiBlockItem, multiBlockItem.getMultiblock());
         }

@@ -24,6 +24,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
         this.tag(VSPTags.Blocks.MAGNETIC_METALS).add(Blocks.IRON_BLOCK, Blocks.COPPER_BLOCK, Blocks.GOLD_BLOCK, Blocks.REDSTONE_BLOCK);
 
         this.tag(BlockTags.NEEDS_STONE_TOOL).add(
+                VSPBlocks.MACHINERY_BOUNDING_BLOCK.get(),
                 VSPBlocks.SHEET_METAL_ROLLER.get(),
                 VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(),
                 VSPBlocks.MAGNETIZER.get(),
@@ -39,7 +40,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
                 VSPBlocks.VEHICLE_ASSEMBLER.get(),
                 VSPBlocks.THREE_KEROLOX.get(),
                 VSPBlocks.TWO_KEROLOX.get(),
-                VSPBlocks.BOUNDING_BLOCK.get(),
+                VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(),
                 VSPBlocks.ALUMINIUM_ORE.get(),
                 VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(),
                 VSPBlocks.ALUMINIUM_BLOCK.get(),
@@ -59,7 +60,8 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
                 VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(),
                 VSPBlocks.THREE_KEROLOX.get(),
                 VSPBlocks.TWO_KEROLOX.get(),
-                VSPBlocks.BOUNDING_BLOCK.get(),
+                VSPBlocks.MACHINERY_BOUNDING_BLOCK.get(),
+                VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(),
                 VSPBlocks.ALUMINIUM_ORE.get(),
                 VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(),
                 VSPBlocks.ALUMINIUM_BLOCK.get(),

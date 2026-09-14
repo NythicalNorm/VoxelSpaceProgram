@@ -54,7 +54,8 @@ public class VSPBlockStateProvider extends BlockStateProvider {
                 2.6f,
                 0.0f
         );
-        particleOnlyBlock(VSPBlocks.BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
+        particleOnlyBlock(VSPBlocks.ROCKETRY_BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
+        particleOnlyBlock(VSPBlocks.MACHINERY_BOUNDING_BLOCK, VSPBlocks.ALUMINIUM_BLOCK);
     }
 
     protected void rocketryEntityBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock, float scale) {

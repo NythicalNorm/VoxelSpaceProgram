@@ -46,7 +46,8 @@ public class VSPBlockLootTables extends BlockLootSubProvider {
 
         this.dropSelf(VSPBlocks.THREE_KEROLOX.get());
         this.dropSelf(VSPBlocks.TWO_KEROLOX.get());
-        this.dropOther(VSPBlocks.BOUNDING_BLOCK.get(), Blocks.AIR);
+        this.dropOther(VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(), Blocks.AIR);
+        this.dropOther(VSPBlocks.MACHINERY_BOUNDING_BLOCK.get(), Blocks.AIR);
     }
 
     @Override

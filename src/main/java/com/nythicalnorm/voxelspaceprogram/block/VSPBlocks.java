@@ -70,6 +70,9 @@ public class VSPBlocks {
     public static final RegistryObject<Block> VEHICLE_ASSEMBLER = registerBlock("vehicle_assembler",
             () -> new VehicleAssembler(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
 
+    public static final RegistryObject<Block> MACHINERY_BOUNDING_BLOCK = registerBlockOnly("machinery_bounding_block",
+            () -> new BoundingBlock(BlockBehaviour.Properties.copy(SHEET_METAL_ROLLER.get())));
+
     // Rocketry Parts
     public static final RegistryObject<Block> HYPERGOLIC_STEEL_TANK = registerBlock("hypergolic_steel_tank",
             () -> new PropellantTankBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
@@ -91,7 +94,7 @@ public class VSPBlocks {
                     .PixelWidth(24)
                     .build()));
 
-    public static final RegistryObject<Block> BOUNDING_BLOCK = registerBlockOnly("engine_bounding_block",
+    public static final RegistryObject<Block> ROCKETRY_BOUNDING_BLOCK = registerBlockOnly("rocketry_bounding_block",
             () -> new BoundingBlock(BlockBehaviour.Properties.copy(THREE_KEROLOX.get())));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {

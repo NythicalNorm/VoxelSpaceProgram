@@ -25,6 +25,6 @@ public class EngineBlock extends RocketryMultiblock {
 
     @Override
     public Block getBoundingBlock() {
-        return VSPBlocks.BOUNDING_BLOCK.get();
+        return VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get();
     }
 }

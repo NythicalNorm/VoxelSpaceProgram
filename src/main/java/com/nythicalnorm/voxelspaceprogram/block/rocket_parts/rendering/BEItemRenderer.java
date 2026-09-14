@@ -22,7 +22,7 @@ public class BEItemRenderer extends BlockEntityWithoutLevelRenderer {
     @Override
     public void renderByItem(ItemStack pStack, ItemDisplayContext pDisplayContext, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
         if (pStack.getItem() instanceof MultiBlockItem blockItem) {
-            BlockEntity entity = ((PreviewRendererDispatcher)Minecraft.getInstance().getBlockEntityRenderDispatcher())
+            BlockEntity entity = ((VSPClientStage)Minecraft.getInstance())
                     .vsp$multiBlockPreviewRenderer().getOrCreateBlockEntity((BaseEntityBlock) blockItem.getBlock());
             if (entity != null) {
                 Minecraft.getInstance().getBlockEntityRenderDispatcher().renderItem(entity, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);

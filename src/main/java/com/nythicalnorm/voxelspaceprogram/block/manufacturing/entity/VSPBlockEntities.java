@@ -46,7 +46,12 @@ public class VSPBlockEntities {
             );
 
     public static final RegistryObject<BlockEntityType<BoundingBlockEntity>> BOUNDING_BLOCK_BE =
-            BLOCK_ENTITIES.register("bounding_block_be", () -> BlockEntityType.Builder.of(BoundingBlockEntity::new, VSPBlocks.BOUNDING_BLOCK.get()).build(null));
+            BLOCK_ENTITIES.register("bounding_block_be", () -> BlockEntityType.Builder.of(
+                    BoundingBlockEntity::new,
+                    VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(),
+                    VSPBlocks.MACHINERY_BOUNDING_BLOCK.get())
+                    .build(null)
+            );
 
 
     public static void register(IEventBus eventBus) {
