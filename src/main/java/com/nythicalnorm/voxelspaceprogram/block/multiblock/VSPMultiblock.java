@@ -53,7 +53,9 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        removeBoundingBlocks(pLevel, this.getBoundingPositions(pPos, pState));
+        if (!pNewState.getBlock().equals(this)) {
+            removeBoundingBlocks(pLevel, this.getBoundingPositions(pPos, pState));
+        }
         super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
 
@@ -179,6 +181,18 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
 
     public int getMaxBlockSize() {
         return this.blockLength(Math.max(this.pixelHeight, Math.max(this.pixelXWidth, this.pixelZWidth)));
+    }
+
+    public float getPixelHeight() {
+        return pixelHeight;
+    }
+
+    public float getPixelXWidth() {
+        return pixelXWidth;
+    }
+
+    public float getPixelZWidth() {
+        return pixelZWidth;
     }
 
     protected abstract Stream<BlockPos> getBoundingPositions(BlockPos pPos, BlockState blockState);

@@ -49,7 +49,8 @@ public class VSPBlockEntities {
             BLOCK_ENTITIES.register("bounding_block_be", () -> BlockEntityType.Builder.of(
                     BoundingBlockEntity::new,
                     VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(),
-                    VSPBlocks.MACHINERY_BOUNDING_BLOCK.get())
+                    VSPBlocks.MACHINERY_BOUNDING_BLOCK.get(),
+                    VSPBlocks.ENGINE_BOUNDING_BLOCK.get())
                     .build(null)
             );
 

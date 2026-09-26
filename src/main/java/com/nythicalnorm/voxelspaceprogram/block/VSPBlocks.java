@@ -5,14 +5,17 @@ import com.nythicalnorm.voxelspaceprogram.Item.MultiBlockItem;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.gse.VehicleAssembler;
 import com.nythicalnorm.voxelspaceprogram.block.gse.PlatformAssembly;
+import com.nythicalnorm.voxelspaceprogram.block.gse.wires.GSEPipe;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.CryogenicAirSeparator;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.SheetMetalRollerBlock;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.PropellantTankBlock;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
 import com.nythicalnorm.voxelspaceprogram.block.terrain.luna.FootprintedRegolith;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.Magnetizer;
+import com.nythicalnorm.voxelspaceprogram.rendering.plumes.PlumeSettings;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -60,6 +63,9 @@ public class VSPBlocks {
             () -> new Magnetizer(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
 
     // Ground Service Equipment (GSE) blocks
+    public static final RegistryObject<Block> GSE_PIPE = registerBlock("gse_pipe",
+            () -> new GSEPipe(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.LANTERN).destroyTime(1.25f)));
+
     public static final RegistryObject<Block> VEHICLE_ASSEMBLY_PLATFORM = registerBlock("vehicle_assembly_platform",
             () -> new PlatformAssembly(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).destroyTime(2f).explosionResistance(10f)));
 
@@ -84,7 +90,16 @@ public class VSPBlocks {
                             .BlockSize(3)
                             .PixelHeight(48)
                             .PixelWidth(38)
-                            .build()));
+                            .build(),
+                    new PlumeSettings(
+                            48.0d,
+                            20.0d,
+                            2.0d,
+                            5.0d,
+                            6.5d,
+                            0xeb9330)
+            )
+    );
 
     public static final RegistryObject<Block> TWO_KEROLOX = registerMultiBlock("two_kerolox",
             () -> new EngineBlock(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK).sound(SoundType.NETHERITE_BLOCK).noOcclusion(),
@@ -92,10 +107,21 @@ public class VSPBlocks {
                     .BlockSize(2)
                     .PixelHeight(32)
                     .PixelWidth(24)
-                    .build()));
+                    .build(),
+            new PlumeSettings(
+                    48.0d,
+                    15.0d,
+                    1.125d,
+                    4.0d,
+                    5.5d,
+                    0xeb9330))
+    );
 
     public static final RegistryObject<Block> ROCKETRY_BOUNDING_BLOCK = registerBlockOnly("rocketry_bounding_block",
-            () -> new BoundingBlock(BlockBehaviour.Properties.copy(THREE_KEROLOX.get())));
+            () -> new BoundingBlock(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
+
+    public static final RegistryObject<Block> ENGINE_BOUNDING_BLOCK = registerBlockOnly("engine_bounding_block",
+            () -> new EngineBoundingBlock(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = registerBlockOnly(name,block);

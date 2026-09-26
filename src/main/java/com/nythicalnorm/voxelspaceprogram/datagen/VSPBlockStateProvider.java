@@ -36,6 +36,13 @@ public class VSPBlockStateProvider extends BlockStateProvider {
 
         connectedBlock(VSPBlocks.HYPERGOLIC_STEEL_TANK);
 
+//        pipeBlock(VSPBlocks.GSE_PIPE.get(),
+//                models().getExistingFile(VoxelSpaceProgram.rl("block/gse_pipe_center")),
+//                models().getExistingFile(VoxelSpaceProgram.rl("block/gse_pipe_line")),
+//                models().getExistingFile(VoxelSpaceProgram.rl("block/gse_pipe_side"))
+//        );
+        simpleBlockItem(VSPBlocks.GSE_PIPE.get(),  models().getExistingFile(VoxelSpaceProgram.rl("block/gse_pipe_line")));
+
         simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(), cubeAll(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get()));
         simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(), cubeAllCutout(VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD));
         simpleBlockWithItem(VSPBlocks.VEHICLE_ASSEMBLER.get(), cubeAll(VSPBlocks.VEHICLE_ASSEMBLER.get()));
@@ -55,6 +62,7 @@ public class VSPBlockStateProvider extends BlockStateProvider {
                 0.0f
         );
         particleOnlyBlock(VSPBlocks.ROCKETRY_BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
+        particleOnlyBlock(VSPBlocks.ENGINE_BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
         particleOnlyBlock(VSPBlocks.MACHINERY_BOUNDING_BLOCK, VSPBlocks.ALUMINIUM_BLOCK);
     }
 
@@ -139,6 +147,154 @@ public class VSPBlockStateProvider extends BlockStateProvider {
                     .rotation(rot.x + 22.5f, rot.y + 45.0f, rot.z)
                     .scale(scale).end();
     }
+
+    // PIPE BLOCK without NOT condition
+//    protected void pipeBlock(Block block, ModelFile center, ModelFile line, ModelFile side) {
+//        MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
+//
+//        for (int mask = 0; mask < 64; mask++) {
+//            boolean north = (mask & (1 << 0)) != 0;
+//            boolean south = (mask & (1 << 1)) != 0;
+//            boolean east  = (mask & (1 << 2)) != 0;
+//            boolean west  = (mask & (1 << 3)) != 0;
+//            boolean up    = (mask & (1 << 4)) != 0;
+//            boolean down  = (mask & (1 << 5)) != 0;
+//
+//            // Don't render center for N+S only
+//            boolean northSouthOnly = north && south &&
+//                    !east && !west && !up && !down;
+//
+//            // Don't render center for E+W only
+//            boolean eastWestOnly = east && west &&
+//                    !north && !south && !up && !down;
+//
+//            // Don't render center for U+D only
+//            boolean upDownOnly = up && down &&
+//                    !north && !south && !east && !west;
+//
+//            if (up && !(upDownOnly)) {
+//                builder.part()
+//                    .modelFile(side)
+//                    .addModel()
+//                    .condition(WireBlock.NORTH, north)
+//                    .condition(WireBlock.SOUTH, south)
+//                    .condition(WireBlock.EAST, east)
+//                    .condition(WireBlock.WEST, west)
+//                    .condition(WireBlock.UP, up)
+//                    .condition(WireBlock.DOWN, down)
+//                .end();
+//            }
+//
+//            if (down && !(upDownOnly)) {
+//                builder.part()
+//                    .modelFile(side).rotationX(180)
+//                    .addModel()
+//                    .condition(WireBlock.NORTH, north)
+//                    .condition(WireBlock.SOUTH, south)
+//                    .condition(WireBlock.EAST, east)
+//                    .condition(WireBlock.WEST, west)
+//                    .condition(WireBlock.UP, up)
+//                    .condition(WireBlock.DOWN, down)
+//                .end();
+//            }
+//
+//            if (north && !(northSouthOnly)) {
+//                builder.part()
+//                    .modelFile(side).rotationX(90)
+//                    .addModel()
+//                    .condition(WireBlock.NORTH, north)
+//                    .condition(WireBlock.SOUTH, south)
+//                    .condition(WireBlock.EAST, east)
+//                    .condition(WireBlock.WEST, west)
+//                    .condition(WireBlock.UP, up)
+//                    .condition(WireBlock.DOWN, down)
+//                .end();
+//            }
+//
+//            if (south && !(northSouthOnly)) {
+//                builder.part()
+//                    .modelFile(side).rotationX(270)
+//                    .addModel()
+//                    .condition(WireBlock.NORTH, north)
+//                    .condition(WireBlock.SOUTH, south)
+//                    .condition(WireBlock.EAST, east)
+//                    .condition(WireBlock.WEST, west)
+//                    .condition(WireBlock.UP, up)
+//                    .condition(WireBlock.DOWN, down)
+//                .end();
+//            }
+//
+//            if (east && !(eastWestOnly)) {
+//                builder.part()
+//                    .modelFile(side).rotationX(90).rotationY(90)
+//                    .addModel()
+//                    .condition(WireBlock.NORTH, north)
+//                    .condition(WireBlock.SOUTH, south)
+//                    .condition(WireBlock.EAST, east)
+//                    .condition(WireBlock.WEST, west)
+//                    .condition(WireBlock.UP, up)
+//                    .condition(WireBlock.DOWN, down)
+//                .end();
+//            }
+//
+//            if (west && !(eastWestOnly)) {
+//                builder.part()
+//                    .modelFile(side).rotationX(90).rotationY(270)
+//                    .addModel()
+//                    .condition(WireBlock.NORTH, north)
+//                    .condition(WireBlock.SOUTH, south)
+//                    .condition(WireBlock.EAST, east)
+//                    .condition(WireBlock.WEST, west)
+//                    .condition(WireBlock.UP, up)
+//                    .condition(WireBlock.DOWN, down)
+//                .end();
+//            }
+//
+//            if (northSouthOnly || eastWestOnly || upDownOnly)
+//                continue;
+//
+//            builder.part()
+//                .modelFile(center)
+//                .addModel()
+//                .condition(WireBlock.NORTH, north)
+//                .condition(WireBlock.SOUTH, south)
+//                .condition(WireBlock.EAST, east)
+//                .condition(WireBlock.WEST, west)
+//                .condition(WireBlock.UP, up)
+//                .condition(WireBlock.DOWN, down)
+//            .end();
+//        }
+//
+//        builder.part().modelFile(line).addModel()
+//            .condition(WireBlock.UP, true)
+//            .condition(WireBlock.DOWN, true)
+//            .condition(WireBlock.NORTH, false)
+//            .condition(WireBlock.SOUTH, false)
+//            .condition(WireBlock.EAST, false)
+//            .condition(WireBlock.WEST, false)
+//        .end();
+//
+//        builder.part().modelFile(line)
+//            .rotationX(90).addModel()
+//            .condition(WireBlock.NORTH, true)
+//            .condition(WireBlock.SOUTH, true)
+//            .condition(WireBlock.UP, false)
+//            .condition(WireBlock.DOWN, false)
+//            .condition(WireBlock.EAST, false)
+//            .condition(WireBlock.WEST, false)
+//        .end();
+//
+//        builder.part().modelFile(line)
+//            .rotationX(90)
+//            .rotationY(90).addModel()
+//            .condition(WireBlock.EAST, true)
+//            .condition(WireBlock.WEST, true)
+//            .condition(WireBlock.NORTH, false)
+//            .condition(WireBlock.SOUTH, false)
+//            .condition(WireBlock.UP, false)
+//            .condition(WireBlock.DOWN, false)
+//        .end();
+//    }
 
     protected void particleOnlyBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock) {
         models().getBuilder(block.getId().getPath()).texture("particle", blockTexture(particleBlock.get()));

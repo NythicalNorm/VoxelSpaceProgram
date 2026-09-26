@@ -6,6 +6,7 @@ import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlockEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.rendering.VSPClientStage;
 import com.nythicalnorm.voxelspaceprogram.rendering.MultiBlockPreviewRenderer;
+import com.nythicalnorm.voxelspaceprogram.rendering.plumes.PlumeRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -23,6 +24,12 @@ public class MinecraftMixin implements VSPClientStage {
     @Unique
     MultiBlockPreviewRenderer vsp$multiBlockPreviewRenderer = new MultiBlockPreviewRenderer();
     @Unique
+    PlumeRenderer vsp$PlumeRenderer = new PlumeRenderer((Minecraft) (Object)this);
+
+    @Override
+    public PlumeRenderer vsp$getPlumeManager() {
+        return vsp$PlumeRenderer;
+    }
 
     @Override
     public MultiBlockPreviewRenderer vsp$multiBlockPreviewRenderer() {

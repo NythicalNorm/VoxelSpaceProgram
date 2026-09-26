@@ -40,6 +40,7 @@ public class VSPBlockLootTables extends BlockLootSubProvider {
         this.dropOther(VSPFluids.NITROGEN.block.get(), Blocks.AIR);
         this.dropSelf(VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get());
 
+        this.dropSelf(VSPBlocks.GSE_PIPE.get());
         this.dropSelf(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get());
         this.dropSelf(VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get());
         this.dropSelf(VSPBlocks.VEHICLE_ASSEMBLER.get());
@@ -47,6 +48,7 @@ public class VSPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(VSPBlocks.THREE_KEROLOX.get());
         this.dropSelf(VSPBlocks.TWO_KEROLOX.get());
         this.dropOther(VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(), Blocks.AIR);
+        this.dropOther(VSPBlocks.ENGINE_BOUNDING_BLOCK.get(), Blocks.AIR);
         this.dropOther(VSPBlocks.MACHINERY_BOUNDING_BLOCK.get(), Blocks.AIR);
     }
 

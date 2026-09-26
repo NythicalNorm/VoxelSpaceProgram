@@ -1,0 +1,25 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"1": "voxelspaceprogram:block/gse_pipe_center",
+		"particle": "voxelspaceprogram:block/gse_pipe_center"
+	},
+	"elements": [
+		{
+			"name": "center",
+			"from": [5, 5, 5],
+			"to": [11, 11, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 3, 3], "texture": "#1"},
+				"east": {"uv": [0, 3, 3, 6], "texture": "#1"},
+				"south": {"uv": [3, 0, 6, 3], "texture": "#1"},
+				"west": {"uv": [3, 3, 6, 6], "texture": "#1"},
+				"up": {"uv": [3, 9, 0, 6], "texture": "#1"},
+				"down": {"uv": [9, 0, 6, 3], "texture": "#1"}
+			}
+		}
+	]
+}

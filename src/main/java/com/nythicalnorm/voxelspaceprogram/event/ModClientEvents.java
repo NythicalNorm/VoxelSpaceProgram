@@ -8,10 +8,13 @@ import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer.Ma
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer.SheetMetalRollerRenderer;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers.EngineEntityRenderer;
+import com.nythicalnorm.voxelspaceprogram.rendering.plumes.PlumeRenderTypes;
 import com.nythicalnorm.voxelspaceprogram.util.VSPKeyBinds;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -44,5 +47,10 @@ public class ModClientEvents {
         event.register(VSPKeyBinds.DOCKING_MODE_TOGGLE_KEY);
         event.register(VSPKeyBinds.CLOCKWISE_SPIN_KEY);
         event.register(VSPKeyBinds.ANTI_CLOCKWISE_SPIN_KEY);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
+        event.register("engine_overlay", RenderType.translucent(), PlumeRenderTypes.ENGINE_OVERLAY);
     }
 }

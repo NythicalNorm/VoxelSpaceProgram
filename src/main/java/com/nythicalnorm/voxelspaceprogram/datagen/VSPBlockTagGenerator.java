@@ -30,6 +30,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
                 VSPBlocks.MAGNETIZER.get(),
                 VSPBlocks.MAGNETIZED_IRON_BLOCK.get(),
                 VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get(),
+                VSPBlocks.GSE_PIPE.get(),
                 VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(),
                 VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get()
         );
@@ -41,6 +42,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
                 VSPBlocks.THREE_KEROLOX.get(),
                 VSPBlocks.TWO_KEROLOX.get(),
                 VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(),
+                VSPBlocks.ENGINE_BOUNDING_BLOCK.get(),
                 VSPBlocks.ALUMINIUM_ORE.get(),
                 VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(),
                 VSPBlocks.ALUMINIUM_BLOCK.get(),
@@ -55,6 +57,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
                 VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART.get(),
                 VSPBlocks.MAGNETIZER.get(),
                 VSPBlocks.MAGNETIZED_IRON_BLOCK.get(),
+                VSPBlocks.GSE_PIPE.get(),
                 VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get(),
                 VSPBlocks.VEHICLE_ASSEMBLER.get(),
                 VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get(),
@@ -62,6 +65,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
                 VSPBlocks.TWO_KEROLOX.get(),
                 VSPBlocks.MACHINERY_BOUNDING_BLOCK.get(),
                 VSPBlocks.ROCKETRY_BOUNDING_BLOCK.get(),
+                VSPBlocks.ENGINE_BOUNDING_BLOCK.get(),
                 VSPBlocks.ALUMINIUM_ORE.get(),
                 VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get(),
                 VSPBlocks.ALUMINIUM_BLOCK.get(),

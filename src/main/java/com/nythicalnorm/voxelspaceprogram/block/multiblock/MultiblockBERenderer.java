@@ -36,8 +36,10 @@ public abstract class MultiblockBERenderer<T extends BlockEntity> implements Blo
             pPoseStack.mulPose(vspMultiblock.getFacingRot());
             Vector3f postRotOffset = getPostRotOffset(block);
             pPoseStack.translate(postRotOffset.x(), postRotOffset.y(), postRotOffset.z());
+
             setModelPositions(pBlockEntity, model, pPartialTick);
-            model.render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay); //, color[0], color[1], color[2], color[3]);
+            model.render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
+            renderAdditional(pBlockEntity, pPartialTick, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
         }
         pPoseStack.popPose();
     }
@@ -68,6 +70,10 @@ public abstract class MultiblockBERenderer<T extends BlockEntity> implements Blo
         }
         pPoseStack.popPose();
 
+    }
+
+    protected void renderAdditional(T pBlockEntity, float pPartialTick, @NotNull PoseStack pPoseStack,
+                                    @NotNull MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
     }
 
     protected abstract Vector3f getPostRotOffset(Block block);

@@ -167,7 +167,7 @@ dependencies {
 
     runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_version}")
 
-    implementation fg.deobf ('com.nythicalnorm:planetshine:0.0.23') {transitive = false}
+    implementation fg.deobf ('com.nythicalnorm:planetshine:0.0.25') {transitive = false}
 
     implementation("org.valkyrienskies.core:api:${vs_core_version}") { transitive = false
         exclude group: 'org.joml', module: ''

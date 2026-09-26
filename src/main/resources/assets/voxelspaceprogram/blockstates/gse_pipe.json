@@ -1,0 +1,232 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_center"
+      },
+      "when": {
+        "AND": [
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"north": "true"},
+                {"south": "true"},
+                {"east": "false"},
+                {"west": "false"},
+                {"up": "false"},
+                {"down": "false"}
+              ]
+            }
+          },
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"east": "true"},
+                {"west": "true"},
+                {"north": "false"},
+                {"south": "false"},
+                {"up": "false"},
+                {"down": "false"}
+              ]
+            }
+          },
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"up": "true"},
+                {"down": "true"},
+                {"north": "false"},
+                {"south": "false"},
+                {"east": "false"},
+                {"west": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_side",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "AND": [
+          {"east": "true"},
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"east": "true"},
+                {"west": "true"},
+                {"north": "false"},
+                {"south": "false"},
+                {"up": "false"},
+                {"down": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_side",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "AND": [
+          {"west": "true"},
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"east": "true"},
+                {"west": "true"},
+                {"north": "false"},
+                {"south": "false"},
+                {"up": "false"},
+                {"down": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_side",
+        "x": 90
+      },
+      "when": {
+        "AND": [
+          {"north": "true"},
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"north": "true"},
+                {"south": "true"},
+                {"up": "false"},
+                {"down": "false"},
+                {"east": "false"},
+                {"west": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_side",
+        "x": 270
+      },
+      "when": {
+        "AND": [
+          {"south": "true"},
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"north": "true"},
+                {"south": "true"},
+                {"up": "false"},
+                {"down": "false"},
+                {"east": "false"},
+                {"west": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_side"
+      },
+      "when": {
+        "AND": [
+          {"up": "true"},
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"up": "true"},
+                {"down": "true"},
+                {"north": "false"},
+                {"south": "false"},
+                {"east": "false"},
+                {"west": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_side",
+        "x": 180
+      },
+      "when": {
+        "AND": [
+          {"down": "true"},
+          {
+            "VSP_NOT": {
+              "AND": [
+                {"up": "true"},
+                {"down": "true"},
+                {"north": "false"},
+                {"south": "false"},
+                {"east": "false"},
+                {"west": "false"}
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_line"
+      },
+      "when": {
+        "up": "true",
+        "down": "true",
+        "east": "false",
+        "west": "false",
+        "north": "false",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_line",
+        "x": 90
+      },
+      "when": {
+        "up": "false",
+        "down": "false",
+        "east": "false",
+        "west": "false",
+        "north": "true",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "voxelspaceprogram:block/gse_pipe_line",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "up": "false",
+        "down": "false",
+        "east": "true",
+        "west": "true",
+        "north": "false",
+        "south": "false"
+      }
+    }
+  ]
+}

@@ -49,6 +49,8 @@ public class ForgeClientEvents {
 
             previewRenderer.renderBlockItemPreview(event.getPoseStack(), mc, multiBlockItem, multiBlockItem.getMultiblock());
         }
+
+        ((VSPClientStage)mc).vsp$getPlumeManager().renderPlumes(event.getCamera(), event.getPoseStack());
     }
 
     @SubscribeEvent

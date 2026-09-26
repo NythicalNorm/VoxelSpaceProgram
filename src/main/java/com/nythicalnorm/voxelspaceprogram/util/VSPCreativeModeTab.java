@@ -51,6 +51,7 @@ public class VSPCreativeModeTab {
 
                         output.accept(VSPBlocks.HYPERGOLIC_STEEL_TANK.get());
 
+                        output.accept(VSPBlocks.GSE_PIPE.get());
                         output.accept(VSPBlocks.VEHICLE_ASSEMBLY_PLATFORM.get());
                         output.accept(VSPBlocks.VEHICLE_ASSEMBLY_SCAFFOLD.get());
                         output.accept(VSPBlocks.VEHICLE_ASSEMBLER.get());

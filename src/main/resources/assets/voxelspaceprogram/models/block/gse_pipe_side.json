@@ -1,0 +1,25 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "voxelspaceprogram:block/gse_pipe_side",
+		"particle": "voxelspaceprogram:block/gse_pipe_side"
+	},
+	"elements": [
+		{
+			"name": "side",
+			"from": [5, 11, 5],
+			"to": [11, 16, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [3, 0, 6, 2.5], "texture": "#0"},
+				"east": {"uv": [3, 2.5, 6, 5], "texture": "#0"},
+				"south": {"uv": [3, 5, 6, 7.5], "texture": "#0"},
+				"west": {"uv": [0, 6, 3, 8.5], "texture": "#0"},
+				"up": {"uv": [3, 3, 0, 0], "texture": "#0"},
+				"down": {"uv": [3, 3, 0, 6], "texture": "#0"}
+			}
+		}
+	]
+}
