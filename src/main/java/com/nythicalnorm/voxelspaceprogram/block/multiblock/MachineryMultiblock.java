@@ -14,7 +14,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.stream.Stream;
 
-public abstract class MachineryMultiblock extends VSPMultiblock{
+public abstract class MachineryMultiblock extends VSPMultiblock {
     public static final DirectionProperty FACING_HORIZONTAL = BlockStateProperties.HORIZONTAL_FACING;
 
     public MachineryMultiblock(Properties pProperties, float pPixelHeight, float pPixelXWidth, float pPixelZWidth) {
@@ -59,46 +59,7 @@ public abstract class MachineryMultiblock extends VSPMultiblock{
     }
 
     @Override
-    public Stream<BlockPos> getBoundingPositions(BlockPos pPos, Direction placeDir) {
-        Stream.Builder<BlockPos> builder = Stream.builder();
-        int XLength = blockLength(this.pixelXWidth);
-        int YLength = blockLength(this.pixelHeight);
-        int ZLength = blockLength(this.pixelZWidth);
-
-        BlockPos leftBottomPos = new BlockPos(0, 0, 0);
-        BlockPos RightTopPos = new BlockPos(XLength - 1, YLength - 1, ZLength - 1);
-        BlockPos centerOffset = new BlockPos(getCenterOffset(XLength), getCenterOffset(YLength), getCenterOffset(ZLength));
-
-        leftBottomPos = rotateBlockPos(leftBottomPos.offset(centerOffset), placeDir);
-        RightTopPos = rotateBlockPos(RightTopPos.offset(centerOffset), placeDir);
-
-        int minX = Math.min(leftBottomPos.getX(), RightTopPos.getX());
-        int minY = Math.min(leftBottomPos.getY(), RightTopPos.getY());
-        int minZ = Math.min(leftBottomPos.getZ(), RightTopPos.getZ());
-
-        int maxX = Math.max(leftBottomPos.getX(), RightTopPos.getX());
-        int maxY = Math.max(leftBottomPos.getY(), RightTopPos.getY());
-        int maxZ = Math.max(leftBottomPos.getZ(), RightTopPos.getZ());
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    BlockPos searchPos = new BlockPos(pPos.getX() + x,pPos.getY() + y, pPos.getZ() + z);
-                    if (!searchPos.equals(pPos)) {
-                        builder.add(searchPos);
-                    }
-                }
-            }
-        }
-
-        return builder.build();
-    }
-
-    private int getCenterOffset(int axis) {
-        return -(axis - 1) / 2;
-    }
-
-    public static BlockPos rotateBlockPos(BlockPos pos, Direction direction) {
+    public BlockPos rotateBlockPos(BlockPos pos, Direction direction) {
         return switch (direction) {
             case NORTH -> new BlockPos( pos.getX(), pos.getY(), pos.getZ());
             case SOUTH -> new BlockPos(-pos.getX(), pos.getY(), -pos.getZ());

@@ -48,11 +48,11 @@ public class EngineEntityRenderer extends MultiblockBERenderer<EngineEntity> {
 
     @Override
     public Vector3f getPostRotOffset(Block block) {
-        if (block instanceof RocketryMultiblock rocketryMultiblock && rocketryMultiblock.isEvenBlockSize()) {
-            return new Vector3f(0.5f, 0.0f, 0.5f);
-        } else {
-            return new Vector3f(0f, 1.0f, 0f);
+        if (block instanceof RocketryMultiblock rocketryMultiblock) {
+            return rocketryMultiblock.getRenderingOffset();
         }
+
+        return new Vector3f(0.0f, 0.0f, 0.0f);
     }
 
     @Override

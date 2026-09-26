@@ -320,8 +320,8 @@ public class VSPBlockStateProvider extends BlockStateProvider {
 
             if (footprintType == FootprintedType.NOFOOTPRINTS) {
                return ConfiguredModel.allYRotations(models().cubeAll("lunar_regolith", blockModel), 0, false);
+               //return new ConfiguredModel[]{new ConfiguredModel(models().cubeAll("lunar_regolith", blockModel))};
            }
-
            else {
                 return new ConfiguredModel[]{new ConfiguredModel(models().cubeTop("lunar_regolith_" + state.getValue(FOOTPRINTTYPE),
                         VoxelSpaceProgram.rl( "block/lunar_regolith"),

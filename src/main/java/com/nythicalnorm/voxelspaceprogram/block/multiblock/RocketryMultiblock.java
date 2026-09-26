@@ -9,17 +9,18 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.joml.Vector3f;
 
 import java.util.stream.Stream;
 
 public abstract class RocketryMultiblock extends VSPMultiblock {
     protected static final DirectionProperty FACING = BlockStateProperties.FACING;
-    protected final int blockSize;
+    protected final Vector3f renderingOffset;
 
-    public RocketryMultiblock(Properties pProperties, int pBlockSize, float pPixelHeight, float pPixelWidth) {
-        super(pProperties, pPixelHeight, pPixelWidth, pPixelWidth);
+    public RocketryMultiblock(Properties pProperties, float pPixelHeight, float pPixelXWidth, float pPixelZWidth) {
+        super(pProperties, pPixelHeight, pPixelXWidth, pPixelZWidth);
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
-        this.blockSize = pBlockSize;
+        this.renderingOffset = calculateRenderingOffset(pPixelHeight, pPixelXWidth, pPixelZWidth);
     }
 
     @Override
@@ -66,81 +67,16 @@ public abstract class RocketryMultiblock extends VSPMultiblock {
     }
 
     @Override
-    public Stream<BlockPos> getBoundingPositions(BlockPos pPos, Direction placeDir) {
-        if (isEvenBlockSize()) {
-            return getEvenPositions(pPos, placeDir);
-        } else {
-            return getOddPositions(pPos, placeDir);
-        }
-    }
-
-    public Stream<BlockPos> getEvenPositions(BlockPos pPos, Direction placeDir) {
-        Stream.Builder<BlockPos> builder = Stream.builder();
-        int minBlockSearch = -(blockSize - 1) / 2;
-        int maxBlockSearch = blockSize / 2;
-
-        BlockPos leftBottomPos = new BlockPos(minBlockSearch, 0, minBlockSearch);
-        BlockPos RightTopPos = new BlockPos(maxBlockSearch, maxBlockSearch, maxBlockSearch);
-        leftBottomPos = rotateBlockPos(leftBottomPos, placeDir);
-        RightTopPos = rotateBlockPos(RightTopPos, placeDir);
-
-        int minX = Math.min(leftBottomPos.getX(), RightTopPos.getX());
-        int minY = Math.min(leftBottomPos.getY(), RightTopPos.getY());
-        int minZ = Math.min(leftBottomPos.getZ(), RightTopPos.getZ());
-
-        int maxX = Math.max(leftBottomPos.getX(), RightTopPos.getX());
-        int maxY = Math.max(leftBottomPos.getY(), RightTopPos.getY());
-        int maxZ = Math.max(leftBottomPos.getZ(), RightTopPos.getZ());
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    BlockPos searchPos = new BlockPos(pPos.getX() + x,pPos.getY() + y, pPos.getZ() + z);
-                    if (!searchPos.equals(pPos)) {
-                        builder.add(searchPos);
-                    }
-                }
-            }
-        }
-
-        return builder.build();
-    }
-
-    public Stream<BlockPos> getOddPositions(BlockPos pPos, Direction placeDir) {
-        Stream.Builder<BlockPos> builder = Stream.builder();
-        int blockCenter = (this.blockSize - 1) / 2;
-        BlockPos cubeCenter = pPos.offset(placeDir.getNormal().multiply(blockCenter));
-
-        int blockSearch = (blockSize / 2);
-
-        for (int x = -blockSearch; x <= blockSearch; x++) {
-            for (int y = -blockSearch; y <= blockSearch; y++) {
-                for (int z = -blockSearch; z <= blockSearch; z++) {
-                    BlockPos searchPos = new BlockPos(cubeCenter.getX() + x,cubeCenter.getY() + y, cubeCenter.getZ() + z);
-                    if (!searchPos.equals(pPos)) {
-                        builder.add(searchPos);
-                    }
-                }
-            }
-        }
-
-        return builder.build();
-    }
-
-    public boolean isEvenBlockSize() {
-        return this.blockSize % 2 == 0;
-    }
-
-    public static BlockPos rotateBlockPos(BlockPos pos, Direction direction) {
+    public BlockPos rotateBlockPos(BlockPos pos, Direction direction) {
         return switch (direction) {
             case UP    -> new BlockPos(pos.getX(),  pos.getY(),  pos.getZ());  // Identity
             case DOWN  -> new BlockPos(pos.getX(), -pos.getY(), -pos.getZ());
 
+            // the below stuff is sus, the positions of getX()'s and getZ()'s might need to be switched.
             case NORTH -> new BlockPos(-pos.getX(),  -pos.getZ(), -pos.getY());
             case SOUTH -> new BlockPos(pos.getX(), -pos.getZ(),  pos.getY());
-
-            case EAST  -> new BlockPos(pos.getZ(),  -pos.getY(), -pos.getX());
-            case WEST  -> new BlockPos(-pos.getZ(),  -pos.getY(),  pos.getX());
+            case EAST  -> new BlockPos(pos.getY(), -pos.getX(), pos.getZ());
+            case WEST  -> new BlockPos(-pos.getY(),  -pos.getX(), -pos.getZ());
         };
     }
 
@@ -162,6 +98,26 @@ public abstract class RocketryMultiblock extends VSPMultiblock {
         return null;
     }
 
+    public Vector3f getRenderingOffset() {
+        return renderingOffset;
+    }
+
+    private static Vector3f calculateRenderingOffset(float pPixelHeight, float pPixelXWidth, float pPixelZWidth) {
+        float xOffset = 0.0f;
+        float zOffset = 0.0f;
+        float yOffset = 0.0f;
+
+        if (blockLength(pPixelXWidth) % 2 == 0) {
+            xOffset = 0.5f;
+        }
+        if (blockLength(pPixelZWidth) % 2 == 0) {
+            zOffset = 0.5f;
+        }
+        if (blockLength(pPixelHeight) % 2 == 1) {
+            yOffset = 1.0f;
+        }
+        return new Vector3f(xOffset, yOffset, zOffset);
+    }
     //for preview drawing purposes
     @Override
     public BlockState getUncheckedStateForPlacement(BlockPlaceContext pContext) {

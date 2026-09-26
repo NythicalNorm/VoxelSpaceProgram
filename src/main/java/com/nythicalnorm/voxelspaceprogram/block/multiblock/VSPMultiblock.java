@@ -89,6 +89,45 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
         });
     }
 
+    public Stream<BlockPos> getBoundingPositions(BlockPos pPos, Direction placeDir) {
+        Stream.Builder<BlockPos> builder = Stream.builder();
+        int XLength = blockLength(this.pixelXWidth);
+        int YLength = blockLength(this.pixelHeight);
+        int ZLength = blockLength(this.pixelZWidth);
+
+        BlockPos leftBottomPos = new BlockPos(0, 0, 0);
+        BlockPos RightTopPos = new BlockPos(XLength - 1, YLength - 1, ZLength - 1);
+        BlockPos centerOffset = new BlockPos(getCenterOffset(XLength), 0, getCenterOffset(ZLength));
+
+        leftBottomPos = rotateBlockPos(leftBottomPos.offset(centerOffset), placeDir);
+        RightTopPos = rotateBlockPos(RightTopPos.offset(centerOffset), placeDir);
+
+        int minX = Math.min(leftBottomPos.getX(), RightTopPos.getX());
+        int minY = Math.min(leftBottomPos.getY(), RightTopPos.getY());
+        int minZ = Math.min(leftBottomPos.getZ(), RightTopPos.getZ());
+
+        int maxX = Math.max(leftBottomPos.getX(), RightTopPos.getX());
+        int maxY = Math.max(leftBottomPos.getY(), RightTopPos.getY());
+        int maxZ = Math.max(leftBottomPos.getZ(), RightTopPos.getZ());
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    BlockPos searchPos = new BlockPos(pPos.getX() + x,pPos.getY() + y, pPos.getZ() + z);
+                    if (!searchPos.equals(pPos)) {
+                        builder.add(searchPos);
+                    }
+                }
+            }
+        }
+
+        return builder.build();
+    }
+
+    private int getCenterOffset(int axis) {
+        return -(axis - 1) / 2;
+    }
+
     protected VoxelShape getShapeFromDirection(Direction direction) {
         double halfX = this.pixelXWidth * 0.5d;
         double halfY = this.pixelHeight * 0.5d;
@@ -127,7 +166,7 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
         return blockLength(axis) % 2 == 0;
     }
 
-    protected int blockLength(float axis) {
+    protected static int blockLength(float axis) {
         return (int) Math.ceil((axis - 1.0f)/16.0f);
     }
 
@@ -201,6 +240,6 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
     protected abstract VoxelShape[] generateShapesForAABB();
     protected abstract VoxelShape getShapeForBlockState(BlockState blockState);
     public abstract Block getBoundingBlock();
-    public abstract Stream<BlockPos> getBoundingPositions(BlockPos pPos, Direction placeDir);
+    public abstract BlockPos rotateBlockPos(BlockPos pos, Direction direction);
     public abstract BlockState getUncheckedStateForPlacement(BlockPlaceContext pContext);
 }

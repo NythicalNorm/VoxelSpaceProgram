@@ -29,8 +29,8 @@ public class EngineBlock extends RocketryMultiblock {
 
     public EngineBlock(Properties pProperties, EngineProperties pEngineProperties, PlumeSettings plumeSettings) {
         super(pProperties.lightLevel(state -> state.getValue(ENABLED) ? 15 : 0),
-                pEngineProperties.getBlockSize(),
                 pEngineProperties.getPixelHeight(),
+                pEngineProperties.getPixelWidth(),
                 pEngineProperties.getPixelWidth()
         );
         this.plumeSettings = plumeSettings;
