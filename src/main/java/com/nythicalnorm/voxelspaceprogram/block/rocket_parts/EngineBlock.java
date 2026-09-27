@@ -2,9 +2,9 @@ package com.nythicalnorm.voxelspaceprogram.block.rocket_parts;
 
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.VSPMultiblock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineProperties;
-import com.nythicalnorm.voxelspaceprogram.block.multiblock.RocketryMultiblock;
 import com.nythicalnorm.voxelspaceprogram.rendering.plumes.PlumeSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class EngineBlock extends RocketryMultiblock {
+public class EngineBlock extends VSPMultiblock {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
     private final EngineProperties engineProperties;
     private final PlumeSettings plumeSettings;
@@ -31,7 +31,8 @@ public class EngineBlock extends RocketryMultiblock {
         super(pProperties.lightLevel(state -> state.getValue(ENABLED) ? 15 : 0),
                 pEngineProperties.getPixelHeight(),
                 pEngineProperties.getPixelWidth(),
-                pEngineProperties.getPixelWidth()
+                pEngineProperties.getPixelWidth(),
+                false
         );
         this.plumeSettings = plumeSettings;
         this.registerDefaultState(this.defaultBlockState().setValue(ENABLED, false));

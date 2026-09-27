@@ -49,14 +49,11 @@ public abstract class MultiblockBERenderer<T extends BlockEntity> implements Blo
         pPoseStack.pushPose();
         Block block = blockState.getBlock();
         ModelPart model = getMainModel(block);
+        Direction dir = blockState.getValue(VSPMultiblock.FACING);
+        Quaternionf facingRot = new Quaternionf(dir.getRotation());
 
-        Quaternionf facingRot = new Quaternionf();
-        if (block instanceof MachineryMultiblock) {
-            Direction dir = blockState.getValue(MachineryMultiblock.FACING_HORIZONTAL);
-            facingRot.set(dir.getRotation().rotateX(Mth.HALF_PI));
-        } else if (block instanceof RocketryMultiblock) {
-            Direction dir = blockState.getValue(RocketryMultiblock.FACING);
-            facingRot.set(dir.getRotation());
+        if (block instanceof VSPMultiblock vspMultiblock && vspMultiblock.isHorizontalOnlyRotation()) {
+            facingRot.rotateX(Mth.HALF_PI);
         }
 
         if (model != null) {

@@ -10,32 +10,151 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaterniond;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.stream.Stream;
 
 public abstract class VSPMultiblock extends BaseEntityBlock {
+    protected static final DirectionProperty FACING = BlockStateProperties.FACING;
+
+    protected final boolean isHorizontalOnlyRotation;
     protected final float pixelHeight;
     protected final float pixelXWidth;
     protected final float pixelZWidth;
     protected final VoxelShape[] SHAPES;
+    protected final Vector3f renderingOffset;
 
-    public VSPMultiblock(Properties pProperties, float pPixelHeight, float pPixelXWidth, float pPixelZWidth) {
+    public VSPMultiblock(Properties pProperties, float pPixelHeight, float pPixelXWidth, float pPixelZWidth, boolean isHorizontalOnlyRotation) {
         super(pProperties);
         this.pixelHeight = pPixelHeight;
         this.pixelXWidth = pPixelXWidth;
         this.pixelZWidth = pPixelZWidth;
+        this.isHorizontalOnlyRotation = isHorizontalOnlyRotation;
         this.SHAPES = generateShapesForAABB();
+        this.renderingOffset = calculateRenderingOffset(pPixelHeight, pPixelXWidth, pPixelZWidth);
+        if (this.isHorizontalOnlyRotation()) {
+            this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
+        } else {
+            this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.DOWN));
+        }
+    }
+
+    protected boolean isHorizontalOnlyRotation() {
+        return this.isHorizontalOnlyRotation;
+    }
+
+    protected VoxelShape[] generateShapesForAABB() {
+        VoxelShape[] voxelShapes = this.isHorizontalOnlyRotation ? new VoxelShape[4] : new VoxelShape[6];
+
+        voxelShapes[0] = getShapeFromDirection(Direction.NORTH);
+        voxelShapes[1] = getShapeFromDirection(Direction.SOUTH);
+        voxelShapes[2] = getShapeFromDirection(Direction.EAST);
+        voxelShapes[3] = getShapeFromDirection(Direction.WEST);
+
+        if (!this.isHorizontalOnlyRotation) {
+            voxelShapes[4] = getShapeFromDirection(Direction.UP);
+            voxelShapes[5] = getShapeFromDirection(Direction.DOWN);
+        }
+        return voxelShapes;
+    }
+
+    protected VoxelShape getShapeForBlockState(BlockState blockState) {
+        switch (blockState.getValue(FACING)) {
+            case NORTH -> {
+                return SHAPES[0];
+            } case SOUTH -> {
+                return SHAPES[1];
+            } case EAST -> {
+                return SHAPES[2];
+            } case WEST -> {
+                return SHAPES[3];
+            } case UP -> {
+                return this.isHorizontalOnlyRotation ? SHAPES[0] : SHAPES[4];
+            } case DOWN -> {
+                return this.isHorizontalOnlyRotation ? SHAPES[0] : SHAPES[5];
+            }
+        }
+        return SHAPES[0];
+    }
+
+    public BlockPos rotateBlockPos(BlockPos pos, Direction direction) {
+        if (this.isHorizontalOnlyRotation()) {
+            return switch (direction) {
+                case NORTH -> new BlockPos( pos.getX(), pos.getY(), pos.getZ());
+                case SOUTH -> new BlockPos(-pos.getX(), pos.getY(), -pos.getZ());
+                case EAST  -> new BlockPos(-pos.getZ(), pos.getY(),  pos.getX());
+                case WEST  -> new BlockPos( pos.getZ(), pos.getY(), -pos.getX());
+                default -> new BlockPos(0, 0, 0);
+            };
+        } else {
+            return switch (direction) {
+                case UP -> new BlockPos(pos.getX(), pos.getY(), pos.getZ());  // Identity
+                case DOWN -> new BlockPos(pos.getX(), -pos.getY(), -pos.getZ());
+
+                // the below stuff is sus, the positions of getX()'s and getZ()'s might need to be switched.
+                case NORTH -> new BlockPos(-pos.getX(), -pos.getZ(), -pos.getY());
+                case SOUTH -> new BlockPos(pos.getX(), -pos.getZ(), pos.getY());
+                case EAST -> new BlockPos(pos.getY(), -pos.getX(), -pos.getZ());
+                case WEST -> new BlockPos(-pos.getY(), -pos.getX(), pos.getZ());
+            };
+        }
+    }
+
+    protected Stream<BlockPos> getBoundingPositions(BlockPos pPos, BlockState blockState) {
+        return getBoundingPositions(pPos, blockState.getValue(FACING));
+    }
+
+    protected BlockState getAnyPlacementDirection(BlockPlaceContext pContext, Direction[] directions) {
+        Direction actualDirection = this.isHorizontalOnlyRotation() ? pContext.getHorizontalDirection().getOpposite() :
+                pContext.getNearestLookingDirection().getOpposite();
+
+        if (checkCanBePlaced(pContext, actualDirection)) {
+            return this.defaultBlockState().setValue(FACING, actualDirection);
+        }
+
+        for (Direction dir : directions) {
+            if (dir.equals(actualDirection) || (this.isHorizontalOnlyRotation() && !dir.getAxis().isHorizontal())) {
+                continue;
+            }
+
+            if (checkCanBePlaced(pContext, dir)) {
+                return this.defaultBlockState().setValue(FACING, dir);
+            }
+        }
+        return null;
+    }
+
+    private static Vector3f calculateRenderingOffset(float pPixelHeight, float pPixelXWidth, float pPixelZWidth) {
+        float xOffset = 0.0f;
+        float zOffset = 0.0f;
+        float yOffset = 0.0f;
+
+        if (blockLength(pPixelXWidth) % 2 == 0) {
+            xOffset = 0.5f;
+        }
+        if (blockLength(pPixelZWidth) % 2 == 0) {
+            zOffset = 0.5f;
+        }
+        if (blockLength(pPixelHeight) % 2 == 1) {
+            yOffset = 1.0f;
+        }
+        return new Vector3f(xOffset, yOffset, zOffset);
+    }
+
+    public Vector3f getRenderingOffset() {
+        return renderingOffset;
     }
 
     protected boolean checkCanBePlaced(BlockPlaceContext pContext, Direction placeDir) {
@@ -234,12 +353,27 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
         return pixelZWidth;
     }
 
-    protected abstract Stream<BlockPos> getBoundingPositions(BlockPos pPos, BlockState blockState);
-    protected abstract boolean isHorizontalOnlyRotation();
-    protected abstract BlockState getAnyPlacementDirection(BlockPlaceContext pContext, Direction[] directions);
-    protected abstract VoxelShape[] generateShapesForAABB();
-    protected abstract VoxelShape getShapeForBlockState(BlockState blockState);
+    //for preview drawing purposes
+    public BlockState getUncheckedStateForPlacement(BlockPlaceContext pContext) {
+        Direction actualDirection = pContext.getNearestLookingDirection().getOpposite();
+        return this.defaultBlockState().setValue(FACING, actualDirection);
+    }
+
+    @Override
+    public BlockState rotate(BlockState pState, Rotation pRotation) {
+        return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(FACING);
+        super.createBlockStateDefinition(pBuilder);
+    }
+
     public abstract Block getBoundingBlock();
-    public abstract BlockPos rotateBlockPos(BlockPos pos, Direction direction);
-    public abstract BlockState getUncheckedStateForPlacement(BlockPlaceContext pContext);
 }

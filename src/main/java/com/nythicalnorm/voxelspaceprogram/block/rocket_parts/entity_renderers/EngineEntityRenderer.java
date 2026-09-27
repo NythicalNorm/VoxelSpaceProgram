@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.MultiblockBERenderer;
-import com.nythicalnorm.voxelspaceprogram.block.multiblock.RocketryMultiblock;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.VSPMultiblock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -48,8 +48,8 @@ public class EngineEntityRenderer extends MultiblockBERenderer<EngineEntity> {
 
     @Override
     public Vector3f getPostRotOffset(Block block) {
-        if (block instanceof RocketryMultiblock rocketryMultiblock) {
-            return rocketryMultiblock.getRenderingOffset();
+        if (block instanceof VSPMultiblock vspMultiblock) {
+            return vspMultiblock.getRenderingOffset();
         }
 
         return new Vector3f(0.0f, 0.0f, 0.0f);

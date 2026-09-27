@@ -51,8 +51,8 @@ public class VSPBlockStateProvider extends BlockStateProvider {
         fluidBlock(VSPFluids.NITROGEN.block);
         connectedBlock(VSPBlocks.CRYOGENIC_AIR_SEPARATOR_PART);
 
-        rocketryEntityBlock(VSPBlocks.THREE_KEROLOX, VSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f);
-        rocketryEntityBlock(VSPBlocks.TWO_KEROLOX, VSPBlocks.ALUMINIUM_BLOCK, 1f/3f);
+        rocketryEntityBlock(VSPBlocks.THREE_KEROLOX, VSPBlocks.MAGNETIZED_IRON_BLOCK, 1f/4f, 0.0f);
+        rocketryEntityBlock(VSPBlocks.TWO_KEROLOX, VSPBlocks.ALUMINIUM_BLOCK, 1f/3f, 3.0f);
 
         machineryEntityBlock(VSPBlocks.SHEET_METAL_ROLLER, VSPBlocks.ALUMINIUM_BLOCK,
                 1f/2.5f,
@@ -66,29 +66,29 @@ public class VSPBlockStateProvider extends BlockStateProvider {
         particleOnlyBlock(VSPBlocks.MACHINERY_BOUNDING_BLOCK, VSPBlocks.ALUMINIUM_BLOCK);
     }
 
-    protected void rocketryEntityBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock, float scale) {
+    protected void rocketryEntityBlock(RegistryObject<Block> block, RegistryObject<Block> particleBlock, float scale, float sizeOffset) {
         particleOnlyBlock(block, particleBlock);
 
-        Vector3f rot = new Vector3f(-90f, 0f, 0f);
+        Vector3f rot = new Vector3f(0f, 0f, 0f);
         Vector3f pos = new Vector3f(0f, 4f, 0f);
         float invScale = 1.0f / scale;
 
         itemModels().getBuilder(block.getId().getPath()).parent(new ModelFile.UncheckedModelFile("builtin/entity"))
                 .texture("particle", blockTexture(particleBlock.get()))
                 .transforms().transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
-                    .translation(pos.x, pos.y, pos.z)
+                    .translation(pos.x, pos.y - sizeOffset, pos.z)
                     .rotation(rot.x, rot.y, rot.z)
                     .scale(scale).end()
                 .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
-                    .translation(pos.x, pos.y, pos.z)
+                    .translation(pos.x, pos.y - sizeOffset, pos.z)
                     .rotation(rot.x, rot.y, rot.z)
                     .scale(scale).end()
                 .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
-                    .translation(pos.x, pos.y, pos.z - 0.25f)
+                    .translation(pos.x - sizeOffset, pos.y, pos.z - 0.25f + sizeOffset)
                     .rotation(rot.x + 45f, rot.y, rot.z)
                     .scale(scale).end()
                 .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
-                    .translation(pos.x, pos.y, pos.z - 0.25f)
+                    .translation(pos.x - sizeOffset, pos.y, pos.z - 0.25f + sizeOffset)
                     .rotation(rot.x + 45f, rot.y, rot.z)
                     .scale(scale).end()
                 .transform(ItemDisplayContext.FIXED)
@@ -99,8 +99,8 @@ public class VSPBlockStateProvider extends BlockStateProvider {
                     .translation(pos.x, pos.y + (invScale * 2.0f), pos.z)
                     .rotation(rot.x, rot.y, rot.z).scale(scale).end()
                 .transform(ItemDisplayContext.GUI)
-                    .translation(pos.x, pos.y, pos.z)
-                    .rotation(rot.x + 22.5f, rot.y, rot.z + 45f)
+                    .translation(pos.x, pos.y - sizeOffset, pos.z)
+                    .rotation(rot.x + 22.5f, rot.y + 45f, rot.z)
                     .scale(scale).end();
     }
 

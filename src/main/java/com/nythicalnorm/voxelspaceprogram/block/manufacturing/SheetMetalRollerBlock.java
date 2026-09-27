@@ -2,16 +2,16 @@ package com.nythicalnorm.voxelspaceprogram.block.manufacturing;
 
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.SheetMetalRollerEntity;
-import com.nythicalnorm.voxelspaceprogram.block.multiblock.MachineryMultiblock;
+import com.nythicalnorm.voxelspaceprogram.block.multiblock.VSPMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class SheetMetalRollerBlock extends MachineryMultiblock {
+public class SheetMetalRollerBlock extends VSPMultiblock {
     public SheetMetalRollerBlock(Properties pProperties) {
-        super(pProperties, 20, 32, 16);
+        super(pProperties, 20, 32, 16, true);
     }
 
     @Override
