@@ -1,4 +1,4 @@
-package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer;
 
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;

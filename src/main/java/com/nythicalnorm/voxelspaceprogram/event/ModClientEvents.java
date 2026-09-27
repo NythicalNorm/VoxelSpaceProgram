@@ -6,8 +6,10 @@ import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.models.Magn
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.models.SheetMetalRollerModel;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer.MagnetizerBlockEntityRenderer;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer.SheetMetalRollerRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.CommandSeatModel;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers.EngineEntityRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer.CommandSeatRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer.EngineEntityRenderer;
 import com.nythicalnorm.voxelspaceprogram.rendering.plumes.PlumeRenderTypes;
 import com.nythicalnorm.voxelspaceprogram.util.VSPKeyBinds;
 import net.minecraft.client.renderer.RenderType;
@@ -26,6 +28,7 @@ public class ModClientEvents {
     public static void RegisterBER(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(VSPBlockEntities.MAGNETIZER_BE.get(), MagnetizerBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(VSPBlockEntities.SHEET_METAL_ROLLER_BE.get(), SheetMetalRollerRenderer::new);
+        event.registerBlockEntityRenderer(VSPBlockEntities.COMMAND_SEAT_BE.get(), CommandSeatRenderer::new);
         event.registerBlockEntityRenderer(VSPBlockEntities.ENGINE_BE.get(), EngineEntityRenderer::new);
     }
 
@@ -33,6 +36,7 @@ public class ModClientEvents {
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(MagnetizerModels.LAYER_LOCATION, MagnetizerModels::createBodyLayer);
         event.registerLayerDefinition(SheetMetalRollerModel.LAYER_LOCATION, SheetMetalRollerModel::createBodyLayer);
+        event.registerLayerDefinition(CommandSeatModel.LAYER_LOCATION, CommandSeatModel::createBodyLayer);
         event.registerLayerDefinition(EngineModelData.ThreeKeroloxLayerLoc, EngineModelData::createThreeKeroloxModel);
         event.registerLayerDefinition(EngineModelData.TwoKeroloxLayerLoc, EngineModelData::createTwoKeroloxModel);
     }

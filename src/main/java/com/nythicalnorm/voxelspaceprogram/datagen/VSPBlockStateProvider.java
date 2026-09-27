@@ -61,6 +61,15 @@ public class VSPBlockStateProvider extends BlockStateProvider {
                 2.6f,
                 0.0f
         );
+
+        machineryEntityBlock(VSPBlocks.COMMAND_SEAT, VSPBlocks.ALUMINIUM_BLOCK,
+                1f/2.5f,
+                16,
+                32,
+                2.6f,
+                -3.0f
+        );
+
         particleOnlyBlock(VSPBlocks.ROCKETRY_BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
         particleOnlyBlock(VSPBlocks.ENGINE_BOUNDING_BLOCK, VSPBlocks.MAGNETIZED_IRON_BLOCK);
         particleOnlyBlock(VSPBlocks.MACHINERY_BOUNDING_BLOCK, VSPBlocks.ALUMINIUM_BLOCK);

@@ -3,7 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.rendering.plumes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers.EngineEntityRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer.EngineEntityRenderer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;

@@ -3,6 +3,7 @@ package com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.gse.entity.VehicleAssemblerEntity;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.CommandSeatBE;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.PropellantTankEntity;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlockEntity;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
@@ -31,6 +32,10 @@ public class VSPBlockEntities {
     public static final RegistryObject<BlockEntityType<VehicleAssemblerEntity>> VEHICLE_ASSEMBLER_BE =
             BLOCK_ENTITIES.register("vehicle_assembler_be", () ->
                     BlockEntityType.Builder.of(VehicleAssemblerEntity::new, VSPBlocks.VEHICLE_ASSEMBLER.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<CommandSeatBE>> COMMAND_SEAT_BE =
+            BLOCK_ENTITIES.register("command_seat_be", () ->
+                    BlockEntityType.Builder.of(CommandSeatBE::new, VSPBlocks.COMMAND_SEAT.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<EngineEntity>> ENGINE_BE =
             BLOCK_ENTITIES.register("engine_be", () -> BlockEntityType.Builder.of(EngineEntity::new,

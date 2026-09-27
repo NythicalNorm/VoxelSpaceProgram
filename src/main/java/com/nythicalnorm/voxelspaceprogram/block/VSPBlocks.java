@@ -8,6 +8,7 @@ import com.nythicalnorm.voxelspaceprogram.block.gse.PlatformAssembly;
 import com.nythicalnorm.voxelspaceprogram.block.gse.wires.GSEPipe;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.CryogenicAirSeparator;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.SheetMetalRollerBlock;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.CommandSeatBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.EngineBoundingBlock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.PropellantTankBlock;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.BoundingBlock;
@@ -80,6 +81,9 @@ public class VSPBlocks {
             () -> new BoundingBlock(BlockBehaviour.Properties.copy(SHEET_METAL_ROLLER.get())));
 
     // Rocketry Parts
+    public static final RegistryObject<Block> COMMAND_SEAT = registerMultiBlock("command_seat",
+            () -> new CommandSeatBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER).noOcclusion()));
+
     public static final RegistryObject<Block> HYPERGOLIC_STEEL_TANK = registerBlock("hypergolic_steel_tank",
             () -> new PropellantTankBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.COPPER)));
 

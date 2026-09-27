@@ -3,7 +3,6 @@ package com.nythicalnorm.voxelspaceprogram.block.multiblock;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -17,10 +16,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaterniond;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -141,13 +141,13 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
         float zOffset = 0.0f;
         float yOffset = 0.0f;
 
-        if (blockLength(pPixelXWidth) % 2 == 0) {
+        if (isEven(pPixelXWidth)) {
             xOffset = 0.5f;
         }
-        if (blockLength(pPixelZWidth) % 2 == 0) {
+        if (isEven(pPixelZWidth)) {
             zOffset = 0.5f;
         }
-        if (blockLength(pPixelHeight) % 2 == 1) {
+        if (!isEven(pPixelHeight)) {
             yOffset = 1.0f;
         }
         return new Vector3f(xOffset, yOffset, zOffset);
@@ -248,40 +248,146 @@ public abstract class VSPMultiblock extends BaseEntityBlock {
     }
 
     protected VoxelShape getShapeFromDirection(Direction direction) {
-        double halfX = this.pixelXWidth * 0.5d;
-        double halfY = this.pixelHeight * 0.5d;
-        double halfZ = this.pixelZWidth * 0.5d;
+        return this.isHorizontalOnlyRotation() ? horizontalRotateVoxelShape(getDefaultVoxelShape(), direction) :
+                rotateVoxelShape(getDefaultVoxelShape(), direction);
+    }
 
-        Vector3d posA = new Vector3d(-halfX, -halfY + 16, -halfZ);
-        Vector3d posB = new Vector3d(halfX, halfY + 16, halfZ);
+    protected VoxelShape getDefaultVoxelShape() {
+        Vector3d posA = new Vector3d(0.0d, 0.0d, 0.0d);
+        Vector3d posB = new Vector3d(this.pixelXWidth, this.pixelHeight, this.pixelZWidth);
+        Vector3d centerOffset = this.getCenterOffset();
 
-        Quaterniond rotD = direction.getRotation().get(new Quaterniond());
-        if (this.isHorizontalOnlyRotation()) {
-            rotD.rotateX(Mth.HALF_PI);
+        return Block.box(
+            posA.x + centerOffset.x(),posA.y + centerOffset.y(),posA.z + centerOffset.z(),
+            posB.x + centerOffset.x(),posB.y + centerOffset.y(),posB.z + centerOffset.z()
+        );
+    }
+
+    public static VoxelShape horizontalRotateVoxelShape(VoxelShape shape, Direction direction) {
+        if (direction == Direction.NORTH) {
+            return shape;
         }
-        posA.rotate(rotD);
-        posB.rotate(rotD);
 
-        Vector3d shapeOffsets = addShapeOffsets(halfX, halfY, halfZ);
-        shapeOffsets.rotate(rotD);
-        posA.add(shapeOffsets);
-        posB.add(shapeOffsets);
+        VoxelShape result = Shapes.empty();
 
-        Vector3d minPos = new Vector3d(Math.min(posA.x, posB.x), Math.min(posA.y, posB.y), Math.min(posA.z, posB.z));
-        Vector3d maxPos = new Vector3d(Math.max(posA.x, posB.x), Math.max(posA.y, posB.y), Math.max(posA.z, posB.z));
+        for (AABB box : shape.toAabbs()) {
+            double minX = box.minX;
+            double minY = box.minY;
+            double minZ = box.minZ;
+            double maxX = box.maxX;
+            double maxY = box.maxY;
+            double maxZ = box.maxZ;
 
-        return Block.box(minPos.x + 8, minPos.y + 8, minPos.z + 8, maxPos.x + 8, maxPos.y + 8, maxPos.z + 8);
+            AABB rotated;
+
+            switch (direction) {
+                case EAST -> rotated = new AABB(1.0 - maxZ, minY, minX, 1.0 - minZ, maxY, maxX);
+                case SOUTH -> rotated = new AABB(1.0 - maxX, minY, 1.0 - maxZ, 1.0 - minX, maxY, 1.0 - minZ);
+                case WEST -> rotated = new AABB(minZ, minY, 1.0 - maxX,maxZ, maxY, 1.0 - minX);
+                default -> rotated = box;
+            }
+
+            result = Shapes.or(result, Shapes.create(rotated));
+        }
+
+        return result.optimize();
     }
 
-    protected Vector3d addShapeOffsets(double halfX, double halfY, double halfZ) {
-        double xOffset = isEven(this.pixelXWidth) ? (this.isHorizontalOnlyRotation() ? 8.0d - halfX : 8.0d) : 0.0d;
-        double yOffset = isEven(this.pixelXWidth) ? (this.isHorizontalOnlyRotation() ? -8.0d - halfY : -8.0d) : 0.0d;
-        double zOffset = isEven(this.pixelXWidth) ? (this.isHorizontalOnlyRotation() ? 8.0d - halfZ : 8.0d) : 0.0d;
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Direction direction) {
+        if (direction == Direction.UP) {
+            return shape;
+        }
 
-        return new Vector3d(xOffset, yOffset, zOffset);
+        VoxelShape result = Shapes.empty();
+
+        for (AABB box : shape.toAabbs()) {
+            double minX = Double.POSITIVE_INFINITY;
+            double minY = Double.POSITIVE_INFINITY;
+            double minZ = Double.POSITIVE_INFINITY;
+
+            double maxX = Double.NEGATIVE_INFINITY;
+            double maxY = Double.NEGATIVE_INFINITY;
+            double maxZ = Double.NEGATIVE_INFINITY;
+
+            // Transform all 8 corners of the AABB
+            for (int x = 0; x <= 1; x++) {
+                for (int y = 0; y <= 1; y++) {
+                    for (int z = 0; z <= 1; z++) {
+                        double px = x == 0 ? box.minX : box.maxX;
+                        double py = y == 0 ? box.minY : box.maxY;
+                        double pz = z == 0 ? box.minZ : box.maxZ;
+
+                        Vector3d rotated = rotatePoint(px, py, pz, direction);
+
+                        minX = Math.min(minX, rotated.x);
+                        minY = Math.min(minY, rotated.y);
+                        minZ = Math.min(minZ, rotated.z);
+
+                        maxX = Math.max(maxX, rotated.x);
+                        maxY = Math.max(maxY, rotated.y);
+                        maxZ = Math.max(maxZ, rotated.z);
+                    }
+                }
+            }
+
+            result = Shapes.or(
+                    result,
+                    Shapes.create(new AABB(
+                            minX, minY, minZ,
+                            maxX, maxY, maxZ
+                    ))
+            );
+        }
+
+        return result.optimize();
     }
 
-    protected boolean isEven(float axis) {
+    private static Vector3d rotatePoint(
+            double x,
+            double y,
+            double z,
+            Direction direction
+    ) {
+        // Move origin to the center of the block
+        x -= 0.5;
+        y -= 0.5;
+        z -= 0.5;
+
+        Vector3d point = new Vector3d();
+
+        switch (direction) {
+            case DOWN -> point.set(x, -y, -z);
+            case NORTH -> point.set(-x, -z, -y);
+            case SOUTH -> point.set(x, -z, y);
+            case EAST -> point.set(y, -x, -z);
+            case WEST -> point.set(-y, -x, z);
+            default -> point.set(x, y, z);
+        }
+
+        // Move origin back to the block corner
+        return point.add(0.5, 0.5, 0.5);
+    }
+
+    public Vector3d getCenterOffset() {
+        int xLength = blockLength(this.pixelXWidth);
+        int zLength = blockLength(this.pixelZWidth);
+
+        Vector3d offset = new Vector3d(
+                getCenterOffset(xLength) * 16.0d,
+                0.0d,
+                getCenterOffset(zLength) * 16.0d
+        );
+
+        if (!this.isHorizontalOnlyRotation()) {
+            double xAdd = ((xLength * 16) - this.pixelXWidth) * 0.5d;
+            double zAdd = ((zLength * 16) - this.pixelZWidth) * 0.5d;
+            offset.add(xAdd, 0.0d, zAdd);
+        }
+
+        return offset;
+    }
+
+    protected static boolean isEven(float axis) {
         return blockLength(axis) % 2 == 0;
     }
 

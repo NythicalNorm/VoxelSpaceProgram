@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nythicalnorm.planetshine.util.calculations.MiscCalc;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.EngineEntity;
-import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity_renderers.EngineEntityRenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer.EngineEntityRenderer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;

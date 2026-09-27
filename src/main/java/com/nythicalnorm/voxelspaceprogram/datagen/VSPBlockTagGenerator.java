@@ -37,6 +37,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
 
         this.tag(BlockTags.NEEDS_IRON_TOOL).add(
                 VSPBlocks.HYPERGOLIC_STEEL_TANK.get(),
+                VSPBlocks.COMMAND_SEAT.get(),
                 VSPBlocks.LUNAR_REGOLITH.get(),
                 VSPBlocks.VEHICLE_ASSEMBLER.get(),
                 VSPBlocks.THREE_KEROLOX.get(),
@@ -51,6 +52,7 @@ public class VSPBlockTagGenerator extends BlockTagsProvider {
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
                 VSPBlocks.SHEET_METAL_ROLLER.get(),
+                VSPBlocks.COMMAND_SEAT.get(),
                 VSPBlocks.HYPERGOLIC_STEEL_TANK.get(),
                 VSPBlocks.LUNAR_REGOLITH.get(),
                 VSPBlocks.CRYOGENIC_AIR_SEPARATOR.get(),

@@ -20,18 +20,10 @@ public class VSPCreativeModeTab {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(VSPItems.SPACESUIT_HELMET.get()))
                     .title(Component.translatable("creativetab.Main_VSP"))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(VSPBlocks.COMMAND_SEAT.get());
+                        output.accept(VSPBlocks.THREE_KEROLOX.get());
+                        output.accept(VSPBlocks.TWO_KEROLOX.get());
                         output.accept(VSPItems.HANDHELD_THRUSTER.get());
-                        output.accept(HandheldThrusterFluidHandler.getFullFilledItemStack(VSPItems.HANDHELD_THRUSTER.get()),
-                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS
-                        );
-
-                        output.accept(VSPItems.MAGNET_BOOTS.get());
-                        output.accept(VSPItems.MAGNETIZED_IRON_INGOT.get());
-
-                        output.accept(VSPItems.SPACESUIT_HELMET.get());
-                        output.accept(VSPItems.CREATIVE_SPACESUIT_CHESTPLATE.get());
-                        output.accept(VSPItems.SPACESUIT_LEGGINGS.get());
-                        output.accept(VSPItems.SPACESUIT_BOOTS.get());
 
                         output.accept(VSPBlocks.MAGNETIZED_IRON_BLOCK.get());
 
@@ -41,8 +33,6 @@ public class VSPCreativeModeTab {
                         output.accept(VSPBlocks.DEEPSLATE_ALUMINIUM_ORE.get());
                         output.accept(VSPBlocks.ALUMINIUM_BLOCK.get());
                         output.accept(VSPBlocks.RAW_ALUMINIUM_BLOCK.get());
-
-                        output.accept(VSPBlocks.LUNAR_REGOLITH.get());
 
                         output.accept(VSPBlocks.SHEET_METAL_ROLLER.get());
                         output.accept(VSPBlocks.MAGNETIZER.get());
@@ -58,8 +48,19 @@ public class VSPCreativeModeTab {
 
                         output.accept(VSPFluids.LIQUID_OXYGEN.fluidContainer.get());
 
-                        output.accept(VSPBlocks.THREE_KEROLOX.get());
-                        output.accept(VSPBlocks.TWO_KEROLOX.get());
+                        output.accept(VSPBlocks.LUNAR_REGOLITH.get());
+
+                        output.accept(HandheldThrusterFluidHandler.getFullFilledItemStack(VSPItems.HANDHELD_THRUSTER.get()),
+                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS
+                        );
+
+                        output.accept(VSPItems.MAGNET_BOOTS.get());
+                        output.accept(VSPItems.MAGNETIZED_IRON_INGOT.get());
+
+                        output.accept(VSPItems.SPACESUIT_HELMET.get());
+                        output.accept(VSPItems.CREATIVE_SPACESUIT_CHESTPLATE.get());
+                        output.accept(VSPItems.SPACESUIT_LEGGINGS.get());
+                        output.accept(VSPItems.SPACESUIT_BOOTS.get());
                     })
                     .build());
 

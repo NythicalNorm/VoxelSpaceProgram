@@ -1,8 +1,8 @@
-package com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.renderer;
+package com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer;
 
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.SheetMetalRollerEntity;
-import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.models.SheetMetalRollerModel;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.MultiblockBERenderer;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.CommandSeatBE;
+import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.CommandSeatModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.Material;
@@ -13,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
-public class SheetMetalRollerRenderer extends MultiblockBERenderer<SheetMetalRollerEntity> {
-    private static SheetMetalRollerModel model;
+public class CommandSeatRenderer extends MultiblockBERenderer<CommandSeatBE> {
+    private static CommandSeatModel model;
 
-    public SheetMetalRollerRenderer(BlockEntityRendererProvider.Context context) {
-        ModelPart modelpart = context.bakeLayer(SheetMetalRollerModel.LAYER_LOCATION);
-        model = new SheetMetalRollerModel(modelpart);
+    public CommandSeatRenderer(BlockEntityRendererProvider.Context context) {
+        ModelPart modelpart = context.bakeLayer(CommandSeatModel.LAYER_LOCATION);
+        model = new CommandSeatModel(modelpart);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class SheetMetalRollerRenderer extends MultiblockBERenderer<SheetMetalRol
     }
 
     @Override
-    protected void setModelPositions(SheetMetalRollerEntity blockEntity, ModelPart main, float pPartialTick) {
+    protected void setModelPositions(CommandSeatBE blockEntity, ModelPart main, float pPartialTick) {
 
     }
 
     @Override
     public @Nullable Material getMaterial(Block block) {
-        return SheetMetalRollerModel.MATERIAL_LOCATION;
+        return CommandSeatModel.MATERIAL_LOCATION;
     }
 }
