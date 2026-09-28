@@ -1,5 +1,6 @@
 package com.nythicalnorm.voxelspaceprogram.event;
 
+import com.nythicalnorm.voxelspaceprogram.Item.VSPItemProperties;
 import com.nythicalnorm.voxelspaceprogram.VoxelSpaceProgram;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.VSPBlockEntities;
 import com.nythicalnorm.voxelspaceprogram.block.manufacturing.entity.models.MagnetizerModels;
@@ -10,9 +11,13 @@ import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.Comma
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.models.EngineModelData;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer.CommandSeatRenderer;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.renderer.EngineEntityRenderer;
+import com.nythicalnorm.voxelspaceprogram.entities.CommandSeatEntityDummyRenderer;
+import com.nythicalnorm.voxelspaceprogram.entities.VSPEntities;
+import com.nythicalnorm.voxelspaceprogram.gui.VSPMenuTypes;
 import com.nythicalnorm.voxelspaceprogram.rendering.plumes.PlumeRenderTypes;
 import com.nythicalnorm.voxelspaceprogram.util.VSPKeyBinds;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -20,10 +25,20 @@ import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = VoxelSpaceProgram.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModClientEvents {
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event)
+    {
+        // Some client setup code
+        EntityRenderers.register(VSPEntities.COMMAND_SEAT_ENTITY.get(), CommandSeatEntityDummyRenderer::new);
+        VSPItemProperties.addCustomItemProperties();
+        VSPMenuTypes.registerMenus();
+    }
+
     @SubscribeEvent
     public static void RegisterBER(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(VSPBlockEntities.MAGNETIZER_BE.get(), MagnetizerBlockEntityRenderer::new);

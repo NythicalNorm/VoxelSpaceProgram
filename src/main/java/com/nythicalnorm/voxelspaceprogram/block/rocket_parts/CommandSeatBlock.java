@@ -4,16 +4,52 @@ import com.nythicalnorm.voxelspaceprogram.block.VSPBlocks;
 import com.nythicalnorm.voxelspaceprogram.block.multiblock.VSPMultiblock;
 import com.nythicalnorm.voxelspaceprogram.block.rocket_parts.entity.CommandSeatBE;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandSeatBlock extends VSPMultiblock {
     public CommandSeatBlock(Properties pProperties) {
         super(pProperties, 32, 16, 32, true);
+    }
+
+    @Override
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (pPlayer.isShiftKeyDown() || pPlayer instanceof FakePlayer) {
+            return InteractionResult.PASS;
+        }
+
+        if (pLevel.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (pLevel.getBlockEntity(pPos) instanceof CommandSeatBE commandSeatBE) {
+            return commandSeatBE.trySitDown((ServerPlayer) pPlayer, (ServerLevel) pLevel, pPos);
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+        if (!pLevel.isClientSide() &&
+                !pState.getBlock().equals(pNewState.getBlock()) &&
+                pLevel.getBlockEntity(pPos) instanceof  CommandSeatBE commandSeatBE
+        ) {
+            commandSeatBE.blockRemoved();
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
 
     @Override
